@@ -57,4 +57,14 @@ class User extends Authenticatable implements PasskeyUser
     {
         return $this->hasMany(Opportunity::class, 'owner_id');
     }
+
+    public function activities(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Activity::class, 'owner_id');
+    }
+
+    public function notes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Note::class, 'created_by');
+    }
 }
