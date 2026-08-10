@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int|null $contact_id
  * @property string $name
+ * @property string|null $email
  * @property string|null $source
  * @property string $status
  * @property string|null $discard_reason
@@ -24,7 +25,7 @@ use Illuminate\Support\Carbon;
  */
 class Lead extends Model
 {
-    protected $fillable = ['contact_id', 'name', 'source', 'status', 'discard_reason', 'owner_id'];
+   protected $fillable = ['contact_id', 'name', 'email', 'source', 'status', 'discard_reason', 'owner_id'];
 
     public function contact(): BelongsTo
     {

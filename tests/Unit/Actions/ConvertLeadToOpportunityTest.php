@@ -26,3 +26,15 @@ it('rejects converting an already-converted lead', function () {
 
     (new ConvertLeadToOpportunity)($lead, 'Jane Deal - Q1');
 })->throws(\DomainException::class);
+
+it('links to an existing contact found by email instead of creating a duplicate', function () {
+    $this->seed(\Database\Seeders\PipelineStageSeeder::class);
+    $user = User::factory()->create();
+    $existingContact = \App\Models\Contact::create(['name' => 'Old Name', 'email' => 'jane@acme.com']);
+    $lead = Lead::create(['name' => 'Jane Deal', 'email' => 'jane@acme.com', 'status' => 'new', 'owner_id' => $user->id]);
+
+    $opportunity = (new ConvertLeadToOpportunity)($lead, 'Jane Deal - Q1');
+
+    expect($opportunity->contact_id)->toBe($existingContact->id);
+    expect(\App\Models\Contact::count())->toBe(1); // no duplicate created
+});

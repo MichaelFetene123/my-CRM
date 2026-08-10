@@ -54,13 +54,21 @@ class ConvertLeadToOpportunity
     }
 
     private function findOrCreateContact(Lead $lead): Contact
-    {
-        // Duplicate-contact check by name (spec §4: "by email/name")
-        $existing = Contact::where('name', $lead->name)->first();
+{
+    $existing = null;
 
-        return $existing ?? Contact::create([
-            'name' => $lead->name,
-            'status' => 'prospect',
-        ]);
+    if ($lead->email) {
+        $existing = Contact::where('email', $lead->email)->first();
     }
+
+    if (!$existing) {
+        $existing = Contact::where('name', $lead->name)->first();
+    }
+
+    return $existing ?? Contact::create([
+        'name' => $lead->name,
+        'email' => $lead->email,
+        'status' => 'prospect',
+    ]);
+}
 }
