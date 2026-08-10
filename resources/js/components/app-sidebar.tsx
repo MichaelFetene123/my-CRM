@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { LayoutGrid } from 'lucide-react';
+import { LayoutGrid, Users, Target, GitBranch, ListChecks } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -13,6 +13,10 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import contacts from '@/routes/contacts';
+import leads from '@/routes/leads';
+import opportunities from '@/routes/opportunities';
+import activities from '@/routes/activities';
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
@@ -20,6 +24,26 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Contacts',
+        href: contacts.index(),
+        icon: Users,
+    },
+    {
+        title: 'Leads',
+        href: leads.index(),
+        icon: Target,
+    },
+    {
+        title: 'Opportunities',
+        href: opportunities.index(),
+        icon: GitBranch,
+    },
+    {
+        title: 'Activities',
+        href: activities.index(),
+        icon: ListChecks,
     },
 ];
 
