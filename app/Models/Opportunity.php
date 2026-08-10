@@ -7,6 +7,28 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+
+/**
+ * @property int $id
+ * @property int $contact_id
+ * @property int|null $lead_id
+ * @property string $title
+ * @property int $stage_id
+ * @property string $status
+ * @property string|null $lost_reason
+ * @property Carbon|null $stage_entered_at
+ * @property int $owner_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Contact $contact
+ * @property-read Lead|null $lead
+ * @property-read PipelineStage $stage
+ * @property-read User $owner
+ * @property-read Collection|Activity[] $activities
+ * @property-read Collection|Note[] $notes
+ */
 class Opportunity extends Model
 {
     protected $fillable = [

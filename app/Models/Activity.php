@@ -7,6 +7,21 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+use Illuminate\Support\Carbon;
+
+/**
+ * @property int $id
+ * @property string $entity_type
+ * @property int $entity_id
+ * @property string $type
+ * @property Carbon $due_at
+ * @property Carbon|null $completed_at
+ * @property int $owner_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Model $entity
+ * @property-read User $owner
+ */
 class Activity extends Model
 {
     protected $fillable = ['entity_type', 'entity_id', 'type', 'due_at', 'completed_at', 'owner_id'];
