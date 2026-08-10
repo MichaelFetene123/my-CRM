@@ -27,7 +27,6 @@ export function NavFooter({
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton
                                 render={<a href={toUrl(item.href)} target="_blank" rel="noopener noreferrer" />}
-                                className="text-neutral-600 hover:text-neutral-800 dark:text-neutral-300 dark:hover:text-neutral-100"
                             >
                                 {item.icon && (
                                     <item.icon className="h-5 w-5" />
