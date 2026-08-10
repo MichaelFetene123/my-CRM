@@ -12,7 +12,7 @@ class StoreOpportunityRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,9 @@ class StoreOpportunityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'contact_id' => ['required', 'exists:contacts,id'],
+            'title' => ['required', 'string', 'max:255'],
+            'stage_id' => ['required', 'exists:pipeline_stages,id'],
         ];
     }
 }

@@ -12,7 +12,7 @@ class StoreActivityRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,10 @@ class StoreActivityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'entity_type' => ['required', 'in:lead,opportunity,contact'],
+            'entity_id' => ['required', 'integer'],
+            'type' => ['required', 'in:call,meeting,task,email'],
+            'due_at' => ['required', 'date'],
         ];
     }
 }

@@ -12,7 +12,7 @@ class MoveStageRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,7 @@ class MoveStageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'stage_id' => ['required', 'exists:pipeline_stages,id'],
         ];
     }
 }
