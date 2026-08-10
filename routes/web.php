@@ -9,7 +9,7 @@ use App\Http\Controllers\OpportunityController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', fn () => Inertia::render('Welcome'))->name('home');
+Route::get('/', fn () => Inertia::render('welcome'))->name('home');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
