@@ -1,5 +1,4 @@
 import { Head, useForm } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import activities from '@/routes/activities';
@@ -21,7 +20,7 @@ export default function Activities({ activities: activityList }: { activities: A
     }, {});
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <>
             <Head title="Activities" />
             <div className="p-6 space-y-6">
                 <h1 className="text-2xl font-semibold">Activities</h1>
@@ -56,6 +55,10 @@ export default function Activities({ activities: activityList }: { activities: A
                     <p className="text-sm text-muted-foreground italic">No activities scheduled.</p>
                 )}
             </div>
-        </AppLayout>
+        </>
     );
 }
+
+Activities.layout = {
+    breadcrumbs,
+};
