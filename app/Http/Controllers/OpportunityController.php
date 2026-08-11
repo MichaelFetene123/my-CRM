@@ -17,10 +17,10 @@ class OpportunityController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('Opportunities/Index', [
-            'stages' => PipelineStage::orderBy('order')->with(['opportunities.contact'])->get(),
-            'contacts' => \App\Models\Contact::latest()->get(['id', 'name']),
-        ]);
+       return Inertia::render('opportunities', [
+    'stages' => PipelineStage::orderBy('order')->with(['opportunities.contact'])->get(),
+    'contacts' => \App\Models\Contact::latest()->get(['id', 'name']),
+]);
     }
 
     public function store(StoreOpportunityRequest $request)
