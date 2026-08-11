@@ -1,5 +1,14 @@
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm, router } from '@inertiajs/react';
 import { useState } from 'react';
+import {
+    DndContext,
+    DragOverlay,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    type DragEndEvent,
+    type DragStartEvent,
+} from '@dnd-kit/core';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,8 +20,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { StageColumn } from '@/components/pipeline-board/stage-column';
 import opportunitiesRoute from '@/routes/opportunities';
 import type { Opportunity, PipelineStage, Contact, BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/app-layout';
@@ -25,6 +34,9 @@ interface Props {
 }
 
 export default function OpportunitiesIndex({ stages, contacts }: Props) {
+    // -----------------------------------------------------
+    // Create Opportunity Form State
+    // -----------------------------------------------------
     const [open, setOpen] = useState(false);
     const { data, setData, post, processing, errors, reset } = useForm({
         title: '',
@@ -42,14 +54,78 @@ export default function OpportunitiesIndex({ stages, contacts }: Props) {
         });
     }
 
-    const statusVariant: Record<string, any> = {
-        open: 'info',
-        won: 'success',
-        lost: 'destructive',
-    };
+    // -----------------------------------------------------
+    // Drag and Drop Board State
+    // -----------------------------------------------------
+    // Local optimistic copy — lets the card move instantly, independent of the next Inertia reload
+    const [board, setBoard] = useState(stages);
+    const [activeOpp, setActiveOpp] = useState<Opportunity | null>(null);
+
+    const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+
+    function findOpp(id: number): { opp: Opportunity; stageIndex: number } | null {
+        for (let i = 0; i < board.length; i++) {
+            const opp = board[i].opportunities.find((o) => o.id === id);
+            if (opp) return { opp, stageIndex: i };
+        }
+        return null;
+    }
+
+    function handleDragStart(event: DragStartEvent) {
+        const found = findOpp(Number(event.active.id));
+        if (found) setActiveOpp(found.opp);
+    }
+
+    function handleDragEnd(event: DragEndEvent) {
+        setActiveOpp(null);
+        const { active, over } = event;
+        if (!over) return;
+
+        const oppId = Number(active.id);
+        const found = findOpp(oppId);
+        if (!found) return;
+
+        // over.id is either a stage id (dropped on empty column) or another opportunity's id (dropped on a card)
+        let targetStageIndex = board.findIndex((s) => s.id === over.id);
+        if (targetStageIndex === -1) {
+            const overOpp = findOpp(Number(over.id));
+            if (!overOpp) return;
+            targetStageIndex = overOpp.stageIndex;
+        }
+
+        if (targetStageIndex === found.stageIndex) return; // dropped in same column, no-op
+
+        const targetStage = board[targetStageIndex];
+        const previousBoard = board;
+
+        // Optimistic update: move card immediately
+        setBoard((prev) => {
+            const next = prev.map((s) => ({ ...s, opportunities: [...s.opportunities] }));
+            next[found.stageIndex].opportunities = next[found.stageIndex].opportunities.filter((o) => o.id !== oppId);
+            next[targetStageIndex].opportunities = [...next[targetStageIndex].opportunities, { ...found.opp, stage_id: targetStage.id }];
+            return next;
+        });
+
+        router.post(
+            opportunitiesRoute.move(oppId).url,
+            { stage_id: targetStage.id },
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => {
+                    // server confirmed — refetch to sync stage_entered_at, system note, etc.
+                    router.reload({ only: ['stages'] });
+                },
+                onError: () => {
+                    // rollback on rejection (e.g. terminal opportunity guard)
+                    setBoard(previousBoard);
+                },
+            }
+        );
+    }
 
     return (
-        <>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Opportunities" />
             <div className="p-6 space-y-4 h-full flex flex-col">
                 <div className="flex items-center justify-between">
@@ -109,46 +185,25 @@ export default function OpportunitiesIndex({ stages, contacts }: Props) {
                     </Dialog>
                 </div>
 
-                <div className="flex-1 overflow-x-auto pb-4">
-                    <div className="flex gap-4 min-w-max h-full">
-                        {stages.map((stage) => (
-                            <div key={stage.id} className="w-80 flex flex-col gap-3 rounded-lg bg-muted/50 p-3">
-                                <div className="flex items-center justify-between px-1">
-                                    <h3 className="font-medium text-sm text-muted-foreground">{stage.name}</h3>
-                                    <Badge variant="secondary" className="rounded-full">{stage.opportunities.length}</Badge>
-                                </div>
-                                
-                                <div className="flex-1 space-y-3 overflow-y-auto pr-1">
-                                    {stage.opportunities.map((opp) => (
-                                        <Card key={opp.id} className="cursor-pointer hover:border-primary/50 transition-colors">
-                                            <CardContent className="p-4 space-y-2">
-                                                <Link href={opportunitiesRoute.show(opp.id).url} className="font-medium block hover:underline">
-                                                    {opp.title}
-                                                </Link>
-                                                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                                    <span>{opp.contact?.name || 'No Contact'}</span>
-                                                    <Badge variant={statusVariant[opp.status] || 'default'} className="text-[10px] px-1.5 py-0">
-                                                        {opp.status}
-                                                    </Badge>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    ))}
-                                    {stage.opportunities.length === 0 && (
-                                        <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg h-24 flex items-center justify-center text-sm text-muted-foreground">
-                                            Empty
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
+                <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                    <div className="flex-1 overflow-x-auto pb-4">
+                        <div className="flex gap-4 min-w-max h-full">
+                            {board.map((stage) => (
+                                <StageColumn key={stage.id} stage={stage} opportunities={stage.opportunities} />
+                            ))}
+                        </div>
                     </div>
-                </div>
+                    <DragOverlay>
+                        {activeOpp && (
+                            <Card className="w-65 opacity-80 cursor-grabbing border-primary">
+                                <CardContent className="p-4">
+                                    <p className="font-medium">{activeOpp.title}</p>
+                                </CardContent>
+                            </Card>
+                        )}
+                    </DragOverlay>
+                </DndContext>
             </div>
-        </>
+        </AppLayout>
     );
 }
-
-OpportunitiesIndex.layout = (page: React.ReactNode) => (
-    <AppLayout breadcrumbs={breadcrumbs}>{page}</AppLayout>
-);
