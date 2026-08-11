@@ -30,7 +30,7 @@ const breadcrumbs: BreadcrumbItem[] = [{ title: 'Opportunities', href: opportuni
 
 interface Props {
     stages: (PipelineStage & { opportunities: Opportunity[] })[];
-    contacts: Contact[];
+    contacts: { id: number; name: string }[];
 }
 
 export default function OpportunitiesIndex({ stages, contacts }: Props) {
