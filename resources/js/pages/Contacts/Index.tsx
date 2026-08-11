@@ -1,4 +1,4 @@
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,6 +18,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import contacts from '@/routes/contacts';
 import type { Contact, PaginatedData, BreadcrumbItem } from '@/types';
@@ -43,9 +44,9 @@ export default function Contacts({ contacts: contactList }: { contacts: Paginate
         });
     }
 
-    const statusVariant: Record<string, 'default' | 'secondary' | 'outline'> = {
-        prospect: 'outline',
-        customer: 'default',
+    const statusVariant: Record<string, any> = {
+        prospect: 'info',
+        customer: 'success',
         inactive: 'secondary',
     };
 
@@ -105,32 +106,45 @@ export default function Contacts({ contacts: contactList }: { contacts: Paginate
                     </Dialog>
                 </div>
 
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Company</TableHead>
-                            <TableHead>Email</TableHead>
-                            <TableHead>Status</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {contactList.data.map((contact) => (
-                            <TableRow key={contact.id}>
-                                <TableCell>
-                                    <Link href={contacts.show(contact.id).url} className="hover:underline">
-                                        {contact.name}
-                                    </Link>
-                                </TableCell>
-                                <TableCell>{contact.company ?? '—'}</TableCell>
-                                <TableCell>{contact.email ?? '—'}</TableCell>
-                                <TableCell>
-                                    <Badge variant={statusVariant[contact.status]}>{contact.status}</Badge>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                <Card>
+                    <CardContent className="p-0">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="pl-6">Name</TableHead>
+                                    <TableHead>Company</TableHead>
+                                    <TableHead>Email</TableHead>
+                                    <TableHead className="pr-6 text-right">Status</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {contactList.data.map((contact) => (
+                                    <TableRow 
+                                        key={contact.id} 
+                                        className="h-12 cursor-pointer hover:bg-muted/50 transition-colors"
+                                        onClick={() => router.visit(contacts.show(contact.id).url)}
+                                    >
+                                        <TableCell className="pl-6 font-medium">
+                                            {contact.name}
+                                        </TableCell>
+                                        <TableCell>{contact.company ?? '—'}</TableCell>
+                                        <TableCell>{contact.email ?? '—'}</TableCell>
+                                        <TableCell className="pr-6 text-right">
+                                            <Badge variant={statusVariant[contact.status] || 'default'}>{contact.status}</Badge>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                                {contactList.data.length === 0 && (
+                                    <TableRow>
+                                        <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
+                                            No contacts found.
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
             </div>
         </>
     );
