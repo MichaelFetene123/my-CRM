@@ -12,6 +12,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { useUnreadCount } from '@/components/activities/reminder-badge';
 import { dashboard } from '@/routes';
 import contacts from '@/routes/contacts';
 import leads from '@/routes/leads';
@@ -19,37 +20,40 @@ import opportunities from '@/routes/opportunities';
 import activities from '@/routes/activities';
 import type { NavItem } from '@/types';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard().url,
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Contacts',
-        href: contacts.index().url,
-        icon: Users,
-    },
-    {
-        title: 'Leads',
-        href: leads.index().url,
-        icon: Target,
-    },
-    {
-        title: 'Opportunities',
-        href: opportunities.index().url,
-        icon: GitBranch,
-    },
-    {
-        title: 'Activities',
-        href: activities.index().url,
-        icon: ListChecks,
-    },
-];
-
 
 
 export function AppSidebar() {
+    const unreadCount = useUnreadCount();
+
+    const mainNavItems: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard().url,
+            icon: LayoutGrid,
+        },
+        {
+            title: 'Contacts',
+            href: contacts.index().url,
+            icon: Users,
+        },
+        {
+            title: 'Leads',
+            href: leads.index().url,
+            icon: Target,
+        },
+        {
+            title: 'Opportunities',
+            href: opportunities.index().url,
+            icon: GitBranch,
+        },
+        {
+            title: 'Activities',
+            href: activities.index().url,
+            icon: ListChecks,
+            badge: unreadCount > 0 ? unreadCount : undefined,
+        },
+    ];
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>

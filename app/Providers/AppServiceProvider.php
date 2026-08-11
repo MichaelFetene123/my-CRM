@@ -30,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
             'lead' => \App\Models\Lead::class,
             'opportunity' => \App\Models\Opportunity::class,
             'contact' => \App\Models\Contact::class,
+            'user' => \App\Models\User::class,
         ]);
     }
 

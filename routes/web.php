@@ -28,6 +28,10 @@ Route::middleware('auth')->group(function () {
     Route::post('activities/{activity}/complete', [ActivityController::class, 'complete'])->name('activities.complete');
 
     Route::post('notes', [NoteController::class, 'store'])->name('notes.store');
+
+    Route::get('notifications/unread-count', fn () => response()->json([
+        'count' => auth()->user()->unreadNotifications()->count(),
+    ]))->name('notifications.unread-count');
 });
 
 require __DIR__.'/settings.php';

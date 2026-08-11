@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/sidebar';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import type { NavItem } from '@/types';
+import { ReminderBadge } from './activities/reminder-badge';
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
     const { isCurrentUrl } = useCurrentUrl();
@@ -25,6 +26,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                         >
                             {item.icon && <item.icon />}
                             <span>{item.title}</span>
+                            {item.badge !== undefined && <ReminderBadge count={item.badge} />}
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 ))}

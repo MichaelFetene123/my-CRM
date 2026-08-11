@@ -83,6 +83,7 @@ export interface NavItem {
     href: any;
     icon?: LucideIcon;
     isActive?: boolean;
+    badge?: number;
 }
 
 export * from './ui';
