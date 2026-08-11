@@ -1,10 +1,13 @@
-import { Head, useForm, router } from '@inertiajs/react';
+import { Head, useForm, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
+import { mergeTimeline, TimelineItem } from '@/components/timeline/timeline-item';
+import { ActivityForm } from '@/components/activities/activity-form';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -25,10 +28,7 @@ interface Props {
 }
 
 export default function OpportunityShow({ opportunity }: Props) {
-    const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Opportunities', href: opportunities.index().url },
-        { title: opportunity.title, href: opportunities.show(opportunity.id).url },
-    ];
+
 
     const [lostOpen, setLostOpen] = useState(false);
     const lostForm = useForm({ reason: '' });
@@ -56,15 +56,15 @@ export default function OpportunityShow({ opportunity }: Props) {
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <>
             <Head title={opportunity.title} />
             <div className="p-6 space-y-6 max-w-3xl">
-                <div className="flex items-start justify-between">
-                    <div>
-                        <h1 className="text-2xl font-semibold">{opportunity.title}</h1>
-                        <p className="text-sm text-muted-foreground">{opportunity.contact.name}</p>
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                    <div className="space-y-1">
+                        <h1 className="text-3xl font-bold tracking-tight">{opportunity.title}</h1>
+                        <p className="text-base text-muted-foreground">{opportunity.contact.name}</p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                         <Badge variant={statusVariant[opportunity.status]} className="capitalize">
                             {opportunity.status}
                         </Badge>
@@ -111,24 +111,46 @@ export default function OpportunityShow({ opportunity }: Props) {
                 )}
 
                 {/* Timeline (Notes + Activities) — full component built in Phase 8 */}
-                <div>
-                    <h2 className="text-lg font-medium mb-2">Timeline</h2>
-                    <ul className="space-y-2">
-                        {opportunity.notes.map((note) => (
-                            <li key={`note-${note.id}`} className="text-sm border-l-2 pl-3 py-1">
-                                {note.is_system_generated && (
-                                    <Badge variant="secondary" className="mr-2 uppercase text-[10px] tracking-wider">
-                                        System
-                                    </Badge>
-                                )}
-                                <span className={note.is_system_generated ? "text-muted-foreground" : ""}>
-                                    {note.body}
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <CardTitle>Timeline</CardTitle>
+                        <Dialog>
+                            <DialogTrigger render={<Button size="sm" variant="outline" />}>Add Activity</DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader><DialogTitle>New Activity</DialogTitle></DialogHeader>
+                                <ActivityForm
+                                    entityType="opportunity"
+                                    entityId={opportunity.id}
+                                    onSuccess={() => router.reload({ only: ['opportunity'] })}
+                                />
+                            </DialogContent>
+                        </Dialog>
+                    </CardHeader>
+                    <CardContent>
+                        {opportunity.notes.length === 0 && opportunity.activities.length === 0 ? (
+                            <p className="text-sm text-muted-foreground italic">No timeline entries yet.</p>
+                        ) : (
+                            <ul className="space-y-2">
+                                {mergeTimeline(opportunity.notes, opportunity.activities).map((entry) => (
+                                    <TimelineItem key={`${entry.kind}-${entry.data.id}`} entry={entry} />
+                                ))}
+                            </ul>
+                        )}
+                    </CardContent>
+                </Card>
             </div>
-        </AppLayout>
+        </>
     );
 }
+
+function ShowLayout({ children }: { children: React.ReactNode }) {
+    const { opportunity } = usePage<any>().props;
+    const breadcrumbs: BreadcrumbItem[] = [
+        { title: 'Opportunities', href: opportunities.index().url },
+        { title: opportunity?.title || 'Opportunity', href: opportunities.show(opportunity?.id || 0).url },
+    ];
+    
+    return <AppLayout breadcrumbs={breadcrumbs}>{children}</AppLayout>;
+}
+
+OpportunityShow.layout = (page: React.ReactNode) => <ShowLayout>{page}</ShowLayout>;

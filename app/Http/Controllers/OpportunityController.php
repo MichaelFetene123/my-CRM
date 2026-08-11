@@ -36,7 +36,7 @@ class OpportunityController extends Controller
 
     public function show(Opportunity $opportunity): Response
     {
-        return Inertia::render('Opportunities/Show', [
+        return Inertia::render('opportunities-show', [
             'opportunity' => $opportunity->load(['contact', 'stage', 'notes', 'activities']),
         ]);
     }

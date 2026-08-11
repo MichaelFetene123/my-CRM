@@ -1,6 +1,8 @@
-import { Head, usePage, Link, useForm } from '@inertiajs/react';
+import { Head, usePage, Link, useForm, router } from '@inertiajs/react';
 import { useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
+import { mergeTimeline, TimelineItem } from '@/components/timeline/timeline-item';
+import { ActivityForm } from '@/components/activities/activity-form';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,10 +24,10 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import contacts from '@/routes/contacts';
-import type { Contact, Lead, Opportunity, BreadcrumbItem } from '@/types';
+import type { Contact, Lead, Opportunity, BreadcrumbItem, Note, Activity } from '@/types';
 
 interface Props {
-    contact: Contact & { leads: Lead[]; opportunities: Opportunity[] };
+    contact: Contact & { leads: Lead[]; opportunities: Opportunity[]; notes: Note[]; activities: Activity[] };
 }
 
 export default function ContactShow({ contact }: Props) {
@@ -206,6 +208,35 @@ export default function ContactShow({ contact }: Props) {
                         </CardContent>
                     </Card>
                 </div>
+
+                {/* Timeline (Notes + Activities) */}
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <CardTitle>Timeline</CardTitle>
+                        <Dialog>
+                            <DialogTrigger render={<Button size="sm" variant="outline" />}>Add Activity</DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader><DialogTitle>New Activity</DialogTitle></DialogHeader>
+                                <ActivityForm
+                                    entityType="contact"
+                                    entityId={contact.id}
+                                    onSuccess={() => router.reload({ only: ['contact'] })}
+                                />
+                            </DialogContent>
+                        </Dialog>
+                    </CardHeader>
+                    <CardContent>
+                        {contact.notes.length === 0 && contact.activities.length === 0 ? (
+                            <p className="text-sm text-muted-foreground italic">No timeline entries yet.</p>
+                        ) : (
+                            <ul className="space-y-2">
+                                {mergeTimeline(contact.notes, contact.activities).map((entry) => (
+                                    <TimelineItem key={`${entry.kind}-${entry.data.id}`} entry={entry} />
+                                ))}
+                            </ul>
+                        )}
+                    </CardContent>
+                </Card>
             </div>
         </>
     );

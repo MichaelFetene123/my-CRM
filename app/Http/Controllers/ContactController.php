@@ -26,7 +26,7 @@ class ContactController extends Controller
   public function show(Contact $contact): Response
 {
     return Inertia::render('Contacts/Show', [
-        'contact' => $contact->load(['leads', 'opportunities']),
+        'contact' => $contact->load(['leads', 'opportunities', 'notes', 'activities']),
     ]);
 }
 

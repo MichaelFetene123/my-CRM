@@ -125,7 +125,7 @@ export default function OpportunitiesIndex({ stages, contacts }: Props) {
     }
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <>
             <Head title="Opportunities" />
             <div className="p-6 space-y-4 h-full flex flex-col">
                 <div className="flex items-center justify-between">
@@ -204,6 +204,10 @@ export default function OpportunitiesIndex({ stages, contacts }: Props) {
                     </DragOverlay>
                 </DndContext>
             </div>
-        </AppLayout>
+        </>
     );
 }
+
+OpportunitiesIndex.layout = {
+    breadcrumbs,
+};

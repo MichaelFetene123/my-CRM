@@ -22,27 +22,27 @@ import type { NavItem } from '@/types';
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard(),
+        href: dashboard().url,
         icon: LayoutGrid,
     },
     {
         title: 'Contacts',
-        href: contacts.index(),
+        href: contacts.index().url,
         icon: Users,
     },
     {
         title: 'Leads',
-        href: leads.index(),
+        href: leads.index().url,
         icon: Target,
     },
     {
         title: 'Opportunities',
-        href: opportunities.index(),
+        href: opportunities.index().url,
         icon: GitBranch,
     },
     {
         title: 'Activities',
-        href: activities.index(),
+        href: activities.index().url,
         icon: ListChecks,
     },
 ];
@@ -55,7 +55,7 @@ export function AppSidebar() {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" render={<Link href={dashboard()} prefetch />}>
+                        <SidebarMenuButton size="lg" render={<Link href={dashboard().url} prefetch />}>
                             <AppLogo />
                         </SidebarMenuButton>
                     </SidebarMenuItem>
