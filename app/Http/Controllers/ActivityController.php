@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\Activities\CompleteActivity;
 use App\Http\Requests\StoreActivityRequest;
 use App\Models\Activity;
+use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -12,6 +13,10 @@ class ActivityController extends Controller
 {
     public function index(): Response
     {
+        /** @var User $user */
+        $user = auth()->user();
+        $user->unreadNotifications()->update(['read_at' => now()]);
+
         return Inertia::render('Activities/Index', [
             'activities' => Activity::with('entity')->orderBy('due_at')->get(),
         ]);
