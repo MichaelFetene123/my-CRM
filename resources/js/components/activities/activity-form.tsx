@@ -1,4 +1,4 @@
-import { useForm } from '@inertiajs/react';
+import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,7 +9,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import activities from '@/routes/activities';
+import { useCreateActivity } from '@/hooks/activities/use-create-activity';
 
 interface Props {
     entityType: 'lead' | 'opportunity' | 'contact';
@@ -18,28 +18,46 @@ interface Props {
 }
 
 export function ActivityForm({ entityType, entityId, onSuccess }: Props) {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        entity_type: entityType,
-        entity_id: entityId,
-        type: 'call' as 'call' | 'meeting' | 'task' | 'email',
-        due_at: '',
+    const { mutate, isPending } = useCreateActivity();
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        setError,
+        setValue,
+        watch,
+        formState: { errors },
+    } = useForm({
+        defaultValues: {
+            entity_type: entityType,
+            entity_id: entityId,
+            type: 'call',
+            due_at: '',
+        },
     });
 
-    function submit(e: React.FormEvent) {
-        e.preventDefault();
-        post(activities.store().url, {
+    const onSubmit = (formData: any) => {
+        mutate(formData, {
             onSuccess: () => {
-                reset('type', 'due_at');
+                reset({ type: 'call', due_at: '', entity_type: entityType, entity_id: entityId });
                 onSuccess?.();
             },
+            onError: (error) => {
+                if (error.errors) {
+                    Object.entries(error.errors).forEach(([key, messages]) => {
+                        setError(key as any, { type: 'server', message: messages[0] });
+                    });
+                }
+            },
         });
-    }
+    };
 
     return (
-        <form onSubmit={submit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
                 <Label htmlFor="type">Type</Label>
-                <Select value={data.type} onValueChange={(v) => setData('type', v as typeof data.type)}>
+                <Select value={watch('type')} onValueChange={(v) => v && setValue('type', v)}>
                     <SelectTrigger id="type"><SelectValue /></SelectTrigger>
                     <SelectContent>
                         <SelectItem value="call">Call</SelectItem>
@@ -54,12 +72,11 @@ export function ActivityForm({ entityType, entityId, onSuccess }: Props) {
                 <Input
                     id="due_at"
                     type="datetime-local"
-                    value={data.due_at}
-                    onChange={(e) => setData('due_at', e.target.value)}
+                    {...register('due_at')}
                 />
-                {errors.due_at && <p className="text-sm text-destructive">{errors.due_at}</p>}
+                {errors.due_at && <p className="text-sm text-destructive">{errors.due_at.message as string}</p>}
             </div>
-            <Button type="submit" disabled={processing}>Add Activity</Button>
+            <Button type="submit" disabled={isPending}>Add Activity</Button>
         </form>
     );
 }

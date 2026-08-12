@@ -1,5 +1,9 @@
-import { Head, useForm, router, usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useOpportunity } from '@/hooks/opportunities/use-opportunity';
+import { useWonOpportunity } from '@/hooks/opportunities/use-won-opportunity';
+import { useLostOpportunity } from '@/hooks/opportunities/use-lost-opportunity';
 import AppLayout from '@/layouts/app-layout';
 import { mergeTimeline, TimelineItem } from '@/components/timeline/timeline-item';
 import { ActivityForm } from '@/components/activities/activity-form';
@@ -27,25 +31,44 @@ interface Props {
     };
 }
 
-export default function OpportunityShow({ opportunity }: Props) {
-
+export default function OpportunityShow({ opportunity: initialOpportunity }: Props) {
+    const { data: opportunity = initialOpportunity } = useOpportunity(initialOpportunity.id, initialOpportunity);
+    const { mutate: markWonMutate } = useWonOpportunity();
+    const { mutate: markLostMutate, isPending: isLosing } = useLostOpportunity();
 
     const [lostOpen, setLostOpen] = useState(false);
-    const lostForm = useForm({ reason: '' });
+    
+    const {
+        register,
+        handleSubmit,
+        reset,
+        setError,
+        formState: { errors },
+    } = useForm({
+        defaultValues: {
+            reason: '',
+        },
+    });
 
     function markWon() {
-        router.post(opportunities.won(opportunity.id).url, {}, { preserveScroll: true });
+        markWonMutate({ id: opportunity.id });
     }
 
-    function submitLost(e: React.FormEvent) {
-        e.preventDefault();
-        lostForm.post(opportunities.lost(opportunity.id).url, {
+    const submitLost = (formData: any) => {
+        markLostMutate({ id: opportunity.id, reason: formData.reason }, {
             onSuccess: () => {
-                lostForm.reset();
+                reset();
                 setLostOpen(false);
             },
+            onError: (error) => {
+                if (error.errors) {
+                    Object.entries(error.errors).forEach(([key, messages]) => {
+                        setError(key as any, { type: 'server', message: messages[0] });
+                    });
+                }
+            },
         });
-    }
+    };
 
     const isOpen = opportunity.status === 'open';
 
@@ -62,13 +85,13 @@ export default function OpportunityShow({ opportunity }: Props) {
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                     <div className="space-y-1">
                         <h1 className="text-3xl font-bold tracking-tight">{opportunity.title}</h1>
-                        <p className="text-base text-muted-foreground">{opportunity.contact.name}</p>
+                        <p className="text-base text-muted-foreground">{opportunity.contact?.name}</p>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                         <Badge variant={statusVariant[opportunity.status]} className="capitalize">
                             {opportunity.status}
                         </Badge>
-                        {opportunity.status.toLowerCase() !== opportunity.stage.name.toLowerCase() && (
+                        {opportunity.stage && opportunity.status.toLowerCase() !== opportunity.stage.name.toLowerCase() && (
                             <Badge variant="outline">{opportunity.stage.name}</Badge>
                         )}
                     </div>
@@ -83,19 +106,15 @@ export default function OpportunityShow({ opportunity }: Props) {
                             </DialogTrigger>
                             <DialogContent>
                                 <DialogHeader><DialogTitle>Mark as Lost</DialogTitle></DialogHeader>
-                                <form onSubmit={submitLost} className="space-y-4">
+                                <form onSubmit={handleSubmit(submitLost)} className="space-y-4">
                                     <div>
                                         <Label htmlFor="reason">Reason</Label>
-                                        <Textarea
-                                            id="reason"
-                                            value={lostForm.data.reason}
-                                            onChange={(e) => lostForm.setData('reason', e.target.value)}
-                                        />
-                                        {lostForm.errors.reason && (
-                                            <p className="text-sm text-destructive">{lostForm.errors.reason}</p>
+                                        <Textarea id="reason" {...register('reason')} />
+                                        {errors.reason && (
+                                            <p className="text-sm text-destructive">{errors.reason.message as string}</p>
                                         )}
                                     </div>
-                                    <Button type="submit" variant="destructive" disabled={lostForm.processing}>
+                                    <Button type="submit" variant="destructive" disabled={isLosing}>
                                         Confirm Lost
                                     </Button>
                                 </form>
@@ -121,7 +140,6 @@ export default function OpportunityShow({ opportunity }: Props) {
                                 <ActivityForm
                                     entityType="opportunity"
                                     entityId={opportunity.id}
-                                    onSuccess={() => router.reload({ only: ['opportunity'] })}
                                 />
                             </DialogContent>
                         </Dialog>

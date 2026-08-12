@@ -1,6 +1,9 @@
-import { Head, usePage, Link, useForm, router } from '@inertiajs/react';
+import { Head, usePage, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
+import { useForm } from 'react-hook-form';
+import { useContact } from '@/hooks/contacts/use-contact';
+import { useUpdateContact } from '@/hooks/contacts/use-update-contact';
 import { mergeTimeline, TimelineItem } from '@/components/timeline/timeline-item';
 import { ActivityForm } from '@/components/activities/activity-form';
 import { Badge } from '@/components/ui/badge';
@@ -30,21 +33,38 @@ interface Props {
     contact: Contact & { leads: Lead[]; opportunities: Opportunity[]; notes: Note[]; activities: Activity[] };
 }
 
-export default function ContactShow({ contact }: Props) {
+export default function ContactShow({ contact: initialContact }: Props) {
+    const { data } = useContact(initialContact.id, initialContact);
+    const contact = data || initialContact;
+    const { mutate, isPending } = useUpdateContact();
     const [open, setOpen] = useState(false);
-    const { data, setData, put, processing, errors } = useForm({
-        name: contact.name,
-        company: contact.company || '',
-        email: contact.email || '',
-        phone: contact.phone || '',
+
+    const {
+        register,
+        handleSubmit,
+        setError,
+        formState: { errors },
+    } = useForm({
+        defaultValues: {
+            name: contact.name,
+            company: contact.company || '',
+            email: contact.email || '',
+            phone: contact.phone || '',
+        },
     });
 
-    function submit(e: React.FormEvent) {
-        e.preventDefault();
-        put(contacts.update(contact.id).url, {
+    const onSubmit = (formData: any) => {
+        mutate({ id: contact.id, ...formData }, {
             onSuccess: () => setOpen(false),
+            onError: (error) => {
+                if (error.errors) {
+                    Object.entries(error.errors).forEach(([key, messages]) => {
+                        setError(key as any, { type: 'server', message: messages[0] });
+                    });
+                }
+            },
         });
-    }
+    };
 
     const statusVariant: Record<string, any> = {
         prospect: 'info',
@@ -82,45 +102,28 @@ export default function ContactShow({ contact }: Props) {
                             <DialogHeader>
                                 <DialogTitle>Edit Contact</DialogTitle>
                             </DialogHeader>
-                            <form onSubmit={submit} className="space-y-4 mt-4">
+                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
                                 <div>
                                     <Label htmlFor="name">Name</Label>
-                                    <Input
-                                        id="name"
-                                        value={data.name}
-                                        onChange={(e) => setData('name', e.target.value)}
-                                    />
-                                    {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
+                                    <Input id="name" {...register('name')} />
+                                    {errors.name && <p className="text-sm text-destructive mt-1">{errors.name.message as string}</p>}
                                 </div>
                                 <div>
                                     <Label htmlFor="company">Company</Label>
-                                    <Input
-                                        id="company"
-                                        value={data.company}
-                                        onChange={(e) => setData('company', e.target.value)}
-                                    />
+                                    <Input id="company" {...register('company')} />
                                 </div>
                                 <div>
                                     <Label htmlFor="email">Email</Label>
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        value={data.email}
-                                        onChange={(e) => setData('email', e.target.value)}
-                                    />
-                                    {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
+                                    <Input id="email" type="email" {...register('email')} />
+                                    {errors.email && <p className="text-sm text-destructive mt-1">{errors.email.message as string}</p>}
                                 </div>
                                 <div>
                                     <Label htmlFor="phone">Phone</Label>
-                                    <Input
-                                        id="phone"
-                                        value={data.phone}
-                                        onChange={(e) => setData('phone', e.target.value)}
-                                    />
+                                    <Input id="phone" {...register('phone')} />
                                 </div>
                                 <div className="flex justify-end gap-2 pt-2">
                                     <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-                                    <Button type="submit" disabled={processing}>Save Changes</Button>
+                                    <Button type="submit" disabled={isPending}>Save Changes</Button>
                                 </div>
                             </form>
                         </DialogContent>

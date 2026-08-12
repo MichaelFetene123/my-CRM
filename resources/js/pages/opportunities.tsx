@@ -1,5 +1,9 @@
-import { Head, Link, useForm, router, Deferred } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useOpportunitiesStages } from '@/hooks/opportunities/use-opportunities-stages';
+import { useCreateOpportunity } from '@/hooks/opportunities/use-create-opportunity';
+import { useMoveOpportunity } from '@/hooks/opportunities/use-move-opportunity';
 import { BoardSkeleton } from '@/components/skeleton/board-skeleton';
 import {
     DndContext,
@@ -29,31 +33,47 @@ import AppLayout from '@/layouts/app-layout';
 
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Opportunities', href: opportunitiesRoute.index().url }];
 
-interface Props {
-    stages: (PipelineStage & { opportunities: Opportunity[] })[];
-    contacts: { id: number; name: string }[];
-}
+export default function OpportunitiesIndex({ contacts }: { contacts: { id: number; name: string }[] }) {
+    const { data: stages, isLoading } = useOpportunitiesStages();
+    const { mutate: createOpportunity, isPending: isCreating } = useCreateOpportunity();
+    const { mutate: moveOpportunity } = useMoveOpportunity();
 
-export default function OpportunitiesIndex({ stages, contacts }: Props) {
     // -----------------------------------------------------
     // Create Opportunity Form State
     // -----------------------------------------------------
     const [open, setOpen] = useState(false);
-    const { data, setData, post, processing, errors, reset } = useForm({
-        title: '',
-        contact_id: '',
-        stage_id: '',
+    
+    const {
+        register,
+        handleSubmit,
+        reset,
+        setError,
+        setValue,
+        watch,
+        formState: { errors },
+    } = useForm({
+        defaultValues: {
+            title: '',
+            contact_id: '',
+            stage_id: '',
+        },
     });
 
-    function submit(e: React.FormEvent) {
-        e.preventDefault();
-        post(opportunitiesRoute.store().url, {
+    const onSubmit = (formData: any) => {
+        createOpportunity(formData, {
             onSuccess: () => {
                 reset();
                 setOpen(false);
             },
+            onError: (error) => {
+                if (error.errors) {
+                    Object.entries(error.errors).forEach(([key, messages]) => {
+                        setError(key as any, { type: 'server', message: messages[0] });
+                    });
+                }
+            },
         });
-    }
+    };
 
     // -----------------------------------------------------
     // Drag and Drop Board State
@@ -113,22 +133,12 @@ export default function OpportunitiesIndex({ stages, contacts }: Props) {
             return next;
         });
 
-        router.post(
-            opportunitiesRoute.move(oppId).url,
-            { stage_id: targetStage.id },
-            {
-                preserveScroll: true,
-                preserveState: true,
-                onSuccess: () => {
-                    // server confirmed — refetch to sync stage_entered_at, system note, etc.
-                    router.reload({ only: ['stages'] });
-                },
-                onError: () => {
-                    // rollback on rejection (e.g. terminal opportunity guard)
-                    setBoard(previousBoard);
-                },
+        moveOpportunity({ id: oppId, stage_id: targetStage.id }, {
+            onError: () => {
+                // rollback on rejection
+                setBoard(previousBoard);
             }
-        );
+        });
     }
 
     return (
@@ -145,19 +155,15 @@ export default function OpportunitiesIndex({ stages, contacts }: Props) {
                             <DialogHeader>
                                 <DialogTitle>New Opportunity</DialogTitle>
                             </DialogHeader>
-                            <form onSubmit={submit} className="space-y-4 mt-4">
+                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
                                 <div>
                                     <Label htmlFor="title">Title</Label>
-                                    <Input
-                                        id="title"
-                                        value={data.title}
-                                        onChange={(e) => setData('title', e.target.value)}
-                                    />
-                                    {errors.title && <p className="text-sm text-destructive mt-1">{errors.title}</p>}
+                                    <Input id="title" {...register('title')} />
+                                    {errors.title && <p className="text-sm text-destructive mt-1">{errors.title.message as string}</p>}
                                 </div>
                                 <div>
                                     <Label htmlFor="contact_id">Contact</Label>
-                                    <Select value={data.contact_id} onValueChange={(val) => setData('contact_id', val ?? '')}>
+                                    <Select value={watch('contact_id')} onValueChange={(val) => val && setValue('contact_id', val)}>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select a contact" />
                                         </SelectTrigger>
@@ -167,11 +173,11 @@ export default function OpportunitiesIndex({ stages, contacts }: Props) {
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                    {errors.contact_id && <p className="text-sm text-destructive mt-1">{errors.contact_id}</p>}
+                                    {errors.contact_id && <p className="text-sm text-destructive mt-1">{errors.contact_id.message as string}</p>}
                                 </div>
                                 <div>
                                     <Label htmlFor="stage_id">Pipeline Stage</Label>
-                                    <Select value={data.stage_id} onValueChange={(val) => setData('stage_id', val ?? '')}>
+                                    <Select value={watch('stage_id')} onValueChange={(val) => val && setValue('stage_id', val)}>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select initial stage" />
                                         </SelectTrigger>
@@ -181,18 +187,20 @@ export default function OpportunitiesIndex({ stages, contacts }: Props) {
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                    {errors.stage_id && <p className="text-sm text-destructive mt-1">{errors.stage_id}</p>}
+                                    {errors.stage_id && <p className="text-sm text-destructive mt-1">{errors.stage_id.message as string}</p>}
                                 </div>
                                 <div className="flex justify-end gap-2 pt-2">
                                     <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-                                    <Button type="submit" disabled={processing}>Save</Button>
+                                    <Button type="submit" disabled={isCreating}>Save</Button>
                                 </div>
                             </form>
                         </DialogContent>
                     </Dialog>
                 </div>
 
-                <Deferred data="stages" fallback={<BoardSkeleton />}>
+                {isLoading ? (
+                    <BoardSkeleton />
+                ) : (
                     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                         <div className="flex-1 overflow-x-auto pb-4">
                             <div className="flex gap-4 min-w-max h-full">
@@ -211,7 +219,7 @@ export default function OpportunitiesIndex({ stages, contacts }: Props) {
                             )}
                         </DragOverlay>
                     </DndContext>
-                </Deferred>
+                )}
             </div>
         </>
     );

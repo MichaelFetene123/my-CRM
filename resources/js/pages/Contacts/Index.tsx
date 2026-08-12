@@ -1,5 +1,8 @@
-import { Head, Link, useForm, router, Deferred } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useContacts } from '@/hooks/contacts/use-contacts';
+import { useCreateContact } from '@/hooks/contacts/use-create-contact';
 import { TableSkeleton } from '@/components/skeleton/table-skeleton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -26,24 +29,42 @@ import type { Contact, PaginatedData, BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Contacts', href: contacts.index().url }];
 
-export default function Contacts({ contacts: contactList }: { contacts: PaginatedData<Contact> }) {
+export default function Contacts() {
     const [open, setOpen] = useState(false);
-    const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        company: '',
-        email: '',
-        phone: '',
+    
+    const { data: contactList, isLoading } = useContacts();
+    const { mutate, isPending } = useCreateContact();
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        setError,
+        formState: { errors },
+    } = useForm({
+        defaultValues: {
+            name: '',
+            company: '',
+            email: '',
+            phone: '',
+        },
     });
 
-    function submit(e: React.FormEvent) {
-        e.preventDefault();
-        post(contacts.store().url, {
+    const onSubmit = (formData: any) => {
+        mutate(formData, {
             onSuccess: () => {
                 reset();
                 setOpen(false);
             },
+            onError: (error) => {
+                if (error.errors) {
+                    Object.entries(error.errors).forEach(([key, messages]) => {
+                        setError(key as any, { type: 'server', message: messages[0] });
+                    });
+                }
+            },
         });
-    }
+    };
 
     const statusVariant: Record<string, any> = {
         prospect: 'info',
@@ -65,43 +86,26 @@ export default function Contacts({ contacts: contactList }: { contacts: Paginate
                             <DialogHeader>
                                 <DialogTitle>New Contact</DialogTitle>
                             </DialogHeader>
-                            <form onSubmit={submit} className="space-y-4">
+                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                                 <div>
                                     <Label htmlFor="name">Name</Label>
-                                    <Input
-                                        id="name"
-                                        value={data.name}
-                                        onChange={(e) => setData('name', e.target.value)}
-                                    />
-                                    {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
+                                    <Input id="name" {...register('name')} />
+                                    {errors.name && <p className="text-sm text-destructive">{errors.name.message as string}</p>}
                                 </div>
                                 <div>
                                     <Label htmlFor="company">Company</Label>
-                                    <Input
-                                        id="company"
-                                        value={data.company}
-                                        onChange={(e) => setData('company', e.target.value)}
-                                    />
+                                    <Input id="company" {...register('company')} />
                                 </div>
                                 <div>
                                     <Label htmlFor="email">Email</Label>
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        value={data.email}
-                                        onChange={(e) => setData('email', e.target.value)}
-                                    />
-                                    {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+                                    <Input id="email" type="email" {...register('email')} />
+                                    {errors.email && <p className="text-sm text-destructive">{errors.email.message as string}</p>}
                                 </div>
                                 <div>
                                     <Label htmlFor="phone">Phone</Label>
-                                    <Input
-                                        id="phone"
-                                        value={data.phone}
-                                        onChange={(e) => setData('phone', e.target.value)}
-                                    />
+                                    <Input id="phone" {...register('phone')} />
                                 </div>
-                                <Button type="submit" disabled={processing}>Save</Button>
+                                <Button type="submit" disabled={isPending}>Save</Button>
                             </form>
                         </DialogContent>
                     </Dialog>
@@ -109,7 +113,9 @@ export default function Contacts({ contacts: contactList }: { contacts: Paginate
 
                 <Card>
                     <CardContent className="p-0">
-                        <Deferred data="contacts" fallback={<TableSkeleton />}>
+                        {isLoading ? (
+                            <TableSkeleton />
+                        ) : (
                             <Table>
                                 <TableHeader>
                                     <TableRow>
@@ -145,7 +151,7 @@ export default function Contacts({ contacts: contactList }: { contacts: Paginate
                                     )}
                                 </TableBody>
                             </Table>
-                        </Deferred>
+                        )}
                     </CardContent>
                 </Card>
             </div>

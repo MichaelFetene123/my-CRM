@@ -5,6 +5,18 @@ import { initializeTheme } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 5 * 60 * 1000,
+            retry: 1,
+            refetchOnWindowFocus: false,
+        },
+    },
+});
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -25,10 +37,13 @@ createInertiaApp({
     strictMode: true,
     withApp(app) {
         return (
-            <TooltipProvider delay={0}>
-                {app}
-                <Toaster />
-            </TooltipProvider>
+            <QueryClientProvider client={queryClient}>
+                <TooltipProvider delay={0}>
+                    {app}
+                    <Toaster />
+                </TooltipProvider>
+                <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
         );
     },
     progress: {

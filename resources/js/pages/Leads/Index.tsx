@@ -1,5 +1,8 @@
-import { Head, Link, useForm, Deferred } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useLeads } from '@/hooks/leads/use-leads';
+import { useCreateLead } from '@/hooks/leads/use-create-lead';
 import { TableSkeleton } from '@/components/skeleton/table-skeleton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,23 +30,41 @@ import AppLayout from '@/layouts/app-layout';
 
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Leads', href: leadsRoute.index().url }];
 
-export default function LeadsIndex({ leads }: { leads: PaginatedData<Lead> }) {
+export default function LeadsIndex() {
     const [open, setOpen] = useState(false);
-    const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        email: '',
-        source: '',
+    
+    const { data: leads, isLoading } = useLeads();
+    const { mutate, isPending } = useCreateLead();
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        setError,
+        formState: { errors },
+    } = useForm({
+        defaultValues: {
+            name: '',
+            email: '',
+            source: '',
+        },
     });
 
-    function submit(e: React.FormEvent) {
-        e.preventDefault();
-        post(leadsRoute.store().url, {
+    const onSubmit = (formData: any) => {
+        mutate(formData, {
             onSuccess: () => {
                 reset();
                 setOpen(false);
             },
+            onError: (error) => {
+                if (error.errors) {
+                    Object.entries(error.errors).forEach(([key, messages]) => {
+                        setError(key as any, { type: 'server', message: messages[0] });
+                    });
+                }
+            },
         });
-    }
+    };
 
     const statusVariant: Record<string, any> = {
         new: 'info',
@@ -66,38 +87,25 @@ export default function LeadsIndex({ leads }: { leads: PaginatedData<Lead> }) {
                             <DialogHeader>
                                 <DialogTitle>New Lead</DialogTitle>
                             </DialogHeader>
-                            <form onSubmit={submit} className="space-y-4 mt-4">
+                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
                                 <div>
                                     <Label htmlFor="name">Name</Label>
-                                    <Input
-                                        id="name"
-                                        value={data.name}
-                                        onChange={(e) => setData('name', e.target.value)}
-                                    />
-                                    {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
+                                    <Input id="name" {...register('name')} />
+                                    {errors.name && <p className="text-sm text-destructive mt-1">{errors.name.message as string}</p>}
                                 </div>
                                 <div>
                                     <Label htmlFor="email">Email</Label>
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        value={data.email}
-                                        onChange={(e) => setData('email', e.target.value)}
-                                    />
-                                    {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
+                                    <Input id="email" type="email" {...register('email')} />
+                                    {errors.email && <p className="text-sm text-destructive mt-1">{errors.email.message as string}</p>}
                                 </div>
                                 <div>
                                     <Label htmlFor="source">Source</Label>
-                                    <Input
-                                        id="source"
-                                        value={data.source}
-                                        onChange={(e) => setData('source', e.target.value)}
-                                    />
-                                    {errors.source && <p className="text-sm text-destructive mt-1">{errors.source}</p>}
+                                    <Input id="source" {...register('source')} />
+                                    {errors.source && <p className="text-sm text-destructive mt-1">{errors.source.message as string}</p>}
                                 </div>
                                 <div className="flex justify-end gap-2 pt-2">
                                     <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-                                    <Button type="submit" disabled={processing}>Save Lead</Button>
+                                    <Button type="submit" disabled={isPending}>Save Lead</Button>
                                 </div>
                             </form>
                         </DialogContent>
@@ -106,7 +114,9 @@ export default function LeadsIndex({ leads }: { leads: PaginatedData<Lead> }) {
 
                 <Card>
                     <CardContent className="p-0">
-                        <Deferred data="leads" fallback={<TableSkeleton />}>
+                        {isLoading ? (
+                            <TableSkeleton />
+                        ) : (
                             <Table>
                                 <TableHeader>
                                     <TableRow>
@@ -138,7 +148,7 @@ export default function LeadsIndex({ leads }: { leads: PaginatedData<Lead> }) {
                                     )}
                                 </TableBody>
                             </Table>
-                        </Deferred>
+                        )}
                     </CardContent>
                 </Card>
             </div>
