@@ -9,12 +9,12 @@ use Inertia\Response;
 
 class ContactController extends Controller
 {
-  public function index(): Response
-{
-    return Inertia::render('Contacts/Index', [
-        'contacts' => Contact::latest()->paginate(20),
-    ]);
-}
+    public function index(): Response
+    {
+        return Inertia::render('Contacts/Index', [
+            'contacts' => Inertia::defer(fn () => Contact::latest()->paginate(20)),
+        ]);
+    }
 
     public function store(StoreContactRequest $request)
     {
@@ -23,14 +23,14 @@ class ContactController extends Controller
         return redirect()->route('contacts.index');
     }
 
-  public function show(Contact $contact): Response
-{
-    return Inertia::render('Contacts/Show', [
-        'contact' => $contact->load(['leads', 'opportunities', 'notes', 'activities']),
-    ]);
-}
+    public function show(Contact $contact): Response
+    {
+        return Inertia::render('Contacts/Show', [
+            'contact' => $contact->load(['leads', 'opportunities', 'notes', 'activities']),
+        ]);
+    }
 
-   public function update(StoreContactRequest $request, Contact $contact)
+    public function update(StoreContactRequest $request, Contact $contact)
     {
         $contact->update($request->validated());
 

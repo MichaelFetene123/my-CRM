@@ -16,7 +16,7 @@ class LeadController extends Controller
     public function index(): Response
     {
         return Inertia::render('Leads/Index', [
-            'leads' => Lead::active()->latest()->paginate(20),
+            'leads' => Inertia::defer(fn () => Lead::active()->latest()->paginate(20)),
         ]);
     }
 

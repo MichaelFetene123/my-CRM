@@ -8,6 +8,7 @@ use App\Actions\Opportunities\MoveOpportunityStage;
 use App\Http\Requests\MarkLostRequest;
 use App\Http\Requests\MoveStageRequest;
 use App\Http\Requests\StoreOpportunityRequest;
+use App\Models\Contact;
 use App\Models\Opportunity;
 use App\Models\PipelineStage;
 use Inertia\Inertia;
@@ -17,10 +18,10 @@ class OpportunityController extends Controller
 {
     public function index(): Response
     {
-       return Inertia::render('opportunities', [
-    'stages' => PipelineStage::orderBy('order')->with(['opportunities.contact'])->get(),
-    'contacts' => \App\Models\Contact::latest()->get(['id', 'name']),
-]);
+        return Inertia::render('opportunities', [
+            'stages' => Inertia::defer(fn () => PipelineStage::orderBy('order')->with(['opportunities.contact'])->get()),
+            'contacts' => Contact::latest()->get(['id', 'name']),
+        ]);
     }
 
     public function store(StoreOpportunityRequest $request)

@@ -18,7 +18,7 @@ class ActivityController extends Controller
         $user->unreadNotifications()->update(['read_at' => now()]);
 
         return Inertia::render('Activities/Index', [
-            'activities' => Activity::with('entity')->orderBy('due_at')->get(),
+            'activities' => Inertia::defer(fn () => Activity::with('entity')->orderBy('due_at')->get()),
         ]);
     }
 

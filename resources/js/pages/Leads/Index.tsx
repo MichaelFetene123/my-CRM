@@ -1,5 +1,6 @@
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm, Deferred } from '@inertiajs/react';
 import { useState } from 'react';
+import { TableSkeleton } from '@/components/skeleton/table-skeleton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -105,37 +106,39 @@ export default function LeadsIndex({ leads }: { leads: PaginatedData<Lead> }) {
 
                 <Card>
                     <CardContent className="p-0">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="pl-6">Name</TableHead>
-                                    <TableHead>Email</TableHead>
-                                    <TableHead>Source</TableHead>
-                                    <TableHead className="pr-6 text-right">Status</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {leads?.data?.map((lead) => (
-                                    <TableRow key={lead.id}>
-                                        <TableCell className="pl-6 font-medium">
-                                            {lead.name}
-                                        </TableCell>
-                                        <TableCell>{lead.email ?? '—'}</TableCell>
-                                        <TableCell>{lead.source ?? '—'}</TableCell>
-                                        <TableCell className="pr-6 text-right">
-                                            <Badge variant={statusVariant[lead.status] || 'default'}>{lead.status}</Badge>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                                {(!leads?.data || leads.data.length === 0) && (
+                        <Deferred data="leads" fallback={<TableSkeleton />}>
+                            <Table>
+                                <TableHeader>
                                     <TableRow>
-                                        <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
-                                            No leads found.
-                                        </TableCell>
+                                        <TableHead className="pl-6">Name</TableHead>
+                                        <TableHead>Email</TableHead>
+                                        <TableHead>Source</TableHead>
+                                        <TableHead className="pr-6 text-right">Status</TableHead>
                                     </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {leads?.data?.map((lead) => (
+                                        <TableRow key={lead.id}>
+                                            <TableCell className="pl-6 font-medium">
+                                                {lead.name}
+                                            </TableCell>
+                                            <TableCell>{lead.email ?? '—'}</TableCell>
+                                            <TableCell>{lead.source ?? '—'}</TableCell>
+                                            <TableCell className="pr-6 text-right">
+                                                <Badge variant={statusVariant[lead.status] || 'default'}>{lead.status}</Badge>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                    {(!leads?.data || leads.data.length === 0) && (
+                                        <TableRow>
+                                            <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
+                                                No leads found.
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </Deferred>
                     </CardContent>
                 </Card>
             </div>

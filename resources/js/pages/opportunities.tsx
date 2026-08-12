@@ -1,5 +1,6 @@
-import { Head, Link, useForm, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, Link, useForm, router, Deferred } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
+import { BoardSkeleton } from '@/components/skeleton/board-skeleton';
 import {
     DndContext,
     DragOverlay,
@@ -58,8 +59,14 @@ export default function OpportunitiesIndex({ stages, contacts }: Props) {
     // Drag and Drop Board State
     // -----------------------------------------------------
     // Local optimistic copy — lets the card move instantly, independent of the next Inertia reload
-    const [board, setBoard] = useState(stages);
+    const [board, setBoard] = useState(stages || []);
     const [activeOpp, setActiveOpp] = useState<Opportunity | null>(null);
+
+    useEffect(() => {
+        if (stages) {
+            setBoard(stages);
+        }
+    }, [stages]);
 
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -169,7 +176,7 @@ export default function OpportunitiesIndex({ stages, contacts }: Props) {
                                             <SelectValue placeholder="Select initial stage" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {stages.map((stage) => (
+                                            {stages?.map((stage) => (
                                                 <SelectItem key={stage.id} value={stage.id.toString()}>{stage.name}</SelectItem>
                                             ))}
                                         </SelectContent>
@@ -185,24 +192,26 @@ export default function OpportunitiesIndex({ stages, contacts }: Props) {
                     </Dialog>
                 </div>
 
-                <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-                    <div className="flex-1 overflow-x-auto pb-4">
-                        <div className="flex gap-4 min-w-max h-full">
-                            {board.map((stage) => (
-                                <StageColumn key={stage.id} stage={stage} opportunities={stage.opportunities} />
-                            ))}
+                <Deferred data="stages" fallback={<BoardSkeleton />}>
+                    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                        <div className="flex-1 overflow-x-auto pb-4">
+                            <div className="flex gap-4 min-w-max h-full">
+                                {board.map((stage) => (
+                                    <StageColumn key={stage.id} stage={stage} opportunities={stage.opportunities} />
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                    <DragOverlay>
-                        {activeOpp && (
-                            <Card className="w-65 opacity-80 cursor-grabbing border-primary">
-                                <CardContent className="p-4">
-                                    <p className="font-medium">{activeOpp.title}</p>
-                                </CardContent>
-                            </Card>
-                        )}
-                    </DragOverlay>
-                </DndContext>
+                        <DragOverlay>
+                            {activeOpp && (
+                                <Card className="w-65 opacity-80 cursor-grabbing border-primary">
+                                    <CardContent className="p-4">
+                                        <p className="font-medium">{activeOpp.title}</p>
+                                    </CardContent>
+                                </Card>
+                            )}
+                        </DragOverlay>
+                    </DndContext>
+                </Deferred>
             </div>
         </>
     );
