@@ -11,10 +11,10 @@ use Inertia\Response;
 
 class ActivityController extends Controller
 {
-    public function index(): Response
+    public function index(\Illuminate\Http\Request $request): Response
     {
         /** @var User $user */
-        $user = auth()->user();
+        $user = $request->user();
         $user->unreadNotifications()->update(['read_at' => now()]);
 
         return Inertia::render('Activities/Index', [
@@ -22,10 +22,10 @@ class ActivityController extends Controller
         ]);
     }
 
-    public function apiIndex()
+    public function apiIndex(\Illuminate\Http\Request $request)
     {
         /** @var User $user */
-        $user = auth()->user();
+        $user = $request->user();
         $user->unreadNotifications()->update(['read_at' => now()]);
 
         return response()->json(Activity::with('entity')->orderBy('due_at')->get());

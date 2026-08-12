@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\OpportunityController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -52,8 +53,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('notes', [NoteController::class, 'store'])->name('notes.store');
 
-    Route::get('notifications/unread-count', fn () => response()->json([
-        'count' => auth()->user()->unreadNotifications()->count(),
+    Route::get('notifications/unread-count', fn (Request $request) => response()->json([
+        'count' => $request->user()->unreadNotifications()->count(),
     ]))->name('notifications.unread-count');
 });
 
