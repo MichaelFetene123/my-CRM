@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import opportunitiesRoute from '@/routes/opportunities';
+import apiOpportunitiesRoute from '@/routes/apiOpportunities';
 import { opportunityKeys } from '@/components/query-keys';
 import type { Opportunity, Contact, Lead, Activity, Note } from '@/types';
 
@@ -15,11 +15,7 @@ export function useOpportunity(id: number, initialData?: OpportunityWithRelation
     return useQuery({
         queryKey: opportunityKeys.detail(id),
         queryFn: async (): Promise<OpportunityWithRelations> => {
-            return await api.getInertiaData(
-                opportunitiesRoute.show(id).url,
-                'opportunity',
-                'opportunities-show'
-            );
+            return await api.get(apiOpportunitiesRoute.show(id).url);
         },
         initialData,
         staleTime: 0,

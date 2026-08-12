@@ -20,6 +20,11 @@ class LeadController extends Controller
         ]);
     }
 
+    public function apiIndex()
+    {
+        return response()->json(Lead::active()->latest()->paginate(20));
+    }
+
     public function store(StoreLeadRequest $request)
     {
         Lead::create([...$request->validated(), 'owner_id' => $request->user()->id, 'status' => 'new']);
@@ -34,11 +39,23 @@ class LeadController extends Controller
         return redirect()->route('opportunities.show', $opportunity);
     }
 
+    public function apiConvert(ConvertLeadRequest $request, Lead $lead, ConvertLeadToOpportunity $action)
+    {
+        $opportunity = $action($lead, $request->validated('title'));
+        return response()->json($opportunity);
+    }
+
     public function discard(DiscardLeadRequest $request, Lead $lead, DiscardLead $action)
     {
         $action($lead, $request->validated('reason'));
 
         return redirect()->route('leads.index');
+    }
+
+    public function apiDiscard(DiscardLeadRequest $request, Lead $lead, DiscardLead $action)
+    {
+        $action($lead, $request->validated('reason'));
+        return response()->json(['success' => true]);
     }
 
     public function destroy(Lead $lead)

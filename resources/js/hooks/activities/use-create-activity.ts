@@ -19,10 +19,10 @@ export function useCreateActivity() {
             return await api.post(activitiesRoute.store().url, data);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: activityKeys.all });
-            queryClient.invalidateQueries({ queryKey: contactKeys.all });
-            queryClient.invalidateQueries({ queryKey: opportunityKeys.all });
-            queryClient.invalidateQueries({ queryKey: leadKeys.all });
+            queryClient.invalidateQueries({ queryKey: activityKeys.list() });
+            queryClient.invalidateQueries({ queryKey: contactKeys.list() });
+            queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
+            queryClient.invalidateQueries({ queryKey: leadKeys.list() });
         },
     });
 }

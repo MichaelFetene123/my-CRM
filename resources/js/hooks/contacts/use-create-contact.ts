@@ -19,7 +19,7 @@ export function useCreateContact() {
             return await api.post(contactsRoute.store().url, data);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: contactKeys.all });
+            queryClient.invalidateQueries({ queryKey: contactKeys.list() });
         },
     });
 }

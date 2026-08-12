@@ -19,7 +19,7 @@ export function useCreateOpportunity() {
             return await api.post(opportunitiesRoute.store().url, data);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: opportunityKeys.all });
+            queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
         },
     });
 }

@@ -18,7 +18,7 @@ export function useCreateLead() {
             return await api.post(leadsRoute.store().url, data);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: leadKeys.all });
+            queryClient.invalidateQueries({ queryKey: leadKeys.list() });
         },
     });
 }

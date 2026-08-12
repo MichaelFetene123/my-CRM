@@ -24,6 +24,14 @@ class OpportunityController extends Controller
         ]);
     }
 
+    public function apiIndex()
+    {
+        return response()->json([
+            'stages' => PipelineStage::orderBy('order')->with(['opportunities.contact'])->get(),
+            'contacts' => Contact::latest()->get(['id', 'name']),
+        ]);
+    }
+
     public function store(StoreOpportunityRequest $request)
     {
         Opportunity::create([
@@ -42,12 +50,25 @@ class OpportunityController extends Controller
         ]);
     }
 
+    public function apiShow(Opportunity $opportunity)
+    {
+        return response()->json($opportunity->load(['contact', 'stage', 'notes', 'activities']));
+    }
+
     public function move(MoveStageRequest $request, Opportunity $opportunity, MoveOpportunityStage $action)
     {
         $newStage = PipelineStage::findOrFail($request->validated('stage_id'));
         $action($opportunity, $newStage);
 
         return redirect()->back();
+    }
+
+    public function apiMove(MoveStageRequest $request, Opportunity $opportunity, MoveOpportunityStage $action)
+    {
+        $newStage = PipelineStage::findOrFail($request->validated('stage_id'));
+        $action($opportunity, $newStage);
+
+        return response()->json(['success' => true]);
     }
 
     public function markWon(Opportunity $opportunity, MarkOpportunityWon $action)
@@ -57,10 +78,24 @@ class OpportunityController extends Controller
         return redirect()->back();
     }
 
+    public function apiMarkWon(Opportunity $opportunity, MarkOpportunityWon $action)
+    {
+        $action($opportunity);
+
+        return response()->json(['success' => true]);
+    }
+
     public function markLost(MarkLostRequest $request, Opportunity $opportunity, MarkOpportunityLost $action)
     {
         $action($opportunity, $request->validated('reason'));
 
         return redirect()->back();
+    }
+
+    public function apiMarkLost(MarkLostRequest $request, Opportunity $opportunity, MarkOpportunityLost $action)
+    {
+        $action($opportunity, $request->validated('reason'));
+
+        return response()->json(['success' => true]);
     }
 }

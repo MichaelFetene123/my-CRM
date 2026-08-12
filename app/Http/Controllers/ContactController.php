@@ -16,6 +16,11 @@ class ContactController extends Controller
         ]);
     }
 
+    public function apiIndex()
+    {
+        return response()->json(Contact::latest()->paginate(20));
+    }
+
     public function store(StoreContactRequest $request)
     {
         Contact::create($request->validated());
@@ -28,6 +33,11 @@ class ContactController extends Controller
         return Inertia::render('Contacts/Show', [
             'contact' => $contact->load(['leads', 'opportunities', 'notes', 'activities']),
         ]);
+    }
+
+    public function apiShow(Contact $contact)
+    {
+        return response()->json($contact->load(['leads', 'opportunities', 'notes', 'activities']));
     }
 
     public function update(StoreContactRequest $request, Contact $contact)

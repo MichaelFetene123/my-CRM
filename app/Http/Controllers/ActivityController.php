@@ -22,6 +22,15 @@ class ActivityController extends Controller
         ]);
     }
 
+    public function apiIndex()
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        $user->unreadNotifications()->update(['read_at' => now()]);
+
+        return response()->json(Activity::with('entity')->orderBy('due_at')->get());
+    }
+
     public function store(StoreActivityRequest $request)
     {
         Activity::create([...$request->validated(), 'owner_id' => $request->user()->id]);
@@ -48,5 +57,12 @@ class ActivityController extends Controller
         $action($activity);
 
         return redirect()->back();
+    }
+
+    public function apiComplete(Activity $activity, CompleteActivity $action)
+    {
+        $action($activity);
+
+        return response()->json(['success' => true]);
     }
 }

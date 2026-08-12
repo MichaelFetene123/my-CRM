@@ -15,6 +15,29 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('contacts', ContactController::class)->except(['create', 'edit']);
+    Route::prefix('api')->name('apiContacts.')->group(function () {
+        Route::get('contacts', [ContactController::class, 'apiIndex'])->name('index');
+        Route::get('contacts/{contact}', [ContactController::class, 'apiShow'])->name('show');
+    });
+
+    Route::prefix('api')->name('apiLeads.')->group(function () {
+        Route::get('leads', [LeadController::class, 'apiIndex'])->name('index');
+        Route::post('leads/{lead}/convert', [LeadController::class, 'apiConvert'])->name('convert');
+        Route::post('leads/{lead}/discard', [LeadController::class, 'apiDiscard'])->name('discard');
+    });
+
+    Route::prefix('api')->name('apiOpportunities.')->group(function () {
+        Route::get('opportunities', [OpportunityController::class, 'apiIndex'])->name('index');
+        Route::get('opportunities/{opportunity}', [OpportunityController::class, 'apiShow'])->name('show');
+        Route::post('opportunities/{opportunity}/move', [OpportunityController::class, 'apiMove'])->name('move');
+        Route::post('opportunities/{opportunity}/won', [OpportunityController::class, 'apiMarkWon'])->name('won');
+        Route::post('opportunities/{opportunity}/lost', [OpportunityController::class, 'apiMarkLost'])->name('lost');
+    });
+
+    Route::prefix('api')->name('apiActivities.')->group(function () {
+        Route::get('activities', [ActivityController::class, 'apiIndex'])->name('index');
+        Route::post('activities/{activity}/complete', [ActivityController::class, 'apiComplete'])->name('complete');
+    });
     Route::resource('leads', LeadController::class)->except(['create', 'edit']);
     Route::post('leads/{lead}/convert', [LeadController::class, 'convert'])->name('leads.convert');
     Route::post('leads/{lead}/discard', [LeadController::class, 'discard'])->name('leads.discard');

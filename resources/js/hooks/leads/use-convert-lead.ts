@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/api';
-import leadsRoute from '@/routes/leads';
+import apiLeadsRoute from '@/routes/apiLeads';
 import { leadKeys, opportunityKeys } from '@/components/query-keys';
 import type { Opportunity } from '@/types';
 
@@ -14,11 +14,11 @@ export function useConvertLead() {
 
     return useMutation<Opportunity, ApiError, ConvertLeadData>({
         mutationFn: async ({ id, ...data }) => {
-            return await api.post(leadsRoute.convert(id).url, data);
+            return await api.post(apiLeadsRoute.convert(id).url, data);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: leadKeys.all });
-            queryClient.invalidateQueries({ queryKey: opportunityKeys.all });
+            queryClient.invalidateQueries({ queryKey: leadKeys.list() });
+            queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
         },
     });
 }

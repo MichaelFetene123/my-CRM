@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import contactsRoute from '@/routes/contacts';
+import apiContactsRoute from '@/routes/apiContacts';
 import { contactKeys } from '@/components/query-keys';
 import type { Contact, Lead, Opportunity, Note, Activity } from '@/types';
 
@@ -15,11 +15,7 @@ export function useContact(id: number, initialData?: ContactWithRelations) {
     return useQuery({
         queryKey: contactKeys.detail(id),
         queryFn: async (): Promise<ContactWithRelations> => {
-            return await api.getInertiaData(
-                contactsRoute.show(id).url,
-                'contact',
-                'Contacts/Show'
-            );
+            return await api.get(apiContactsRoute.show(id).url);
         },
         initialData,
         staleTime: 0,
