@@ -22,5 +22,6 @@ export function useOpportunity(id: number, initialData?: OpportunityWithRelation
             );
         },
         initialData,
+        staleTime: 0,
     });
 }

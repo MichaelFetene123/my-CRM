@@ -14,5 +14,6 @@ export function useLeads() {
                 'Leads/Index'
             );
         },
+        staleTime: 0,
     });
 }

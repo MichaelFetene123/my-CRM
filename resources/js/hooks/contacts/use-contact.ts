@@ -22,5 +22,6 @@ export function useContact(id: number, initialData?: ContactWithRelations) {
             );
         },
         initialData,
+        staleTime: 0,
     });
 }

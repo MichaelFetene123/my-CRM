@@ -14,5 +14,6 @@ export function useOpportunitiesStages() {
                 'opportunities'
             );
         },
+        staleTime: 0,
     });
 }

@@ -14,5 +14,6 @@ export function useContacts() {
                 'Contacts/Index'
             );
         },
+        staleTime: 0,
     });
 }

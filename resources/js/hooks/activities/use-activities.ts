@@ -14,5 +14,6 @@ export function useActivities() {
                 'Activities/Index'
             );
         },
+        staleTime: 0,
     });
 }
