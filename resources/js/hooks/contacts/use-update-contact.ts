@@ -21,6 +21,7 @@ export function useUpdateContact() {
             return await api.put(contactsRoute.update(id).url, data);
         },
         onSuccess: (_, variables) => {
+            toast.success('Contact updated');
             queryClient.invalidateQueries({ queryKey: contactKeys.all });
             queryClient.invalidateQueries({ queryKey: contactKeys.detail(variables.id) });
         },

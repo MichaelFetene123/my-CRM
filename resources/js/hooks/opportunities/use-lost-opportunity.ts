@@ -18,6 +18,7 @@ export function useLostOpportunity() {
             return await api.post(apiOpportunitiesRoute.lost(id).url, { reason });
         },
         onSuccess: (_, variables) => {
+            toast.success('Opportunity marked as lost');
             queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
         },
         onError: (error) => {

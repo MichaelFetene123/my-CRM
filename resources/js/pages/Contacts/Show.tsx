@@ -6,6 +6,7 @@ import { useContact } from '@/hooks/contacts/use-contact';
 import { useUpdateContact } from '@/hooks/contacts/use-update-contact';
 import { mergeTimeline, TimelineItem } from '@/components/timeline/timeline-item';
 import { ActivityForm } from '@/components/activities/activity-form';
+import { NoteForm } from '@/components/notes/note-form';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -216,17 +217,30 @@ export default function ContactShow({ contact: initialContact }: Props) {
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle>Timeline</CardTitle>
-                        <Dialog>
-                            <DialogTrigger render={<Button size="sm" variant="outline" />}>Add Activity</DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader><DialogTitle>New Activity</DialogTitle></DialogHeader>
-                                <ActivityForm
-                                    entityType="contact"
-                                    entityId={contact.id}
-                                    onSuccess={() => router.reload({ only: ['contact'] })}
-                                />
-                            </DialogContent>
-                        </Dialog>
+                        <div className="flex gap-2">
+                            <Dialog>
+                                <DialogTrigger render={<Button size="sm" variant="outline" />}>Add Note</DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader><DialogTitle>New Note</DialogTitle></DialogHeader>
+                                    <NoteForm
+                                        entityType="contact"
+                                        entityId={contact.id}
+                                        onSuccess={() => router.reload({ only: ['contact'] })}
+                                    />
+                                </DialogContent>
+                            </Dialog>
+                            <Dialog>
+                                <DialogTrigger render={<Button size="sm" variant="outline" />}>Add Activity</DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader><DialogTitle>New Activity</DialogTitle></DialogHeader>
+                                    <ActivityForm
+                                        entityType="contact"
+                                        entityId={contact.id}
+                                        onSuccess={() => router.reload({ only: ['contact'] })}
+                                    />
+                                </DialogContent>
+                            </Dialog>
+                        </div>
                     </CardHeader>
                     <CardContent>
                         {contact.notes.length === 0 && contact.activities.length === 0 ? (

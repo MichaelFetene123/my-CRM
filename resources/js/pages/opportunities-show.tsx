@@ -7,6 +7,7 @@ import { useLostOpportunity } from '@/hooks/opportunities/use-lost-opportunity';
 import AppLayout from '@/layouts/app-layout';
 import { mergeTimeline, TimelineItem } from '@/components/timeline/timeline-item';
 import { ActivityForm } from '@/components/activities/activity-form';
+import { NoteForm } from '@/components/notes/note-form';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
@@ -133,16 +134,28 @@ export default function OpportunityShow({ opportunity: initialOpportunity }: Pro
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle>Timeline</CardTitle>
-                        <Dialog>
-                            <DialogTrigger render={<Button size="sm" variant="outline" />}>Add Activity</DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader><DialogTitle>New Activity</DialogTitle></DialogHeader>
-                                <ActivityForm
-                                    entityType="opportunity"
-                                    entityId={opportunity.id}
-                                />
-                            </DialogContent>
-                        </Dialog>
+                        <div className="flex gap-2">
+                            <Dialog>
+                                <DialogTrigger render={<Button size="sm" variant="outline" />}>Add Note</DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader><DialogTitle>New Note</DialogTitle></DialogHeader>
+                                    <NoteForm
+                                        entityType="opportunity"
+                                        entityId={opportunity.id}
+                                    />
+                                </DialogContent>
+                            </Dialog>
+                            <Dialog>
+                                <DialogTrigger render={<Button size="sm" variant="outline" />}>Add Activity</DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader><DialogTitle>New Activity</DialogTitle></DialogHeader>
+                                    <ActivityForm
+                                        entityType="opportunity"
+                                        entityId={opportunity.id}
+                                    />
+                                </DialogContent>
+                            </Dialog>
+                        </div>
                     </CardHeader>
                     <CardContent>
                         {opportunity.notes.length === 0 && opportunity.activities.length === 0 ? (

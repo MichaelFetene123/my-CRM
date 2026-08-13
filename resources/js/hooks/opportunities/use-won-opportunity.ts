@@ -17,6 +17,7 @@ export function useWonOpportunity() {
             return await api.post(apiOpportunitiesRoute.won(id).url);
         },
         onSuccess: (_, variables) => {
+            toast.success('Opportunity marked as won');
             queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
         },
         onError: (error) => {
