@@ -3,6 +3,7 @@ import { api, ApiError } from '@/lib/api';
 import apiOpportunitiesRoute from '@/routes/apiOpportunities';
 import { opportunityKeys } from '@/components/query-keys';
 import type { Opportunity } from '@/types';
+import { toast } from 'sonner';
 
 type WonOpportunityData = {
     id: number;
@@ -18,5 +19,8 @@ export function useWonOpportunity() {
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
         },
+        onError: (error) => {
+            toast.error(error.message || 'An error occurred');
+        }
     });
 }

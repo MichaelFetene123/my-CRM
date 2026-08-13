@@ -3,6 +3,7 @@ import { api, ApiError } from '@/lib/api';
 import apiLeadsRoute from '@/routes/apiLeads';
 import { leadKeys, opportunityKeys } from '@/components/query-keys';
 import type { Opportunity } from '@/types';
+import { toast } from 'sonner';
 
 type ConvertLeadData = {
     id: number;
@@ -17,8 +18,12 @@ export function useConvertLead() {
             return await api.post(apiLeadsRoute.convert(id).url, data);
         },
         onSuccess: () => {
+            toast.success('Lead converted to opportunity');
             queryClient.invalidateQueries({ queryKey: leadKeys.list() });
             queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
         },
+        onError: (error) => {
+            toast.error(error.message || 'An error occurred');
+        }
     });
 }

@@ -3,6 +3,7 @@ import { api, ApiError } from '@/lib/api';
 import contactsRoute from '@/routes/contacts';
 import { contactKeys } from '@/components/query-keys';
 import type { Contact } from '@/types';
+import { toast } from 'sonner';
 
 type UpdateContactData = {
     id: number;
@@ -23,5 +24,8 @@ export function useUpdateContact() {
             queryClient.invalidateQueries({ queryKey: contactKeys.all });
             queryClient.invalidateQueries({ queryKey: contactKeys.detail(variables.id) });
         },
+        onError: (error) => {
+            toast.error(error.message || 'An error occurred');
+        }
     });
 }

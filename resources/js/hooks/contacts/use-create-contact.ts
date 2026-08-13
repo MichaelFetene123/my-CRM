@@ -3,6 +3,7 @@ import { api, ApiError } from '@/lib/api';
 import contactsRoute from '@/routes/contacts';
 import { contactKeys } from '@/components/query-keys';
 import type { Contact } from '@/types';
+import { toast } from 'sonner';
 
 type CreateContactData = {
     name: string;
@@ -19,7 +20,11 @@ export function useCreateContact() {
             return await api.post(contactsRoute.store().url, data);
         },
         onSuccess: () => {
+            toast.success('Contact created');
             queryClient.invalidateQueries({ queryKey: contactKeys.list() });
         },
+        onError: (error) => {
+            toast.error(error.message || 'An error occurred');
+        }
     });
 }

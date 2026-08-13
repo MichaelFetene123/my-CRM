@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @property int $id
@@ -18,6 +19,8 @@ use Illuminate\Database\Eloquent\Collection;
  * @property Carbon|null $updated_at
  * @property-read Collection|Lead[] $leads
  * @property-read Collection|Opportunity[] $opportunities
+ * @property-read Collection|Note[] $notes
+ * @property-read Collection|Activity[] $activities
  */
 class Contact extends Model
 {
@@ -31,5 +34,15 @@ class Contact extends Model
     public function opportunities(): HasMany
     {
         return $this->hasMany(Opportunity::class);
+    }
+
+    public function notes(): MorphMany
+    {
+        return $this->morphMany(Note::class, 'entity');
+    }
+
+    public function activities(): MorphMany
+    {
+        return $this->morphMany(Activity::class, 'entity');
     }
 }

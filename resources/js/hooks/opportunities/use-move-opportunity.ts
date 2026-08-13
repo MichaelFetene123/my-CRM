@@ -3,6 +3,7 @@ import { api, ApiError } from '@/lib/api';
 import apiOpportunitiesRoute from '@/routes/apiOpportunities';
 import { opportunityKeys } from '@/components/query-keys';
 import type { Opportunity } from '@/types';
+import { toast } from 'sonner';
 
 type MoveOpportunityData = {
     id: number;
@@ -17,7 +18,11 @@ export function useMoveOpportunity() {
             return await api.post(apiOpportunitiesRoute.move(id).url, data);
         },
         onSuccess: () => {
+            toast.success('Opportunity moved');
             queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
         },
+        onError: (error) => {
+            toast.error(error.message || 'An error occurred');
+        }
     });
 }
