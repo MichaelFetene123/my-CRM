@@ -11,7 +11,10 @@ type OpportunityWithRelations = Opportunity & {
     notes: Note[];
 };
 
-export function useOpportunity(id: number, initialData?: OpportunityWithRelations) {
+export function useOpportunity(
+    id: number,
+    initialData?: OpportunityWithRelations,
+) {
     return useQuery({
         queryKey: opportunityKeys.detail(id),
         queryFn: async (): Promise<OpportunityWithRelations> => {

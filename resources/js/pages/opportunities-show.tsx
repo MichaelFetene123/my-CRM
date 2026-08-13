@@ -5,7 +5,10 @@ import { useOpportunity } from '@/hooks/opportunities/use-opportunity';
 import { useWonOpportunity } from '@/hooks/opportunities/use-won-opportunity';
 import { useLostOpportunity } from '@/hooks/opportunities/use-lost-opportunity';
 import AppLayout from '@/layouts/app-layout';
-import { mergeTimeline, TimelineItem } from '@/components/timeline/timeline-item';
+import {
+    mergeTimeline,
+    TimelineItem,
+} from '@/components/timeline/timeline-item';
 import { ActivityForm } from '@/components/activities/activity-form';
 import { NoteForm } from '@/components/notes/note-form';
 import { Button } from '@/components/ui/button';
@@ -21,7 +24,14 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import opportunities from '@/routes/opportunities';
-import type { Opportunity, Contact, PipelineStage, Note, Activity, BreadcrumbItem } from '@/types';
+import type {
+    Opportunity,
+    Contact,
+    PipelineStage,
+    Note,
+    Activity,
+    BreadcrumbItem,
+} from '@/types';
 
 interface Props {
     opportunity: Opportunity & {
@@ -32,13 +42,19 @@ interface Props {
     };
 }
 
-export default function OpportunityShow({ opportunity: initialOpportunity }: Props) {
-    const { data: opportunity = initialOpportunity } = useOpportunity(initialOpportunity.id, initialOpportunity);
+export default function OpportunityShow({
+    opportunity: initialOpportunity,
+}: Props) {
+    const { data: opportunity = initialOpportunity } = useOpportunity(
+        initialOpportunity.id,
+        initialOpportunity,
+    );
     const { mutate: markWonMutate } = useWonOpportunity();
-    const { mutate: markLostMutate, isPending: isLosing } = useLostOpportunity();
+    const { mutate: markLostMutate, isPending: isLosing } =
+        useLostOpportunity();
 
     const [lostOpen, setLostOpen] = useState(false);
-    
+
     const {
         register,
         handleSubmit,
@@ -56,24 +72,35 @@ export default function OpportunityShow({ opportunity: initialOpportunity }: Pro
     }
 
     const submitLost = (formData: any) => {
-        markLostMutate({ id: opportunity.id, reason: formData.reason }, {
-            onSuccess: () => {
-                reset();
-                setLostOpen(false);
+        markLostMutate(
+            { id: opportunity.id, reason: formData.reason },
+            {
+                onSuccess: () => {
+                    reset();
+                    setLostOpen(false);
+                },
+                onError: (error) => {
+                    if (error.errors) {
+                        Object.entries(error.errors).forEach(
+                            ([key, messages]) => {
+                                setError(key as any, {
+                                    type: 'server',
+                                    message: messages[0],
+                                });
+                            },
+                        );
+                    }
+                },
             },
-            onError: (error) => {
-                if (error.errors) {
-                    Object.entries(error.errors).forEach(([key, messages]) => {
-                        setError(key as any, { type: 'server', message: messages[0] });
-                    });
-                }
-            },
-        });
+        );
     };
 
     const isOpen = opportunity.status === 'open';
 
-    const statusVariant: Record<string, 'default' | 'secondary' | 'destructive'> = {
+    const statusVariant: Record<
+        string,
+        'default' | 'secondary' | 'destructive'
+    > = {
         open: 'default',
         won: 'secondary',
         lost: 'destructive',
@@ -82,19 +109,30 @@ export default function OpportunityShow({ opportunity: initialOpportunity }: Pro
     return (
         <>
             <Head title={opportunity.title} />
-            <div className="p-6 space-y-6 max-w-3xl">
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+            <div className="max-w-3xl space-y-6 p-6">
+                <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
                     <div className="space-y-1">
-                        <h1 className="text-3xl font-bold tracking-tight">{opportunity.title}</h1>
-                        <p className="text-base text-muted-foreground">{opportunity.contact?.name}</p>
+                        <h1 className="text-3xl font-bold tracking-tight">
+                            {opportunity.title}
+                        </h1>
+                        <p className="text-base text-muted-foreground">
+                            {opportunity.contact?.name}
+                        </p>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                        <Badge variant={statusVariant[opportunity.status]} className="capitalize">
+                    <div className="flex shrink-0 items-center gap-2">
+                        <Badge
+                            variant={statusVariant[opportunity.status]}
+                            className="capitalize"
+                        >
                             {opportunity.status}
                         </Badge>
-                        {opportunity.stage && opportunity.status.toLowerCase() !== opportunity.stage.name.toLowerCase() && (
-                            <Badge variant="outline">{opportunity.stage.name}</Badge>
-                        )}
+                        {opportunity.stage &&
+                            opportunity.status.toLowerCase() !==
+                                opportunity.stage.name.toLowerCase() && (
+                                <Badge variant="outline">
+                                    {opportunity.stage.name}
+                                </Badge>
+                            )}
                     </div>
                 </div>
 
@@ -102,20 +140,39 @@ export default function OpportunityShow({ opportunity: initialOpportunity }: Pro
                     <div className="flex gap-2">
                         <Button onClick={markWon}>Mark Won</Button>
                         <Dialog open={lostOpen} onOpenChange={setLostOpen}>
-                            <DialogTrigger render={<Button variant="destructive" />}>
+                            <DialogTrigger
+                                render={<Button variant="destructive" />}
+                            >
                                 Mark Lost
                             </DialogTrigger>
                             <DialogContent>
-                                <DialogHeader><DialogTitle>Mark as Lost</DialogTitle></DialogHeader>
-                                <form onSubmit={handleSubmit(submitLost)} className="space-y-4">
+                                <DialogHeader>
+                                    <DialogTitle>Mark as Lost</DialogTitle>
+                                </DialogHeader>
+                                <form
+                                    onSubmit={handleSubmit(submitLost)}
+                                    className="space-y-4"
+                                >
                                     <div>
                                         <Label htmlFor="reason">Reason</Label>
-                                        <Textarea id="reason" {...register('reason')} />
+                                        <Textarea
+                                            id="reason"
+                                            {...register('reason')}
+                                        />
                                         {errors.reason && (
-                                            <p className="text-sm text-destructive">{errors.reason.message as string}</p>
+                                            <p className="text-sm text-destructive">
+                                                {
+                                                    errors.reason
+                                                        .message as string
+                                                }
+                                            </p>
                                         )}
                                     </div>
-                                    <Button type="submit" variant="destructive" disabled={isLosing}>
+                                    <Button
+                                        type="submit"
+                                        variant="destructive"
+                                        disabled={isLosing}
+                                    >
                                         Confirm Lost
                                     </Button>
                                 </form>
@@ -126,7 +183,8 @@ export default function OpportunityShow({ opportunity: initialOpportunity }: Pro
 
                 {opportunity.status === 'lost' && opportunity.lost_reason && (
                     <p className="text-sm text-muted-foreground">
-                        <span className="font-medium">Lost reason:</span> {opportunity.lost_reason}
+                        <span className="font-medium">Lost reason:</span>{' '}
+                        {opportunity.lost_reason}
                     </p>
                 )}
 
@@ -136,9 +194,17 @@ export default function OpportunityShow({ opportunity: initialOpportunity }: Pro
                         <CardTitle>Timeline</CardTitle>
                         <div className="flex gap-2">
                             <Dialog>
-                                <DialogTrigger render={<Button size="sm" variant="outline" />}>Add Note</DialogTrigger>
+                                <DialogTrigger
+                                    render={
+                                        <Button size="sm" variant="outline" />
+                                    }
+                                >
+                                    Add Note
+                                </DialogTrigger>
                                 <DialogContent>
-                                    <DialogHeader><DialogTitle>New Note</DialogTitle></DialogHeader>
+                                    <DialogHeader>
+                                        <DialogTitle>New Note</DialogTitle>
+                                    </DialogHeader>
                                     <NoteForm
                                         entityType="opportunity"
                                         entityId={opportunity.id}
@@ -146,9 +212,17 @@ export default function OpportunityShow({ opportunity: initialOpportunity }: Pro
                                 </DialogContent>
                             </Dialog>
                             <Dialog>
-                                <DialogTrigger render={<Button size="sm" variant="outline" />}>Add Activity</DialogTrigger>
+                                <DialogTrigger
+                                    render={
+                                        <Button size="sm" variant="outline" />
+                                    }
+                                >
+                                    Add Activity
+                                </DialogTrigger>
                                 <DialogContent>
-                                    <DialogHeader><DialogTitle>New Activity</DialogTitle></DialogHeader>
+                                    <DialogHeader>
+                                        <DialogTitle>New Activity</DialogTitle>
+                                    </DialogHeader>
                                     <ActivityForm
                                         entityType="opportunity"
                                         entityId={opportunity.id}
@@ -158,12 +232,21 @@ export default function OpportunityShow({ opportunity: initialOpportunity }: Pro
                         </div>
                     </CardHeader>
                     <CardContent>
-                        {opportunity.notes.length === 0 && opportunity.activities.length === 0 ? (
-                            <p className="text-sm text-muted-foreground italic">No timeline entries yet.</p>
+                        {opportunity.notes.length === 0 &&
+                        opportunity.activities.length === 0 ? (
+                            <p className="text-sm text-muted-foreground italic">
+                                No timeline entries yet.
+                            </p>
                         ) : (
                             <ul className="space-y-2">
-                                {mergeTimeline(opportunity.notes, opportunity.activities).map((entry) => (
-                                    <TimelineItem key={`${entry.kind}-${entry.data.id}`} entry={entry} />
+                                {mergeTimeline(
+                                    opportunity.notes,
+                                    opportunity.activities,
+                                ).map((entry) => (
+                                    <TimelineItem
+                                        key={`${entry.kind}-${entry.data.id}`}
+                                        entry={entry}
+                                    />
                                 ))}
                             </ul>
                         )}
@@ -178,10 +261,15 @@ function ShowLayout({ children }: { children: React.ReactNode }) {
     const { opportunity } = usePage<any>().props;
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Opportunities', href: opportunities.index().url },
-        { title: opportunity?.title || 'Opportunity', href: opportunities.show(opportunity?.id || 0).url },
+        {
+            title: opportunity?.title || 'Opportunity',
+            href: opportunities.show(opportunity?.id || 0).url,
+        },
     ];
-    
+
     return <AppLayout breadcrumbs={breadcrumbs}>{children}</AppLayout>;
 }
 
-OpportunityShow.layout = (page: React.ReactNode) => <ShowLayout>{page}</ShowLayout>;
+OpportunityShow.layout = (page: React.ReactNode) => (
+    <ShowLayout>{page}</ShowLayout>
+);

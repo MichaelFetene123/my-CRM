@@ -26,7 +26,9 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                         >
                             {item.icon && <item.icon />}
                             <span>{item.title}</span>
-                            {item.badge !== undefined && <ReminderBadge count={item.badge} />}
+                            {item.badge !== undefined && (
+                                <ReminderBadge count={item.badge} />
+                            )}
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 ))}

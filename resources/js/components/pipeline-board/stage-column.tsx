@@ -1,5 +1,8 @@
 import { useDroppable } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import {
+    SortableContext,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { OpportunityCard } from './opportunity-card';
 import type { Opportunity, PipelineStage } from '@/types';
 
@@ -15,18 +18,25 @@ export function StageColumn({ stage, opportunities }: Props) {
     });
 
     return (
-        <div className="flex-1 min-w-65 bg-muted/40 rounded-lg p-3 flex flex-col">
-            <div className="flex items-center justify-between mb-3">
-                <h3 className="font-medium text-sm">
+        <div className="flex min-w-65 flex-1 flex-col rounded-lg bg-muted/40 p-3">
+            <div className="mb-3 flex items-center justify-between">
+                <h3 className="text-sm font-medium">
                     {stage.name}
-                    <span className="text-xs text-muted-foreground ml-2">{opportunities.length}</span>
+                    <span className="ml-2 text-xs text-muted-foreground">
+                        {opportunities.length}
+                    </span>
                 </h3>
                 {(stage.is_won || stage.is_lost) && (
-                    <span className="text-xs text-muted-foreground">(via action only)</span>
+                    <span className="text-xs text-muted-foreground">
+                        (via action only)
+                    </span>
                 )}
             </div>
-            <div ref={setNodeRef} className="space-y-2 flex-1 min-h-25">
-                <SortableContext items={opportunities.map((o) => o.id)} strategy={verticalListSortingStrategy}>
+            <div ref={setNodeRef} className="min-h-25 flex-1 space-y-2">
+                <SortableContext
+                    items={opportunities.map((o) => o.id)}
+                    strategy={verticalListSortingStrategy}
+                >
                     {opportunities.map((opp) => (
                         <OpportunityCard key={opp.id} opportunity={opp} />
                     ))}

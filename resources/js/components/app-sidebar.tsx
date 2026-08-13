@@ -20,8 +20,6 @@ import opportunities from '@/routes/opportunities';
 import activities from '@/routes/activities';
 import type { NavItem } from '@/types';
 
-
-
 export function AppSidebar() {
     const unreadCount = useUnreadCount();
 
@@ -59,7 +57,10 @@ export function AppSidebar() {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" render={<Link href={dashboard().url} prefetch />}>
+                        <SidebarMenuButton
+                            size="lg"
+                            render={<Link href={dashboard().url} prefetch />}
+                        >
                             <AppLogo />
                         </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -71,7 +72,6 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

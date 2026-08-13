@@ -11,6 +11,7 @@ import ManageTwoFactor from '@/components/manage-two-factor';
 import PasswordInput from '@/components/password-input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { Loader2Icon } from 'lucide-react';
 import { edit } from '@/routes/security';
 
 type Props = {
@@ -48,7 +49,9 @@ export default function Security(props: Props) {
                     resetOnSuccess
                     onSuccess={() => toast.success('Password updated')}
                     onError={(errors) => {
-                        toast.error(Object.values(errors)[0] || 'An error occurred');
+                        toast.error(
+                            Object.values(errors)[0] || 'An error occurred',
+                        );
                         if (errors.password) {
                             passwordInput.current?.focus();
                         }
@@ -118,6 +121,9 @@ export default function Security(props: Props) {
                                     disabled={processing}
                                     data-test="update-password-button"
                                 >
+                                    {processing && (
+                                        <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                                    )}
                                     Save
                                 </Button>
                             </div>

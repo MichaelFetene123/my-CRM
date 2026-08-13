@@ -57,7 +57,7 @@ export default function PasskeyItem({ passkey, onDelete }: Props) {
             </div>
 
             <Dialog>
-                <DialogTrigger 
+                <DialogTrigger
                     render={
                         <Button
                             variant="ghost"

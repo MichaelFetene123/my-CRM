@@ -25,6 +25,6 @@ export function useCreateOpportunity() {
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');
-        }
+        },
     });
 }

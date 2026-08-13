@@ -35,12 +35,12 @@ export default function Welcome() {
                         )}
                     </nav>
                 </header>
-                
-                <main className="flex flex-1 flex-col items-center justify-center w-full">
+
+                <main className="flex w-full flex-1 flex-col items-center justify-center">
                     <h1 className="text-4xl font-bold tracking-tight text-foreground">
                         Welcome to My CRM
                     </h1>
-                    <p className="mt-4 text-muted-foreground text-lg">
+                    <p className="mt-4 text-lg text-muted-foreground">
                         Get started by logging in or creating a new account.
                     </p>
                 </main>

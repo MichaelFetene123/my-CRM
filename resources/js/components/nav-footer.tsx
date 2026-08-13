@@ -26,11 +26,15 @@ export function NavFooter({
                     {items.map((item) => (
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton
-                                render={<a href={toUrl(item.href)} target="_blank" rel="noopener noreferrer" />}
+                                render={
+                                    <a
+                                        href={toUrl(item.href)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    />
+                                }
                             >
-                                {item.icon && (
-                                    <item.icon className="h-5 w-5" />
-                                )}
+                                {item.icon && <item.icon className="h-5 w-5" />}
                                 <span>{item.title}</span>
                             </SidebarMenuButton>
                         </SidebarMenuItem>

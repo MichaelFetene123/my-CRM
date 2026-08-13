@@ -76,13 +76,15 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                     {/* Mobile Menu */}
                     <div className="lg:hidden">
                         <Sheet>
-                            <SheetTrigger render={
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="mr-2 h-8.5 w-8.5"
-                                />
-                            }>
+                            <SheetTrigger
+                                render={
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="mr-2 h-8.5 w-8.5"
+                                    />
+                                }
+                            >
                                 <Menu className="h-5 w-5" />
                             </SheetTrigger>
                             <SheetContent
@@ -211,12 +213,14 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                             </div>
                         </div>
                         <DropdownMenu>
-                            <DropdownMenuTrigger render={
-                                <Button
-                                    variant="ghost"
-                                    className="size-10 rounded-full p-1"
-                                />
-                            }>
+                            <DropdownMenuTrigger
+                                render={
+                                    <Button
+                                        variant="ghost"
+                                        className="size-10 rounded-full p-1"
+                                    />
+                                }
+                            >
                                 <Avatar className="size-8 overflow-hidden rounded-full">
                                     <AvatarImage
                                         src={auth.user?.avatar}

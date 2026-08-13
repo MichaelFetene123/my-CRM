@@ -21,5 +21,9 @@ export function useUnreadCount() {
 
 export function ReminderBadge({ count }: { count: number }) {
     if (count === 0) return null;
-    return <Badge variant="destructive" className="ml-2">{count}</Badge>;
+    return (
+        <Badge variant="destructive" className="ml-2">
+            {count}
+        </Badge>
+    );
 }

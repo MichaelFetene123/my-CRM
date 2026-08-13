@@ -36,7 +36,7 @@ export default function DeleteUser() {
                 </div>
 
                 <Dialog>
-                    <DialogTrigger 
+                    <DialogTrigger
                         render={
                             <Button
                                 variant="destructive"
@@ -64,7 +64,10 @@ export default function DeleteUser() {
                             }}
                             onSuccess={() => toast.success('Account deleted')}
                             onError={(errors) => {
-                                toast.error(Object.values(errors)[0] || 'An error occurred');
+                                toast.error(
+                                    Object.values(errors)[0] ||
+                                        'An error occurred',
+                                );
                                 passwordInput.current?.focus();
                             }}
                             resetOnSuccess
@@ -92,14 +95,16 @@ export default function DeleteUser() {
                                     </div>
 
                                     <DialogFooter className="gap-2">
-                                        <DialogClose render={
-                                            <Button
-                                                variant="secondary"
-                                                onClick={() =>
-                                                    resetAndClearErrors()
-                                                }
-                                            />
-                                        }>
+                                        <DialogClose
+                                            render={
+                                                <Button
+                                                    variant="secondary"
+                                                    onClick={() =>
+                                                        resetAndClearErrors()
+                                                    }
+                                                />
+                                            }
+                                        >
                                             Cancel
                                         </DialogClose>
 

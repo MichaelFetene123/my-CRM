@@ -7,10 +7,13 @@ import type { PipelineStage, Opportunity, Contact } from '@/types';
 export function useOpportunitiesStages() {
     return useQuery({
         queryKey: opportunityKeys.stages(),
-        queryFn: async (): Promise<(PipelineStage & { opportunities: Opportunity[] })[]> => {
-            const data = await api.get<{ stages: (PipelineStage & { opportunities: Opportunity[] })[], contacts: Contact[] }>(
-                apiOpportunitiesRoute.index().url
-            );
+        queryFn: async (): Promise<
+            (PipelineStage & { opportunities: Opportunity[] })[]
+        > => {
+            const data = await api.get<{
+                stages: (PipelineStage & { opportunities: Opportunity[] })[];
+                contacts: Contact[];
+            }>(apiOpportunitiesRoute.index().url);
             return data.stages;
         },
         staleTime: 0,

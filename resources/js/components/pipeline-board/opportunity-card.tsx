@@ -6,7 +6,14 @@ import opportunities from '@/routes/opportunities';
 import type { Opportunity } from '@/types';
 
 export function OpportunityCard({ opportunity }: { opportunity: Opportunity }) {
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({
         id: opportunity.id,
         disabled: opportunity.status !== 'open',
     });
@@ -20,15 +27,17 @@ export function OpportunityCard({ opportunity }: { opportunity: Opportunity }) {
     return (
         <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
             <Card className="cursor-grab active:cursor-grabbing">
-                <CardContent className="p-3 space-y-1">
+                <CardContent className="space-y-1 p-3">
                     <Link
                         href={opportunities.show(opportunity.id).url}
-                        className="font-medium text-sm hover:underline"
+                        className="text-sm font-medium hover:underline"
                         onClick={(e) => isDragging && e.preventDefault()}
                     >
                         {opportunity.title}
                     </Link>
-                    <p className="text-xs text-muted-foreground">{opportunity.contact?.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                        {opportunity.contact?.name}
+                    </p>
                 </CardContent>
             </Card>
         </div>

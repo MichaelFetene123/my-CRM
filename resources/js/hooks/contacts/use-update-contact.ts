@@ -23,10 +23,12 @@ export function useUpdateContact() {
         onSuccess: (_, variables) => {
             toast.success('Contact updated');
             queryClient.invalidateQueries({ queryKey: contactKeys.all });
-            queryClient.invalidateQueries({ queryKey: contactKeys.detail(variables.id) });
+            queryClient.invalidateQueries({
+                queryKey: contactKeys.detail(variables.id),
+            });
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');
-        }
+        },
     });
 }

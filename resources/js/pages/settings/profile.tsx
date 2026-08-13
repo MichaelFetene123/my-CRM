@@ -8,6 +8,7 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Loader2Icon } from 'lucide-react';
 import { edit } from '@/routes/profile';
 import { send } from '@/routes/verification';
 import type { Auth } from '@/types';
@@ -44,7 +45,11 @@ export default function Profile({
                         preserveScroll: true,
                     }}
                     onSuccess={() => toast.success('Profile updated')}
-                    onError={(errors) => toast.error(Object.values(errors)[0] || 'An error occurred')}
+                    onError={(errors) =>
+                        toast.error(
+                            Object.values(errors)[0] || 'An error occurred',
+                        )
+                    }
                     className="space-y-6"
                 >
                     {({ processing, errors }) => (
@@ -105,11 +110,11 @@ export default function Profile({
 
                                         {status ===
                                             'verification-link-sent' && (
-                                            <div className="mt-2 text-sm font-medium text-green-600">
-                                                A new verification link has been
-                                                sent to your email address.
-                                            </div>
-                                        )}
+                                                <div className="mt-2 text-sm font-medium text-green-600">
+                                                    A new verification link has been
+                                                    sent to your email address.
+                                                </div>
+                                            )}
                                     </div>
                                 )}
 
@@ -118,6 +123,9 @@ export default function Profile({
                                     disabled={processing}
                                     data-test="update-profile-button"
                                 >
+                                    {processing && (
+                                        <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                                    )}
                                     Save
                                 </Button>
                             </div>

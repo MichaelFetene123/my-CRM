@@ -15,7 +15,9 @@ export function useLostOpportunity() {
 
     return useMutation<Opportunity, ApiError, LostOpportunityData>({
         mutationFn: async ({ id, reason }) => {
-            return await api.post(apiOpportunitiesRoute.lost(id).url, { reason });
+            return await api.post(apiOpportunitiesRoute.lost(id).url, {
+                reason,
+            });
         },
         onSuccess: (_, variables) => {
             toast.success('Opportunity marked as lost');
@@ -23,6 +25,6 @@ export function useLostOpportunity() {
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');
-        }
+        },
     });
 }

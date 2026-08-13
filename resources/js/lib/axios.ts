@@ -12,8 +12,8 @@ const axiosInstance = axios.create({
     withCredentials: true,
     headers: {
         'X-Requested-With': 'XMLHttpRequest',
-        'Accept': 'application/json',
-    }
+        Accept: 'application/json',
+    },
 });
 
 axiosInstance.interceptors.request.use((config) => {
@@ -31,11 +31,13 @@ axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
         // Normalize the error to match what the hooks currently expect (ApiError structure)
-        const customError = new Error(error.response?.data?.message || error.message);
+        const customError = new Error(
+            error.response?.data?.message || error.message,
+        );
         (customError as any).status = error.response?.status;
         (customError as any).errors = error.response?.data?.errors;
         return Promise.reject(customError);
-    }
+    },
 );
 
 export default axiosInstance;

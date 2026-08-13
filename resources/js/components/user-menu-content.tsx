@@ -36,40 +36,46 @@ export function UserMenuContent({ user }: Props) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-                <DropdownMenuItem render={
-                    <Link
-                        className="block w-full cursor-pointer"
-                        href={profileEdit.url()}
-                        prefetch
-                        onClick={cleanup}
-                    />
-                }>
+                <DropdownMenuItem
+                    render={
+                        <Link
+                            className="block w-full cursor-pointer"
+                            href={profileEdit.url()}
+                            prefetch
+                            onClick={cleanup}
+                        />
+                    }
+                >
                     <Settings className="mr-2" />
                     Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem render={
-                    <Link
-                        className="block w-full cursor-pointer"
-                        href={securityEdit.url()}
-                        prefetch
-                        onClick={cleanup}
-                    />
-                }>
+                <DropdownMenuItem
+                    render={
+                        <Link
+                            className="block w-full cursor-pointer"
+                            href={securityEdit.url()}
+                            prefetch
+                            onClick={cleanup}
+                        />
+                    }
+                >
                     <Lock className="mr-2" />
                     Security
                 </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem render={
-                <Link
-                    className="block w-full cursor-pointer"
-                    href={logout.url()}
-                    method="post"
-                    as="button"
-                    onClick={handleLogout}
-                    data-test="logout-button"
-                />
-            }>
+            <DropdownMenuItem
+                render={
+                    <Link
+                        className="block w-full cursor-pointer"
+                        href={logout.url()}
+                        method="post"
+                        as="button"
+                        onClick={handleLogout}
+                        data-test="logout-button"
+                    />
+                }
+            >
                 <LogOut className="mr-2" />
                 Log out
             </DropdownMenuItem>

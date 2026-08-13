@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Loader2Icon } from 'lucide-react';
 import {
     Select,
     SelectContent,
@@ -40,13 +41,21 @@ export function ActivityForm({ entityType, entityId, onSuccess }: Props) {
     const onSubmit = (formData: any) => {
         mutate(formData, {
             onSuccess: () => {
-                reset({ type: 'call', due_at: '', entity_type: entityType, entity_id: entityId });
+                reset({
+                    type: 'call',
+                    due_at: '',
+                    entity_type: entityType,
+                    entity_id: entityId,
+                });
                 onSuccess?.();
             },
             onError: (error) => {
                 if (error.errors) {
                     Object.entries(error.errors).forEach(([key, messages]) => {
-                        setError(key as any, { type: 'server', message: messages[0] });
+                        setError(key as any, {
+                            type: 'server',
+                            message: messages[0],
+                        });
                     });
                 }
             },
@@ -57,8 +66,13 @@ export function ActivityForm({ entityType, entityId, onSuccess }: Props) {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
                 <Label htmlFor="type">Type</Label>
-                <Select value={watch('type')} onValueChange={(v) => v && setValue('type', v)}>
-                    <SelectTrigger id="type"><SelectValue /></SelectTrigger>
+                <Select
+                    value={watch('type')}
+                    onValueChange={(v) => v && setValue('type', v)}
+                >
+                    <SelectTrigger id="type">
+                        <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="call">Call</SelectItem>
                         <SelectItem value="meeting">Meeting</SelectItem>
@@ -74,9 +88,18 @@ export function ActivityForm({ entityType, entityId, onSuccess }: Props) {
                     type="datetime-local"
                     {...register('due_at')}
                 />
-                {errors.due_at && <p className="text-sm text-destructive">{errors.due_at.message as string}</p>}
+                {errors.due_at && (
+                    <p className="text-sm text-destructive">
+                        {errors.due_at.message as string}
+                    </p>
+                )}
             </div>
-            <Button type="submit" disabled={isPending}>Add Activity</Button>
+            <Button type="submit" disabled={isPending}>
+                {isPending && (
+                    <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Add Activity
+            </Button>
         </form>
     );
 }

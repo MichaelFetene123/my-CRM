@@ -1,7 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/api';
 import apiActivitiesRoute from '@/routes/apiActivities';
-import { activityKeys, contactKeys, leadKeys, opportunityKeys } from '@/components/query-keys';
+import {
+    activityKeys,
+    contactKeys,
+    leadKeys,
+    opportunityKeys,
+} from '@/components/query-keys';
 import type { Activity } from '@/types';
 import { toast } from 'sonner';
 
@@ -25,6 +30,6 @@ export function useCompleteActivity() {
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');
-        }
+        },
     });
 }

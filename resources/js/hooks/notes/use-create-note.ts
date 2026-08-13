@@ -1,7 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/api';
 import notesRoute from '@/routes/notes';
-import { contactKeys, leadKeys, opportunityKeys } from '@/components/query-keys';
+import {
+    contactKeys,
+    leadKeys,
+    opportunityKeys,
+} from '@/components/query-keys';
 import type { Note } from '@/types';
 import { toast } from 'sonner';
 
@@ -26,6 +30,6 @@ export function useCreateNote() {
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');
-        }
+        },
     });
 }

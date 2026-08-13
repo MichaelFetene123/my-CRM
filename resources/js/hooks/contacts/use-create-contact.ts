@@ -25,6 +25,6 @@ export function useCreateContact() {
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');
-        }
+        },
     });
 }

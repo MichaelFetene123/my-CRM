@@ -24,6 +24,6 @@ export function useCreateLead() {
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');
-        }
+        },
     });
 }

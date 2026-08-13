@@ -1,7 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/api';
 import activitiesRoute from '@/routes/activities';
-import { activityKeys, contactKeys, leadKeys, opportunityKeys } from '@/components/query-keys';
+import {
+    activityKeys,
+    contactKeys,
+    leadKeys,
+    opportunityKeys,
+} from '@/components/query-keys';
 import type { Activity } from '@/types';
 import { toast } from 'sonner';
 
@@ -28,6 +33,6 @@ export function useCreateActivity() {
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');
-        }
+        },
     });
 }

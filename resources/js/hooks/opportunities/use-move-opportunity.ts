@@ -23,6 +23,6 @@ export function useMoveOpportunity() {
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');
-        }
+        },
     });
 }

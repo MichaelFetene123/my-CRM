@@ -4,11 +4,11 @@ import apiContactsRoute from '@/routes/apiContacts';
 import { contactKeys } from '@/components/query-keys';
 import type { Contact, Lead, Opportunity, Note, Activity } from '@/types';
 
-type ContactWithRelations = Contact & { 
-    leads: Lead[]; 
-    opportunities: Opportunity[]; 
-    notes: Note[]; 
-    activities: Activity[] 
+type ContactWithRelations = Contact & {
+    leads: Lead[];
+    opportunities: Opportunity[];
+    notes: Note[];
+    activities: Activity[];
 };
 
 export function useContact(id: number, initialData?: ContactWithRelations) {
