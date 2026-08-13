@@ -225,3 +225,91 @@ Inertia responses: every controller action returns `Inertia::render('Page/Name',
 - Single Laravel app: standard deployment (Forge, Vapor, or plain VPS with `php artisan serve` behind Nginx).
 - Queue worker (`php artisan queue:work`) and scheduler (`* * * * * php artisan schedule:run` in cron) required for reminders.
 - No separate frontend build/deploy — Vite bundles React with the Laravel app via the starter kit's default config.
+
+
+
+
+
+
+<!-- RBAC  -->
+
+
+
+
+Phase 1 — Authentication & Access Control
+Seed the initial Super Admin.
+Create roles, permissions, role_user, and permission_role.
+Default newly registered users to Restricted/Standard User.
+Implement role/permission checks with Laravel Policies/Gates.
+Build basic user/role management for authorized admins.
+Phase 2 — Contacts
+Contact migration/model.
+Contact CRUD backend.
+Contact ownership.
+Policies/permissions.
+Backend tests.
+React Hook Form + Inertia Contact UI.
+TanStack Query for server state where appropriate.
+Phase 3 — Leads
+Lead model and relationships.
+Lead CRUD.
+Lead ownership/permissions.
+Lead qualification/discard.
+Contact association.
+Frontend implementation.
+Phase 4 — Lead Conversion
+
+Implement:
+
+Lead → Contact → Opportunity
+
+Include duplicate detection, transaction handling, permissions, and conversion history.
+
+Phase 5 — Opportunities & Pipeline
+Opportunity CRUD
+Pipeline stages
+Kanban
+Stage movement
+Won/Lost
+Lost reasons
+Ownership and permissions
+Phase 6 — Activities
+Tasks
+Calls
+Meetings
+Emails
+Due dates
+Completion
+Overdue activities
+Entity relationships
+Phase 7 — Notes & Timeline
+Manual notes
+System events
+Entity timeline
+Contact history
+Phase 8 — Dashboard
+
+Add only the documented CRM metrics and use TanStack Query for dashboard server state.
+
+Phase 9 — Notifications
+In-app notifications
+Upcoming activities
+Overdue activities
+Database queue
+Phase 10 — Complete Integration
+
+Connect:
+
+Contacts → Leads → Opportunities → Activities → Won/Lost → Customer
+
+Then perform authorization, validation, UX, performance, and regression testing.
+
+Development Rule
+
+Implement one phase at a time.
+
+For every phase:
+
+Backend → Tests → Frontend → Integration → Verification
+
+Do not start the next phase until the current phase is working correctly.
