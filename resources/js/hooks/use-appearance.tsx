@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react';
+import { toast } from 'sonner';
 
 export type ResolvedAppearance = 'light' | 'dark';
 export type Appearance = ResolvedAppearance | 'system';
@@ -109,6 +110,7 @@ export function useAppearance(): UseAppearanceReturn {
 
         applyTheme(mode);
         notify();
+        toast.success('Appearance updated');
     };
 
     return { appearance, resolvedAppearance, updateAppearance } as const;

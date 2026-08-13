@@ -1,5 +1,6 @@
 import { Form, Head } from '@inertiajs/react';
 import { useRef } from 'react';
+import { toast } from 'sonner';
 import SecurityController from '@/actions/App/Http/Controllers/Settings/SecurityController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
@@ -45,7 +46,9 @@ export default function Security(props: Props) {
                         'current_password',
                     ]}
                     resetOnSuccess
+                    onSuccess={() => toast.success('Password updated')}
                     onError={(errors) => {
+                        toast.error(Object.values(errors)[0] || 'An error occurred');
                         if (errors.password) {
                             passwordInput.current?.focus();
                         }

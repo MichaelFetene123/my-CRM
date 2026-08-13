@@ -40,7 +40,7 @@ createInertiaApp({
             <QueryClientProvider client={queryClient}>
                 <TooltipProvider delay={0}>
                     {app}
-                    <Toaster />
+                    <Toaster position="top-right"  />
                 </TooltipProvider>
                 <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>

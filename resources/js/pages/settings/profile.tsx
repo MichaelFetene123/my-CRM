@@ -1,5 +1,6 @@
 import { Form, Head, usePage } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
+import { toast } from 'sonner';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import DeleteUser from '@/components/delete-user';
 import Heading from '@/components/heading';
@@ -42,6 +43,8 @@ export default function Profile({
                     options={{
                         preserveScroll: true,
                     }}
+                    onSuccess={() => toast.success('Profile updated')}
+                    onError={(errors) => toast.error(Object.values(errors)[0] || 'An error occurred')}
                     className="space-y-6"
                 >
                     {({ processing, errors }) => (

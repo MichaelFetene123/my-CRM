@@ -1,5 +1,6 @@
 import { Form } from '@inertiajs/react';
 import { useRef } from 'react';
+import { toast } from 'sonner';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
@@ -61,7 +62,11 @@ export default function DeleteUser() {
                             options={{
                                 preserveScroll: true,
                             }}
-                            onError={() => passwordInput.current?.focus()}
+                            onSuccess={() => toast.success('Account deleted')}
+                            onError={(errors) => {
+                                toast.error(Object.values(errors)[0] || 'An error occurred');
+                                passwordInput.current?.focus();
+                            }}
                             resetOnSuccess
                             className="space-y-6"
                         >
