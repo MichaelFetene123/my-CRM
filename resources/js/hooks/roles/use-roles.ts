@@ -15,5 +15,6 @@ export function useRoles(initialData?: Role[], componentName: string = 'admin/ro
             );
         },
         initialData,
+        staleTime: 0,
     });
 }

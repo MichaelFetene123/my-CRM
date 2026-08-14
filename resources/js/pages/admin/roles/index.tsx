@@ -5,6 +5,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Roles', href: admin.roles.index().url },
 ];
 import { Head } from '@inertiajs/react';
+import { Loader2 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -116,6 +117,7 @@ export default function RolesIndex({ roles: initialRoles, permissions: initialPe
                             />
                         </div>
                         <Button type="submit" disabled={createMutation.isPending}>
+                            {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             Create Role
                         </Button>
                     </form>
