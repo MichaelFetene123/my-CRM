@@ -36,7 +36,7 @@ function UserRow({ user, roles }: { user: User; roles: Role[] }) {
                                 value={field.value}
                                 onValueChange={field.onChange}
                             >
-                                <SelectTrigger className="w-[180px]">
+                                <SelectTrigger className="w-45">
                                     <SelectValue placeholder="Assign Role" />
                                 </SelectTrigger>
                                 <SelectContent>

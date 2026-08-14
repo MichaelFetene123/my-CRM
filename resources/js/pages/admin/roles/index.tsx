@@ -45,7 +45,7 @@ function RoleRow({ role, permissions }: { role: Role; permissions: Permission[] 
                                     value={field.value}
                                     onValueChange={field.onChange}
                                 >
-                                    <SelectTrigger className="w-[200px]">
+                                    <SelectTrigger className="w-50">
                                         <SelectValue placeholder="Add permission..." />
                                     </SelectTrigger>
                                     <SelectContent>
