@@ -1,5 +1,9 @@
-import { PageProps, User, Role } from '@/types';
-import AppLayout from '@/layouts/app-layout';
+import { PageProps, User, Role, BreadcrumbItem } from '@/types';
+import admin from '@/routes/admin';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    { title: 'Users', href: admin.users.index().url },
+];
 import { Head } from '@inertiajs/react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -60,9 +64,9 @@ export default function UsersIndex({ users: initialUsers, roles: initialRoles }:
     const { data: roles = [] } = useRoles(initialRoles, 'admin/users/index');
 
     return (
-        <AppLayout>
+        <>
             <Head title="Manage Users" />
-            
+
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="flex items-center justify-between">
                     <h1 className="text-xl font-semibold">Manage Users</h1>
@@ -85,6 +89,10 @@ export default function UsersIndex({ users: initialUsers, roles: initialRoles }:
                     </Table>
                 </div>
             </div>
-        </AppLayout>
+        </>
     );
 }
+
+UsersIndex.layout = {
+    breadcrumbs,
+};

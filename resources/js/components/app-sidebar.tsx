@@ -1,5 +1,5 @@
-import { Link } from '@inertiajs/react';
-import { LayoutGrid, Users, Target, GitBranch, ListChecks } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import { LayoutGrid, Users, Target, GitBranch, ListChecks, Shield, UserCog } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -18,10 +18,12 @@ import contacts from '@/routes/contacts';
 import leads from '@/routes/leads';
 import opportunities from '@/routes/opportunities';
 import activities from '@/routes/activities';
-import type { NavItem } from '@/types';
+import admin from '@/routes/admin';
+import type { NavItem, PageProps } from '@/types';
 
 export function AppSidebar() {
     const unreadCount = useUnreadCount();
+    const { auth } = usePage<PageProps>().props;
 
     const mainNavItems: NavItem[] = [
         {
@@ -51,6 +53,22 @@ export function AppSidebar() {
             badge: unreadCount > 0 ? unreadCount : undefined,
         },
     ];
+
+    if (auth.permissions?.manage_users) {
+        mainNavItems.push({
+            title: 'Users',
+            href: admin.users.index().url,
+            icon: UserCog,
+        });
+    }
+
+    if (auth.permissions?.manage_roles) {
+        mainNavItems.push({
+            title: 'Roles',
+            href: admin.roles.index().url,
+            icon: Shield,
+        });
+    }
 
     return (
         <Sidebar collapsible="icon" variant="inset">

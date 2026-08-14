@@ -1,5 +1,9 @@
-import { PageProps, Role, Permission } from '@/types';
-import AppLayout from '@/layouts/app-layout';
+import { PageProps, Role, Permission, BreadcrumbItem } from '@/types';
+import admin from '@/routes/admin';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    { title: 'Roles', href: admin.roles.index().url },
+];
 import { Head } from '@inertiajs/react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -52,10 +56,10 @@ function RoleRow({ role, permissions }: { role: Role; permissions: Permission[] 
                                         {permissions
                                             .filter(p => !role.permissions?.some(rp => rp.id === p.id))
                                             .map((permission) => (
-                                            <SelectItem key={permission.id} value={permission.id.toString()}>
-                                                {permission.name}
-                                            </SelectItem>
-                                        ))}
+                                                <SelectItem key={permission.id} value={permission.id.toString()}>
+                                                    {permission.name}
+                                                </SelectItem>
+                                            ))}
                                     </SelectContent>
                                 </Select>
                             )}
@@ -87,9 +91,9 @@ export default function RolesIndex({ roles: initialRoles, permissions: initialPe
     };
 
     return (
-        <AppLayout>
+        <>
             <Head title="Manage Roles" />
-            
+
             <div className="flex h-full flex-1 flex-col gap-6 rounded-xl p-4">
                 <div>
                     <h1 className="text-xl font-semibold mb-4">Create New Role</h1>
@@ -137,6 +141,10 @@ export default function RolesIndex({ roles: initialRoles, permissions: initialPe
                     </div>
                 </div>
             </div>
-        </AppLayout>
+        </>
     );
 }
+
+RolesIndex.layout = {
+    breadcrumbs,
+};
