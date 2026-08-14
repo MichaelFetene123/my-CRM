@@ -2,17 +2,17 @@
 
 use App\Actions\Activities\CompleteActivity;
 use App\Models\Activity;
-use App\Models\User;
 use App\Models\Contact;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use DomainException;
+use Tests\TestCase;
 
-uses(\Tests\TestCase::class, RefreshDatabase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 it('completes a pending activity', function () {
     $user = User::factory()->create();
     $contact = Contact::create(['name' => 'John Doe', 'status' => 'prospect']);
-    
+
     $activity = Activity::create([
         'entity_type' => Contact::class,
         'entity_id' => $contact->id,
@@ -29,7 +29,7 @@ it('completes a pending activity', function () {
 it('rejects completing an already-completed activity', function () {
     $user = User::factory()->create();
     $contact = Contact::create(['name' => 'John Doe', 'status' => 'prospect']);
-    
+
     $activity = Activity::create([
         'entity_type' => Contact::class,
         'entity_id' => $contact->id,

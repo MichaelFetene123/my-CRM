@@ -4,9 +4,9 @@ use App\Actions\Leads\DiscardLead;
 use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use DomainException;
+use Tests\TestCase;
 
-uses(\Tests\TestCase::class, RefreshDatabase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 it('discards a new lead', function () {
     $user = User::factory()->create();

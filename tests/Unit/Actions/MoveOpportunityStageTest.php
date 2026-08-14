@@ -1,20 +1,21 @@
 <?php
 
 use App\Actions\Opportunities\MoveOpportunityStage;
+use App\Models\Contact;
 use App\Models\Opportunity;
 use App\Models\PipelineStage;
 use App\Models\User;
-use App\Models\Contact;
+use Database\Seeders\PipelineStageSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use DomainException;
+use Tests\TestCase;
 
-uses(\Tests\TestCase::class, RefreshDatabase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 it('moves an open opportunity to a new stage', function () {
-    $this->seed(\Database\Seeders\PipelineStageSeeder::class);
+    $this->seed(PipelineStageSeeder::class);
     $user = User::factory()->create();
     $contact = Contact::create(['name' => 'John Doe', 'status' => 'prospect']);
-    
+
     $stage1 = PipelineStage::where('order', 1)->first();
     $stage2 = PipelineStage::where('order', 2)->first();
 
@@ -34,10 +35,10 @@ it('moves an open opportunity to a new stage', function () {
 });
 
 it('rejects moving a won or lost opportunity', function () {
-    $this->seed(\Database\Seeders\PipelineStageSeeder::class);
+    $this->seed(PipelineStageSeeder::class);
     $user = User::factory()->create();
     $contact = Contact::create(['name' => 'John Doe', 'status' => 'prospect']);
-    
+
     $stage1 = PipelineStage::where('order', 1)->first();
     $stage2 = PipelineStage::where('order', 2)->first();
 

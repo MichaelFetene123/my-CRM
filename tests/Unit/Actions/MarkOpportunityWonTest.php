@@ -1,20 +1,21 @@
 <?php
 
 use App\Actions\Opportunities\MarkOpportunityWon;
+use App\Models\Contact;
 use App\Models\Opportunity;
 use App\Models\PipelineStage;
 use App\Models\User;
-use App\Models\Contact;
+use Database\Seeders\PipelineStageSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use DomainException;
+use Tests\TestCase;
 
-uses(\Tests\TestCase::class, RefreshDatabase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 it('marks an open opportunity as won', function () {
-    $this->seed(\Database\Seeders\PipelineStageSeeder::class);
+    $this->seed(PipelineStageSeeder::class);
     $user = User::factory()->create();
     $contact = Contact::create(['name' => 'John Doe', 'status' => 'prospect']);
-    
+
     $stage1 = PipelineStage::where('order', 1)->first();
 
     $opportunity = Opportunity::create([
@@ -34,10 +35,10 @@ it('marks an open opportunity as won', function () {
 });
 
 it('rejects marking an already won or lost opportunity as won', function () {
-    $this->seed(\Database\Seeders\PipelineStageSeeder::class);
+    $this->seed(PipelineStageSeeder::class);
     $user = User::factory()->create();
     $contact = Contact::create(['name' => 'John Doe', 'status' => 'prospect']);
-    
+
     $stage1 = PipelineStage::where('order', 1)->first();
 
     $opportunity = Opportunity::create([
