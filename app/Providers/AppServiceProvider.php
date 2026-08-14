@@ -32,6 +32,19 @@ class AppServiceProvider extends ServiceProvider
             'contact' => \App\Models\Contact::class,
             'user' => \App\Models\User::class,
         ]);
+
+        \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
+            return $user->hasRole('Super Admin') ? true : null;
+        });
+
+        // Add gates for permissions
+        \Illuminate\Support\Facades\Gate::define('manage_users', function ($user) {
+            return $user->hasPermission('manage_users');
+        });
+
+        \Illuminate\Support\Facades\Gate::define('manage_roles', function ($user) {
+            return $user->hasPermission('manage_roles');
+        });
     }
 
     /**

@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
+            RbacSeeder::class,
             PipelineStageSeeder::class,
         ]);
     }

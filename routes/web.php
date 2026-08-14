@@ -9,6 +9,8 @@ use App\Http\Controllers\OpportunityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
 
 Route::get('/', fn () => Inertia::render('welcome'))->name('home');
 
@@ -56,6 +58,19 @@ Route::middleware('auth')->group(function () {
     Route::get('notifications/unread-count', fn (Request $request) => response()->json([
         'count' => $request->user()->unreadNotifications()->count(),
     ]))->name('notifications.unread-count');
+
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::middleware('can:manage_users')->group(function () {
+            Route::get('users', [UserController::class, 'index'])->name('users.index');
+            Route::post('users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assign-role');
+        });
+
+        Route::middleware('can:manage_roles')->group(function () {
+            Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
+            Route::post('roles', [RoleController::class, 'store'])->name('roles.store');
+            Route::post('roles/{role}/permissions', [RoleController::class, 'assignPermission'])->name('roles.assign-permission');
+        });
+    });
 });
 
 require __DIR__.'/settings.php';
