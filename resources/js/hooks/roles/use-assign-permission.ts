@@ -16,7 +16,8 @@ export function useAssignPermission(roleId: number) {
             return await api.post(adminRolesRoute.assignPermission(roleId).url, data);
         },
         onSuccess: () => {
-            toast.success('Permission assigned successfully');
+            toast.success('Permissions updated successfully');
+            queryClient.invalidateQueries({ queryKey: roleKeys.list() });
             queryClient.invalidateQueries({ queryKey: roleKeys.all });
         },
         onError: (error) => {

@@ -19,8 +19,12 @@ export function useUpdateUser(userId: number) {
             return await api.put(adminUsersRoute.update(userId).url, data);
         },
         onSuccess: () => {
+            const key = userKeys.list();
+            console.log('[DEBUG] useUpdateUser onSuccess REACHED!');
+            console.log('[DEBUG] useUpdateUser invalidating queryKey:', JSON.stringify(key));
+            
             toast.success('User updated successfully');
-            queryClient.invalidateQueries({ queryKey: userKeys.list() });
+            queryClient.invalidateQueries({ queryKey: key });
             queryClient.invalidateQueries({ queryKey: userKeys.detail(userId) });
             queryClient.invalidateQueries({ queryKey: roleKeys.all });
         },

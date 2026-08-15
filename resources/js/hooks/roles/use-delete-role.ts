@@ -12,11 +12,8 @@ export function useDeleteRole(roleId: number) {
             return await api.delete(adminRolesRoute.destroy(roleId).url);
         },
         onSuccess: () => {
-            queryClient.setQueryData(roleKeys.list(), (old: any) => {
-                if (!old) return old;
-                return old.filter((r: any) => r.id !== roleId);
-            });
             toast.success('Role deleted successfully');
+            queryClient.invalidateQueries({ queryKey: roleKeys.list() });
             queryClient.invalidateQueries({ queryKey: roleKeys.all });
         },
         onError: (error) => {

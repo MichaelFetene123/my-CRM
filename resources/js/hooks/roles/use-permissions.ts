@@ -3,15 +3,18 @@ import { api } from '@/lib/api';
 import { Permission } from '@/types';
 import adminRolesRoute from '@/routes/admin/roles';
 import { permissionKeys } from '@/components/query-keys';
+import { usePage } from '@inertiajs/react';
 
-export function usePermissions(initialData?: Permission[], componentName: string = 'admin/roles/index') {
+export function usePermissions(initialData?: Permission[]) {
+    const { version } = usePage();
     return useQuery<Permission[]>({
         queryKey: permissionKeys.list(),
         queryFn: async () => {
             return await api.getInertiaData(
                 adminRolesRoute.index().url,
                 'permissions',
-                componentName
+                'admin/roles/index',
+                version
             );
         },
         initialData,
