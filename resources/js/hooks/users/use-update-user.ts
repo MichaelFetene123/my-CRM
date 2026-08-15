@@ -3,7 +3,7 @@ import { api, ApiError } from '@/lib/api';
 import { toast } from 'sonner';
 
 import adminUsersRoute from '@/routes/admin/users';
-import { userKeys } from '@/components/query-keys';
+import { userKeys, roleKeys } from '@/components/query-keys';
 
 export type UpdateUserData = {
     name: string;
@@ -21,6 +21,8 @@ export function useUpdateUser(userId: number) {
         onSuccess: () => {
             toast.success('User updated successfully');
             queryClient.invalidateQueries({ queryKey: userKeys.list() });
+            queryClient.invalidateQueries({ queryKey: userKeys.detail(userId) });
+            queryClient.invalidateQueries({ queryKey: roleKeys.all });
         },
         onError: (error) => {
             toast.error(error.message || 'Failed to update user');

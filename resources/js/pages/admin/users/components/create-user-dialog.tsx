@@ -80,7 +80,9 @@ export function CreateUserDialog({ open, onOpenChange }: { open: boolean; onOpen
                             <Label htmlFor="role_id">Role</Label>
                             <Select onValueChange={(val) => val && setValue('role_id', val)} value={watch('role_id')?.toString()}>
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Select a role" />
+                                    <SelectValue placeholder="Select a role">
+                                        {roles?.find((r) => r.id.toString() === watch('role_id')?.toString())?.name}
+                                    </SelectValue>
                                 </SelectTrigger>
                                 <SelectContent>
                                     {roles?.map((role) => (

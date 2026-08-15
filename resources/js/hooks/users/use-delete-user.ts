@@ -3,7 +3,7 @@ import { api, ApiError } from '@/lib/api';
 import { toast } from 'sonner';
 
 import adminUsersRoute from '@/routes/admin/users';
-import { userKeys } from '@/components/query-keys';
+import { userKeys, roleKeys } from '@/components/query-keys';
 
 export function useDeleteUser() {
     const queryClient = useQueryClient();
@@ -12,9 +12,11 @@ export function useDeleteUser() {
         mutationFn: async (userId) => {
             return await api.delete(adminUsersRoute.destroy(userId).url);
         },
-        onSuccess: () => {
+        onSuccess: (_, userId) => {
             toast.success('User deleted successfully');
             queryClient.invalidateQueries({ queryKey: userKeys.list() });
+            queryClient.invalidateQueries({ queryKey: userKeys.detail(userId) });
+            queryClient.invalidateQueries({ queryKey: roleKeys.all });
         },
         onError: (error) => {
             toast.error(error.message || 'Failed to delete user');

@@ -3,7 +3,7 @@ import { api, ApiError } from '@/lib/api';
 import { toast } from 'sonner';
 
 import adminUsersRoute from '@/routes/admin/users';
-import { userKeys } from '@/components/query-keys';
+import { userKeys, roleKeys } from '@/components/query-keys';
 
 export type CreateUserData = {
     name: string;
@@ -21,6 +21,7 @@ export function useCreateUser() {
         onSuccess: () => {
             toast.success('User created successfully');
             queryClient.invalidateQueries({ queryKey: userKeys.list() });
+            queryClient.invalidateQueries({ queryKey: roleKeys.all });
         },
         onError: (error) => {
             toast.error(error.message || 'Failed to create user');

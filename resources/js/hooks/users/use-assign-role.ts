@@ -3,7 +3,7 @@ import { api, ApiError } from '@/lib/api';
 import { toast } from 'sonner';
 
 import adminUsersRoute from '@/routes/admin/users';
-import { userKeys } from '@/components/query-keys';
+import { userKeys, roleKeys } from '@/components/query-keys';
 
 export type AssignRoleData = {
     role_id: string;
@@ -19,6 +19,8 @@ export function useAssignRole(userId: number) {
         onSuccess: () => {
             toast.success('Role assigned successfully');
             queryClient.invalidateQueries({ queryKey: userKeys.list() });
+            queryClient.invalidateQueries({ queryKey: userKeys.detail(userId) });
+            queryClient.invalidateQueries({ queryKey: roleKeys.all });
         },
         onError: (error) => {
             const errorMessage = error.errors?.role_id?.[0] || error.message || 'Failed to assign role';
