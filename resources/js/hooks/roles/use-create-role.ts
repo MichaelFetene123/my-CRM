@@ -7,6 +7,7 @@ import { roleKeys } from '@/components/query-keys';
 export type CreateRoleData = {
     name: string;
     description: string;
+    permissions?: number[];
 };
 
 export function useCreateRole() {
@@ -16,9 +17,15 @@ export function useCreateRole() {
         mutationFn: async (data) => {
             return await api.post(adminRolesRoute.store().url, data);
         },
-        onSuccess: () => {
+        onSuccess: (response) => {
+            if (response?.role) {
+                queryClient.setQueryData(roleKeys.list(), (old: any) => {
+                    if (!old) return [response.role];
+                    return [...old, response.role];
+                });
+            }
             toast.success('Role created successfully');
-            queryClient.invalidateQueries({ queryKey: roleKeys.all });
+            queryClient.invalidateQueries({ queryKey: roleKeys.list() });
         },
         onError: (error) => {
             const errorMessage = error.errors?.name?.[0] || error.message || 'Failed to create role';

@@ -17,9 +17,15 @@ export function useUpdateRole(roleId: number) {
         mutationFn: async (data) => {
             return await api.put(adminRolesRoute.update(roleId).url, data);
         },
-        onSuccess: () => {
+        onSuccess: (response) => {
+            if (response?.role) {
+                queryClient.setQueryData(roleKeys.list(), (old: any) => {
+                    if (!old) return [response.role];
+                    return old.map((r: any) => r.id === response.role.id ? response.role : r);
+                });
+            }
             toast.success('Role updated successfully');
-            queryClient.invalidateQueries({ queryKey: roleKeys.all });
+            queryClient.invalidateQueries({ queryKey: roleKeys.list() });
         },
         onError: (error) => {
             const errorMessage = error.errors?.name?.[0] || error.errors?.role?.[0] || error.message || 'Failed to update role';

@@ -23,12 +23,21 @@ class RoleController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:roles,name',
             'description' => 'nullable|string|max:255',
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,id',
         ]);
 
-        $role = Role::create($validated);
+        $role = Role::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+        ]);
+
+        if (!empty($validated['permissions'])) {
+            $role->permissions()->sync($validated['permissions']);
+        }
 
         if ($request->wantsJson()) {
-            return response()->json(['message' => 'Role created successfully.', 'role' => $role]);
+            return response()->json(['message' => 'Role created successfully.', 'role' => $role->load('permissions')]);
         }
 
         return back()->with('success', 'Role created successfully.');
@@ -84,7 +93,7 @@ class RoleController extends Controller
         }
 
         if ($request->wantsJson()) {
-            return response()->json(['message' => 'Role updated successfully.']);
+            return response()->json(['message' => 'Role updated successfully.', 'role' => $role->load('permissions')]);
         }
 
         return back()->with('success', 'Role updated successfully.');
