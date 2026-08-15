@@ -6,62 +6,25 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 import { Head } from '@inertiajs/react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { toast } from 'sonner';
-import { useForm, Controller } from 'react-hook-form';
-
-import { useAssignRole, AssignRoleData } from '@/hooks/users/use-assign-role';
+import { Badge } from '@/components/ui/badge';
 import { useUsers } from '@/hooks/users/use-users';
-import { useRoles } from '@/hooks/roles/use-roles';
 
-function UserRow({ user, roles }: { user: User; roles: Role[] }) {
-    const { control, handleSubmit } = useForm<AssignRoleData>({
-        defaultValues: {
-            role_id: user.roles?.[0]?.id.toString() || '',
-        },
-    });
-
-    const mutation = useAssignRole(user.id);
+function UserRow({ user }: { user: User }) {
+    const roleName = user.roles?.[0]?.name || 'No Role';
 
     return (
         <TableRow>
             <TableCell className="font-medium">{user.name}</TableCell>
             <TableCell>{user.email}</TableCell>
             <TableCell>
-                <form
-                    onChange={handleSubmit((data) => mutation.mutate(data))}
-                >
-                    <Controller
-                        name="role_id"
-                        control={control}
-                        render={({ field }) => (
-                            <Select
-                                disabled={mutation.isPending}
-                                value={field.value}
-                                onValueChange={field.onChange}
-                            >
-                                <SelectTrigger className="w-45">
-                                    <SelectValue placeholder="Assign Role" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {roles.map((role) => (
-                                        <SelectItem key={role.id} value={role.id.toString()}>
-                                            {role.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        )}
-                    />
-                </form>
+                <Badge variant="secondary">{roleName}</Badge>
             </TableCell>
         </TableRow>
     );
 }
 
-export default function UsersIndex({ users: initialUsers, roles: initialRoles }: PageProps<{ users: User[], roles: Role[] }>) {
+export default function UsersIndex({ users: initialUsers }: PageProps<{ users: User[], roles: Role[] }>) {
     const { data: users = [] } = useUsers(initialUsers);
-    const { data: roles = [] } = useRoles(initialRoles, 'admin/users/index');
 
     return (
         <>
@@ -83,7 +46,7 @@ export default function UsersIndex({ users: initialUsers, roles: initialRoles }:
                         </TableHeader>
                         <TableBody>
                             {users.map((user) => (
-                                <UserRow key={user.id} user={user} roles={roles} />
+                                <UserRow key={user.id} user={user} />
                             ))}
                         </TableBody>
                     </Table>
