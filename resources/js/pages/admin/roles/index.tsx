@@ -17,10 +17,40 @@ import { useCreateRole, CreateRoleData } from '@/hooks/roles/use-create-role';
 import { useAssignPermission, AssignPermissionData } from '@/hooks/roles/use-assign-permission';
 import { useRoles } from '@/hooks/roles/use-roles';
 import { usePermissions } from '@/hooks/roles/use-permissions';
+import { useState } from 'react';
+import { MoreHorizontal, Edit, Trash2 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useUpdateRole, UpdateRoleData } from '@/hooks/roles/use-update-role';
+import { useDeleteRole } from '@/hooks/roles/use-delete-role';
 
 function RoleRow({ role, permissions }: { role: Role; permissions: Permission[] }) {
     const { control, handleSubmit } = useForm<AssignPermissionData>();
     const assignMutation = useAssignPermission(role.id);
+    const updateMutation = useUpdateRole(role.id);
+    const deleteMutation = useDeleteRole(role.id);
+
+    const [editOpen, setEditOpen] = useState(false);
+
+    const { register: editRegister, handleSubmit: handleEditSubmit, reset: editReset, control: editControl, formState: { errors: editErrors } } = useForm<UpdateRoleData>({
+        defaultValues: {
+            name: role.name,
+            description: role.description || '',
+            permissions: role.permissions?.map(p => p.id) || [],
+        }
+    });
+
+    const onEditSubmit = (data: UpdateRoleData) => {
+        updateMutation.mutate(data, {
+            onSuccess: () => setEditOpen(false)
+        });
+    };
+
+    const onDelete = () => {
+        if (window.confirm(`Are you sure you want to delete the role "${role.name}"?`)) {
+            deleteMutation.mutate();
+        }
+    };
 
     return (
         <TableRow>
@@ -66,6 +96,97 @@ function RoleRow({ role, permissions }: { role: Role; permissions: Permission[] 
                             )}
                         />
                     </form>
+                )}
+            </TableCell>
+            <TableCell>
+                {role.name !== 'Super Admin' && (
+                    <>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger>
+                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                    <span className="sr-only">Open menu</span>
+                                    <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => {
+                                    editReset({
+                                        name: role.name,
+                                        description: role.description || '',
+                                        permissions: role.permissions?.map(p => p.id) || [],
+                                    });
+                                    setEditOpen(true);
+                                }}>
+                                    <Edit className="mr-2 h-4 w-4" />
+                                    Edit Role
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={onDelete} className="text-red-600">
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    Delete Role
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+
+                        <Dialog open={editOpen} onOpenChange={setEditOpen}>
+                            <DialogContent className="sm:max-w-[425px]">
+                                <DialogHeader>
+                                    <DialogTitle>Edit Role</DialogTitle>
+                                </DialogHeader>
+                                <form onSubmit={handleEditSubmit(onEditSubmit)} className="space-y-4 pt-4">
+                                    <div className="grid gap-2">
+                                        <Label htmlFor={`edit-name-${role.id}`}>Role Name</Label>
+                                        <Input
+                                            id={`edit-name-${role.id}`}
+                                            {...editRegister('name', { required: true })}
+                                        />
+                                        {editErrors.name && <span className="text-sm text-red-500">This field is required</span>}
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor={`edit-desc-${role.id}`}>Description</Label>
+                                        <Input
+                                            id={`edit-desc-${role.id}`}
+                                            {...editRegister('description')}
+                                        />
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label>Permissions</Label>
+                                        <div className="grid grid-cols-2 gap-2 mt-2">
+                                            <Controller
+                                                name="permissions"
+                                                control={editControl}
+                                                render={({ field }) => (
+                                                    <>
+                                                        {permissions.map((p) => (
+                                                            <label key={p.id} className="flex items-center gap-2 cursor-pointer">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="rounded border-gray-300 text-primary focus:ring-primary"
+                                                                    checked={field.value?.includes(p.id)}
+                                                                    onChange={(e) => {
+                                                                        const newValue = e.target.checked
+                                                                            ? [...(field.value || []), p.id]
+                                                                            : (field.value || []).filter(id => id !== p.id);
+                                                                        field.onChange(newValue);
+                                                                    }}
+                                                                />
+                                                                <span className="text-sm">{p.name}</span>
+                                                            </label>
+                                                        ))}
+                                                    </>
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-end pt-4">
+                                        <Button type="submit" disabled={updateMutation.isPending}>
+                                            {updateMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                            Save Changes
+                                        </Button>
+                                    </div>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
+                    </>
                 )}
             </TableCell>
         </TableRow>
@@ -132,6 +253,7 @@ export default function RolesIndex({ roles: initialRoles, permissions: initialPe
                                     <TableHead>Role</TableHead>
                                     <TableHead>Permissions</TableHead>
                                     <TableHead>Assign Permission</TableHead>
+                                    <TableHead className="w-[80px]"></TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>

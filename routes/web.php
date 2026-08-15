@@ -69,6 +69,8 @@ Route::middleware('auth')->group(function () {
             Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
             Route::post('roles', [RoleController::class, 'store'])->name('roles.store');
             Route::post('roles/{role}/permissions', [RoleController::class, 'assignPermission'])->name('roles.assign-permission');
+            Route::put('roles/{role}', [RoleController::class, 'update'])->name('roles.update');
+            Route::delete('roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
         });
     });
 });

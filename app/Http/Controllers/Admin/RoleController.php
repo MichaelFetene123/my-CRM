@@ -55,4 +55,56 @@ class RoleController extends Controller
 
         return back()->with('success', 'Permission assigned successfully.');
     }
+
+    public function update(Request $request, Role $role)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
+            'description' => 'nullable|string|max:255',
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,id',
+        ]);
+
+        if ($role->name === 'Super Admin') {
+            if ($request->wantsJson()) {
+                return response()->json(['message' => 'Cannot modify Super Admin directly.'], 422);
+            }
+            return back()->withErrors(['role' => 'Cannot modify Super Admin directly.']);
+        }
+
+        $role->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+        ]);
+
+        if (isset($validated['permissions'])) {
+            $role->permissions()->sync($validated['permissions']);
+        } else {
+            $role->permissions()->sync([]);
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Role updated successfully.']);
+        }
+
+        return back()->with('success', 'Role updated successfully.');
+    }
+
+    public function destroy(Request $request, Role $role)
+    {
+        if ($role->name === 'Super Admin') {
+            if ($request->wantsJson()) {
+                return response()->json(['message' => 'Cannot delete Super Admin role.'], 422);
+            }
+            return back()->withErrors(['role' => 'Cannot delete Super Admin role.']);
+        }
+
+        $role->delete();
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Role deleted successfully.']);
+        }
+
+        return back()->with('success', 'Role deleted successfully.');
+    }
 }

@@ -76,3 +76,36 @@ it('allows manager to assign standard roles', function () {
     $response->assertSessionHasNoErrors();
     expect($targetUser->fresh()->hasRole('Restricted/Standard User'))->toBeTrue();
 });
+
+it('allows super admin to edit and delete roles', function () {
+    $admin = User::where('email', 'admin@gmail.com')->first();
+    $role = Role::create(['name' => 'Custom Role', 'description' => 'Test']);
+
+    $response = $this->actingAs($admin)->put("/admin/roles/{$role->id}", [
+        'name' => 'Updated Role',
+        'description' => 'Updated',
+    ]);
+    
+    $response->assertSessionHasNoErrors();
+    expect($role->fresh()->name)->toBe('Updated Role');
+
+    $response = $this->actingAs($admin)->delete("/admin/roles/{$role->id}");
+    $response->assertSessionHasNoErrors();
+    expect(Role::find($role->id))->toBeNull();
+});
+
+it('prevents deletion and modification of super admin role', function () {
+    $admin = User::where('email', 'admin@gmail.com')->first();
+    $superAdminRole = Role::where('name', 'Super Admin')->first();
+
+    $response = $this->actingAs($admin)->put("/admin/roles/{$superAdminRole->id}", [
+        'name' => 'Hacked Admin',
+    ]);
+    
+    $response->assertSessionHasErrors(['role' => 'Cannot modify Super Admin directly.']);
+    expect($superAdminRole->fresh()->name)->toBe('Super Admin');
+
+    $response = $this->actingAs($admin)->delete("/admin/roles/{$superAdminRole->id}");
+    $response->assertSessionHasErrors(['role' => 'Cannot delete Super Admin role.']);
+    expect(Role::find($superAdminRole->id))->not->toBeNull();
+});
