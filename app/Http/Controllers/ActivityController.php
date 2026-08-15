@@ -6,13 +6,17 @@ use App\Actions\Activities\CompleteActivity;
 use App\Http\Requests\StoreActivityRequest;
 use App\Models\Activity;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ActivityController extends Controller
 {
-    public function index(\Illuminate\Http\Request $request): Response
+    public function index(Request $request): Response
     {
+        Gate::authorize('viewAny', Activity::class);
+
         /** @var User $user */
         $user = $request->user();
         $user->unreadNotifications()->update(['read_at' => now()]);
@@ -22,8 +26,10 @@ class ActivityController extends Controller
         ]);
     }
 
-    public function apiIndex(\Illuminate\Http\Request $request)
+    public function apiIndex(Request $request)
     {
+        Gate::authorize('viewAny', Activity::class);
+
         /** @var User $user */
         $user = $request->user();
         $user->unreadNotifications()->update(['read_at' => now()]);
@@ -33,6 +39,8 @@ class ActivityController extends Controller
 
     public function store(StoreActivityRequest $request)
     {
+        Gate::authorize('create', Activity::class);
+
         Activity::create([...$request->validated(), 'owner_id' => $request->user()->id]);
 
         return redirect()->back();
@@ -40,6 +48,8 @@ class ActivityController extends Controller
 
     public function update(StoreActivityRequest $request, Activity $activity)
     {
+        Gate::authorize('update', $activity);
+
         $activity->update($request->validated());
 
         return redirect()->back();
@@ -47,6 +57,8 @@ class ActivityController extends Controller
 
     public function destroy(Activity $activity)
     {
+        Gate::authorize('delete', $activity);
+
         $activity->delete();
 
         return redirect()->back();
@@ -54,6 +66,8 @@ class ActivityController extends Controller
 
     public function complete(Activity $activity, CompleteActivity $action)
     {
+        Gate::authorize('update', $activity);
+
         $action($activity);
 
         return redirect()->back();
@@ -61,6 +75,8 @@ class ActivityController extends Controller
 
     public function apiComplete(Activity $activity, CompleteActivity $action)
     {
+        Gate::authorize('update', $activity);
+
         $action($activity);
 
         return response()->json(['success' => true]);

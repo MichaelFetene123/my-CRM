@@ -11,6 +11,7 @@ use App\Http\Requests\StoreOpportunityRequest;
 use App\Models\Contact;
 use App\Models\Opportunity;
 use App\Models\PipelineStage;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,6 +19,8 @@ class OpportunityController extends Controller
 {
     public function index(): Response
     {
+        Gate::authorize('viewAny', Opportunity::class);
+
         return Inertia::render('opportunities', [
             'stages' => Inertia::defer(fn () => PipelineStage::orderBy('order')->with(['opportunities.contact'])->get()),
             'contacts' => Contact::latest()->get(['id', 'name']),
@@ -26,6 +29,8 @@ class OpportunityController extends Controller
 
     public function apiIndex()
     {
+        Gate::authorize('viewAny', Opportunity::class);
+
         return response()->json([
             'stages' => PipelineStage::orderBy('order')->with(['opportunities.contact'])->get(),
             'contacts' => Contact::latest()->get(['id', 'name']),
@@ -34,6 +39,8 @@ class OpportunityController extends Controller
 
     public function store(StoreOpportunityRequest $request)
     {
+        Gate::authorize('create', Opportunity::class);
+
         Opportunity::create([
             ...$request->validated(),
             'owner_id' => $request->user()->id,
@@ -45,6 +52,8 @@ class OpportunityController extends Controller
 
     public function show(Opportunity $opportunity): Response
     {
+        Gate::authorize('view', $opportunity);
+
         return Inertia::render('opportunities-show', [
             'opportunity' => $opportunity->load(['contact', 'stage', 'notes', 'activities']),
         ]);
@@ -52,11 +61,15 @@ class OpportunityController extends Controller
 
     public function apiShow(Opportunity $opportunity)
     {
+        Gate::authorize('view', $opportunity);
+
         return response()->json($opportunity->load(['contact', 'stage', 'notes', 'activities']));
     }
 
     public function move(MoveStageRequest $request, Opportunity $opportunity, MoveOpportunityStage $action)
     {
+        Gate::authorize('update', $opportunity);
+
         $newStage = PipelineStage::findOrFail($request->validated('stage_id'));
         $action($opportunity, $newStage);
 
@@ -65,6 +78,8 @@ class OpportunityController extends Controller
 
     public function apiMove(MoveStageRequest $request, Opportunity $opportunity, MoveOpportunityStage $action)
     {
+        Gate::authorize('update', $opportunity);
+
         $newStage = PipelineStage::findOrFail($request->validated('stage_id'));
         $action($opportunity, $newStage);
 
@@ -73,6 +88,8 @@ class OpportunityController extends Controller
 
     public function markWon(Opportunity $opportunity, MarkOpportunityWon $action)
     {
+        Gate::authorize('update', $opportunity);
+
         $action($opportunity);
 
         return redirect()->back();
@@ -80,6 +97,8 @@ class OpportunityController extends Controller
 
     public function apiMarkWon(Opportunity $opportunity, MarkOpportunityWon $action)
     {
+        Gate::authorize('update', $opportunity);
+
         $action($opportunity);
 
         return response()->json(['success' => true]);
@@ -87,6 +106,8 @@ class OpportunityController extends Controller
 
     public function markLost(MarkLostRequest $request, Opportunity $opportunity, MarkOpportunityLost $action)
     {
+        Gate::authorize('update', $opportunity);
+
         $action($opportunity, $request->validated('reason'));
 
         return redirect()->back();
@@ -94,6 +115,8 @@ class OpportunityController extends Controller
 
     public function apiMarkLost(MarkLostRequest $request, Opportunity $opportunity, MarkOpportunityLost $action)
     {
+        Gate::authorize('update', $opportunity);
+
         $action($opportunity, $request->validated('reason'));
 
         return response()->json(['success' => true]);

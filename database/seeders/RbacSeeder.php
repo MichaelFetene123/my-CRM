@@ -18,10 +18,32 @@ class RbacSeeder extends Seeder
         $superAdminRole = Role::firstOrCreate(['name' => 'Super Admin', 'description' => 'Has all permissions']);
         $standardRole = Role::firstOrCreate(['name' => 'Restricted/Standard User', 'description' => 'Default user role']);
 
-        $manageUsers = Permission::firstOrCreate(['name' => 'manage_users', 'description' => 'Can manage users']);
-        $manageRoles = Permission::firstOrCreate(['name' => 'manage_roles', 'description' => 'Can manage roles and permissions']);
+        $superAdminPermissions = [
+            Permission::firstOrCreate(['name' => 'manage_users', 'description' => 'Can manage users'])->id,
+            Permission::firstOrCreate(['name' => 'manage_roles', 'description' => 'Can manage roles and permissions'])->id,
+        ];
+        $standardPermissions = [];
 
-        $superAdminRole->permissions()->syncWithoutDetaching([$manageUsers->id, $manageRoles->id]);
+        $modules = ['contacts', 'leads', 'opportunities', 'activities'];
+        $actions = ['view' => 'Can view %s', 'create' => 'Can create %s', 'update' => 'Can update %s', 'delete' => 'Can delete %s'];
+
+        foreach ($modules as $module) {
+            foreach ($actions as $action => $desc) {
+                $permission = Permission::firstOrCreate([
+                    'name' => "{$module}.{$action}",
+                    'description' => sprintf($desc, str_replace('_', ' ', $module)),
+                ]);
+
+                $superAdminPermissions[] = $permission->id;
+
+                if ($action === 'view') {
+                    $standardPermissions[] = $permission->id;
+                }
+            }
+        }
+
+        $superAdminRole->permissions()->syncWithoutDetaching($superAdminPermissions);
+        $standardRole->permissions()->syncWithoutDetaching($standardPermissions);
 
         $admin = User::firstOrCreate(
             ['email' => 'admin@gmail.com'],
@@ -31,7 +53,7 @@ class RbacSeeder extends Seeder
             ]
         );
 
-        if (!$admin->hasRole('Super Admin')) {
+        if (! $admin->hasRole('Super Admin')) {
             $admin->roles()->attach($superAdminRole);
         }
     }
