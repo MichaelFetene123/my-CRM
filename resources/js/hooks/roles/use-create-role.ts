@@ -25,7 +25,7 @@ export function useCreateRole() {
                 });
             }
             toast.success('Role created successfully');
-            queryClient.invalidateQueries({ queryKey: roleKeys.list() });
+            queryClient.invalidateQueries({ queryKey: roleKeys.all });
         },
         onError: (error) => {
             const errorMessage = error.errors?.name?.[0] || error.message || 'Failed to create role';

@@ -18,6 +18,11 @@ class RoleController extends Controller
         ]);
     }
 
+    public function apiIndex()
+    {
+        return response()->json(Role::where('name', '!=', 'Super Admin')->get());
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -32,7 +37,7 @@ class RoleController extends Controller
             'description' => $validated['description'] ?? null,
         ]);
 
-        if (!empty($validated['permissions'])) {
+        if (! empty($validated['permissions'])) {
             $role->permissions()->sync($validated['permissions']);
         }
 
@@ -53,6 +58,7 @@ class RoleController extends Controller
             if ($request->wantsJson()) {
                 return response()->json(['message' => 'Cannot modify Super Admin permissions directly.'], 422);
             }
+
             return back()->withErrors(['role' => 'Cannot modify Super Admin permissions directly.']);
         }
 
@@ -68,7 +74,7 @@ class RoleController extends Controller
     public function update(Request $request, Role $role)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
+            'name' => 'required|string|max:255|unique:roles,name,'.$role->id,
             'description' => 'nullable|string|max:255',
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,id',
@@ -78,6 +84,7 @@ class RoleController extends Controller
             if ($request->wantsJson()) {
                 return response()->json(['message' => 'Cannot modify Super Admin directly.'], 422);
             }
+
             return back()->withErrors(['role' => 'Cannot modify Super Admin directly.']);
         }
 
@@ -105,6 +112,7 @@ class RoleController extends Controller
             if ($request->wantsJson()) {
                 return response()->json(['message' => 'Cannot delete Super Admin role.'], 422);
             }
+
             return back()->withErrors(['role' => 'Cannot delete Super Admin role.']);
         }
 

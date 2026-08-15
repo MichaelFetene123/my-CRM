@@ -5,24 +5,25 @@ import { toast } from 'sonner';
 import adminUsersRoute from '@/routes/admin/users';
 import { userKeys } from '@/components/query-keys';
 
-export type AssignRoleData = {
-    role_id: string;
+export type UpdateUserData = {
+    name: string;
+    email: string;
+    role_id: string | number;
 };
 
-export function useAssignRole(userId: number) {
+export function useUpdateUser(userId: number) {
     const queryClient = useQueryClient();
 
-    return useMutation<any, ApiError, AssignRoleData>({
+    return useMutation<any, ApiError, UpdateUserData>({
         mutationFn: async (data) => {
-            return await api.post(adminUsersRoute.assignRole(userId).url, data);
+            return await api.put(adminUsersRoute.update(userId).url, data);
         },
         onSuccess: () => {
-            toast.success('Role assigned successfully');
+            toast.success('User updated successfully');
             queryClient.invalidateQueries({ queryKey: userKeys.list() });
         },
         onError: (error) => {
-            const errorMessage = error.errors?.role_id?.[0] || error.message || 'Failed to assign role';
-            toast.error(errorMessage);
+            toast.error(error.message || 'Failed to update user');
         },
     });
 }

@@ -36,6 +36,7 @@ export const userKeys = {
 export const roleKeys = {
     all: ['roles'] as const,
     list: () => [...roleKeys.all, 'list'] as const,
+    api: () => [...roleKeys.all, 'api'] as const,
     detail: (id: number) => [...roleKeys.all, 'detail', id] as const,
 };
 

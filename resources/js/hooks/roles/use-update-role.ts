@@ -25,7 +25,7 @@ export function useUpdateRole(roleId: number) {
                 });
             }
             toast.success('Role updated successfully');
-            queryClient.invalidateQueries({ queryKey: roleKeys.list() });
+            queryClient.invalidateQueries({ queryKey: roleKeys.all });
         },
         onError: (error) => {
             const errorMessage = error.errors?.name?.[0] || error.errors?.role?.[0] || error.message || 'Failed to update role';

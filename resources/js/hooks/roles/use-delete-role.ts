@@ -17,7 +17,7 @@ export function useDeleteRole(roleId: number) {
                 return old.filter((r: any) => r.id !== roleId);
             });
             toast.success('Role deleted successfully');
-            queryClient.invalidateQueries({ queryKey: roleKeys.list() });
+            queryClient.invalidateQueries({ queryKey: roleKeys.all });
         },
         onError: (error) => {
             const errorMessage = error.errors?.role?.[0] || error.message || 'Failed to delete role';

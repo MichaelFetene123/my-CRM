@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeadController;
@@ -9,8 +11,6 @@ use App\Http\Controllers\OpportunityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\UserController;
 
 Route::get('/', fn () => Inertia::render('welcome'))->name('home');
 
@@ -59,10 +59,18 @@ Route::middleware('auth')->group(function () {
         'count' => $request->user()->unreadNotifications()->count(),
     ]))->name('notifications.unread-count');
 
+    Route::prefix('api')->name('apiRoles.')->group(function () {
+        Route::get('roles', [RoleController::class, 'apiIndex'])->name('index');
+    });
+
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::middleware('can:manage_users')->group(function () {
             Route::get('users', [UserController::class, 'index'])->name('users.index');
+            Route::post('users', [UserController::class, 'store'])->name('users.store');
+            Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+            Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
             Route::post('users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assign-role');
+            Route::post('users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
         });
 
         Route::middleware('can:manage_roles')->group(function () {
