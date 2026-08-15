@@ -17,14 +17,33 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            ['name' => 'Test User', 'password' => bcrypt('password')]
+        );
 
         $this->call([
             RbacSeeder::class,
             PipelineStageSeeder::class,
         ]);
+
+        $user = User::where('email', 'admin@gmail.com')->first() ?? User::factory()->create();
+
+        $contacts = \App\Models\Contact::factory(10)->create();
+        
+        \App\Models\Lead::factory(10)
+            ->recycle($user)
+            ->recycle($contacts)
+            ->create();
+
+        \App\Models\Opportunity::factory(10)
+            ->recycle($user)
+            ->recycle($contacts)
+            ->create();
+
+        \App\Models\Activity::factory(10)
+            ->recycle($user)
+            ->recycle($contacts)
+            ->create();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,6 +32,8 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class Opportunity extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'contact_id', 'lead_id', 'title', 'stage_id',
         'status', 'lost_reason', 'stage_entered_at', 'owner_id',

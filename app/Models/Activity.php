@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,6 +25,8 @@ use Illuminate\Support\Carbon;
  */
 class Activity extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['entity_type', 'entity_id', 'type', 'due_at', 'completed_at', 'owner_id'];
 
     protected $casts = [
