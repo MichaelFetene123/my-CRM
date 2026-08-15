@@ -30,29 +30,41 @@ export function AppSidebar() {
             title: 'Dashboard',
             href: dashboard().url,
             icon: LayoutGrid,
-        },
-        {
+        }
+    ];
+
+    if (auth.permissions?.contacts_view !== false) {
+        mainNavItems.push({
             title: 'Contacts',
             href: contacts.index().url,
             icon: Users,
-        },
-        {
+        });
+    }
+
+    if (auth.permissions?.leads_view !== false) {
+        mainNavItems.push({
             title: 'Leads',
             href: leads.index().url,
             icon: Target,
-        },
-        {
+        });
+    }
+
+    if (auth.permissions?.opportunities_view !== false) {
+        mainNavItems.push({
             title: 'Opportunities',
             href: opportunities.index().url,
             icon: GitBranch,
-        },
-        {
+        });
+    }
+
+    if (auth.permissions?.activities_view !== false) {
+        mainNavItems.push({
             title: 'Activities',
             href: activities.index().url,
             icon: ListChecks,
             badge: unreadCount > 0 ? unreadCount : undefined,
-        },
-    ];
+        });
+    }
 
     if (auth.permissions?.manage_users) {
         mainNavItems.push({
