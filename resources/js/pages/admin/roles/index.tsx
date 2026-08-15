@@ -108,9 +108,18 @@ export default function RolesIndex({ roles: initialRoles, permissions: initialPe
     const groupedPermissions = useMemo(() => {
         const groups: Record<string, { id: number; name: string; action: string }[]> = {};
         permissions.forEach(p => {
-            const parts = p.name.split('_');
-            const actionRaw = parts[0];
-            const groupNameRaw = parts.length > 1 ? parts.slice(1).join(' ') : 'General';
+            let groupNameRaw = 'General';
+            let actionRaw = p.name;
+
+            if (p.name.includes('.')) {
+                const parts = p.name.split('.');
+                groupNameRaw = parts[0];
+                actionRaw = parts.slice(1).join(' ');
+            } else if (p.name.includes('_')) {
+                const parts = p.name.split('_');
+                actionRaw = parts[0];
+                groupNameRaw = parts.slice(1).join(' ');
+            }
             
             const groupName = groupNameRaw.charAt(0).toUpperCase() + groupNameRaw.slice(1);
             const action = actionRaw.charAt(0).toUpperCase() + actionRaw.slice(1);
