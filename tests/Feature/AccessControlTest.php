@@ -4,15 +4,16 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use function Pest\Laravel\{actingAs, post, seed};
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed(\Database\Seeders\RbacSeeder::class);
+    seed(\Database\Seeders\RbacSeeder::class);
 });
 
 it('assigns standard role on registration', function () {
-    $response = $this->post('/register', [
+    $response = post('/register', [
         'name' => 'New User',
         'email' => 'new@example.com',
         'password' => 'password',
@@ -29,7 +30,7 @@ it('assigns standard role on registration', function () {
 it('allows super admin to access user management', function () {
     $admin = User::where('email', 'admin@gmail.com')->first();
     
-    $response = $this->actingAs($admin)->get('/admin/users');
+    $response = actingAs($admin)->get('/admin/users');
     $response->assertStatus(200);
 });
 
@@ -37,7 +38,7 @@ it('prevents standard users from accessing user management', function () {
     $user = User::factory()->create();
     $user->roles()->attach(Role::where('name', 'Restricted/Standard User')->first());
 
-    $response = $this->actingAs($user)->get('/admin/users');
+    $response = actingAs($user)->get('/admin/users');
     $response->assertStatus(403);
 });
 
@@ -51,7 +52,7 @@ it('prevents non-super-admins from assigning super admin role', function () {
     $targetUser = User::factory()->create();
     $superAdminRole = Role::where('name', 'Super Admin')->first();
 
-    $response = $this->actingAs($manager)->post("/admin/users/{$targetUser->id}/roles", [
+    $response = actingAs($manager)->post("/admin/users/{$targetUser->id}/roles", [
         'role_id' => $superAdminRole->id,
     ]);
 
@@ -69,7 +70,7 @@ it('allows manager to assign standard roles', function () {
     $targetUser = User::factory()->create();
     $standardRole = Role::where('name', 'Restricted/Standard User')->first();
 
-    $response = $this->actingAs($manager)->post("/admin/users/{$targetUser->id}/roles", [
+    $response = actingAs($manager)->post("/admin/users/{$targetUser->id}/roles", [
         'role_id' => $standardRole->id,
     ]);
 
@@ -81,7 +82,7 @@ it('allows super admin to edit and delete roles', function () {
     $admin = User::where('email', 'admin@gmail.com')->first();
     $role = Role::create(['name' => 'Custom Role', 'description' => 'Test']);
 
-    $response = $this->actingAs($admin)->put("/admin/roles/{$role->id}", [
+    $response = actingAs($admin)->put("/admin/roles/{$role->id}", [
         'name' => 'Updated Role',
         'description' => 'Updated',
     ]);
@@ -89,7 +90,7 @@ it('allows super admin to edit and delete roles', function () {
     $response->assertSessionHasNoErrors();
     expect($role->fresh()->name)->toBe('Updated Role');
 
-    $response = $this->actingAs($admin)->delete("/admin/roles/{$role->id}");
+    $response = actingAs($admin)->delete("/admin/roles/{$role->id}");
     $response->assertSessionHasNoErrors();
     expect(Role::find($role->id))->toBeNull();
 });
@@ -98,14 +99,14 @@ it('prevents deletion and modification of super admin role', function () {
     $admin = User::where('email', 'admin@gmail.com')->first();
     $superAdminRole = Role::where('name', 'Super Admin')->first();
 
-    $response = $this->actingAs($admin)->put("/admin/roles/{$superAdminRole->id}", [
+    $response = actingAs($admin)->put("/admin/roles/{$superAdminRole->id}", [
         'name' => 'Hacked Admin',
     ]);
     
     $response->assertSessionHasErrors(['role' => 'Cannot modify Super Admin directly.']);
     expect($superAdminRole->fresh()->name)->toBe('Super Admin');
 
-    $response = $this->actingAs($admin)->delete("/admin/roles/{$superAdminRole->id}");
+    $response = actingAs($admin)->delete("/admin/roles/{$superAdminRole->id}");
     $response->assertSessionHasErrors(['role' => 'Cannot delete Super Admin role.']);
     expect(Role::find($superAdminRole->id))->not->toBeNull();
 });
