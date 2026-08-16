@@ -11,6 +11,7 @@ use App\Http\Requests\StoreOpportunityRequest;
 use App\Models\Contact;
 use App\Models\Opportunity;
 use App\Models\PipelineStage;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -133,5 +134,31 @@ class OpportunityController extends Controller
         $action($opportunity, $request->validated('reason'));
 
         return response()->json(['success' => true]);
+    }
+
+    public function destroy(Opportunity $opportunity)
+    {
+        Gate::authorize('delete', $opportunity);
+
+        DB::transaction(function () use ($opportunity) {
+            $opportunity->notes()->delete();
+            $opportunity->activities()->delete();
+            $opportunity->delete();
+        });
+
+        return redirect()->route('opportunities.index');
+    }
+
+    public function apiDestroy(Opportunity $opportunity)
+    {
+        Gate::authorize('delete', $opportunity);
+
+        DB::transaction(function () use ($opportunity) {
+            $opportunity->notes()->delete();
+            $opportunity->activities()->delete();
+            $opportunity->delete();
+        });
+
+        return response()->noContent();
     }
 }

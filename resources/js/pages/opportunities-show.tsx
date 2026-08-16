@@ -1,10 +1,11 @@
 import { Head, usePage, router } from '@inertiajs/react';
 import { useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Trash2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useOpportunity } from '@/hooks/opportunities/use-opportunity';
 import { useWonOpportunity } from '@/hooks/opportunities/use-won-opportunity';
 import { useLostOpportunity } from '@/hooks/opportunities/use-lost-opportunity';
+import { useDeleteOpportunity } from '@/hooks/opportunities/use-delete-opportunity';
 import AppLayout from '@/layouts/app-layout';
 import {
     mergeTimeline,
@@ -23,6 +24,9 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
+    DialogDescription,
+    DialogFooter,
+    DialogClose,
 } from '@/components/ui/dialog';
 import opportunities from '@/routes/opportunities';
 import type {
@@ -53,6 +57,7 @@ export default function OpportunityShow({
     const { mutate: markWonMutate, isPending: isWinning } = useWonOpportunity();
     const { mutate: markLostMutate, isPending: isLosing } =
         useLostOpportunity();
+    const { mutate: deleteMutate, isPending: isDeleting } = useDeleteOpportunity();
 
     const [lostOpen, setLostOpen] = useState(false);
     const [noteOpen, setNoteOpen] = useState(false);
@@ -136,6 +141,44 @@ export default function OpportunityShow({
                                     {opportunity.stage.name}
                                 </Badge>
                             )}
+
+                        <Dialog>
+                            <DialogTrigger
+                                render={
+                                    <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                        disabled={isDeleting}
+                                    />
+                                }
+                            >
+                                <Trash2 className="h-4 w-4" />
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogTitle>Delete Opportunity</DialogTitle>
+                                <DialogDescription>
+                                    Are you sure you want to delete this opportunity? This will permanently delete the opportunity and all of its associated notes and activities. This action cannot be undone.
+                                </DialogDescription>
+                                <DialogFooter className="gap-2 sm:justify-end">
+                                    <DialogClose
+                                        render={<Button variant="secondary" />}
+                                    >
+                                        Cancel
+                                    </DialogClose>
+                                    <DialogClose
+                                        render={
+                                            <Button
+                                                variant="destructive"
+                                                onClick={() => deleteMutate({ id: opportunity.id })}
+                                            />
+                                        }
+                                    >
+                                        Delete
+                                    </DialogClose>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
                     </div>
                 </div>
 
