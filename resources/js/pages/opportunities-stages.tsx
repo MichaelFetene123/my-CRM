@@ -6,11 +6,16 @@ import { usePipelineStages } from '@/hooks/pipeline-stages/use-pipeline-stages';
 import { useCreateStage } from '@/hooks/pipeline-stages/use-create-stage';
 import { useUpdateStage } from '@/hooks/pipeline-stages/use-update-stage';
 import { useDeleteStage } from '@/hooks/pipeline-stages/use-delete-stage';
+import { TableSkeleton } from '@/components/skeleton/table-skeleton';
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
+    DialogTrigger,
+    DialogDescription,
+    DialogFooter,
+    DialogClose,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -96,9 +101,7 @@ export default function OpportunitiesStages() {
     };
 
     const handleDelete = (id: number) => {
-        if (confirm('Are you sure you want to delete this stage?')) {
-            deleteStage(id);
-        }
+        deleteStage(id);
     };
 
     return (
@@ -124,25 +127,22 @@ export default function OpportunitiesStages() {
 
                 <div className="space-y-6 mt-4">
                     {/* List */}
-                    <div className="rounded-md border bg-card">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Order</TableHead>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Properties</TableHead>
-                                    <TableHead>Opps</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {isLoading ? (
+                    {isLoading ? (
+                        <TableSkeleton />
+                    ) : (
+                        <div className="rounded-md border bg-card">
+                            <Table>
+                                <TableHeader>
                                     <TableRow>
-                                        <TableCell colSpan={5} className="text-center py-4">
-                                            <Loader2Icon className="mx-auto h-4 w-4 animate-spin text-muted-foreground" />
-                                        </TableCell>
+                                        <TableHead>Order</TableHead>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Properties</TableHead>
+                                        <TableHead>Opps</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
                                     </TableRow>
-                                ) : stages?.length === 0 ? (
+                                </TableHeader>
+                                <TableBody>
+                                    {stages?.length === 0 ? (
                                     <TableRow>
                                         <TableCell colSpan={5} className="text-center py-4 text-muted-foreground">
                                             No stages found.
@@ -171,23 +171,54 @@ export default function OpportunitiesStages() {
                                                     >
                                                         <PencilIcon className="h-4 w-4" />
                                                     </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={() => handleDelete(stage.id)}
-                                                        disabled={isDeleting}
-                                                        className="text-destructive hover:bg-destructive/10 hover:text-destructive h-8 w-8"
-                                                    >
-                                                        <Trash2Icon className="h-4 w-4" />
-                                                    </Button>
+                                                    <Dialog>
+                                                        <DialogTrigger
+                                                            render={
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    className="text-destructive hover:bg-destructive/10 hover:text-destructive h-8 w-8"
+                                                                    disabled={isDeleting}
+                                                                />
+                                                            }
+                                                        >
+                                                            <Trash2Icon className="h-4 w-4" />
+                                                        </DialogTrigger>
+                                                        <DialogContent>
+                                                            <DialogHeader>
+                                                                <DialogTitle>Delete Stage</DialogTitle>
+                                                                <DialogDescription>
+                                                                    Are you sure you want to delete this stage? This action cannot be undone.
+                                                                </DialogDescription>
+                                                            </DialogHeader>
+                                                            <DialogFooter className="gap-2 sm:justify-end">
+                                                                <DialogClose
+                                                                    render={<Button variant="secondary" />}
+                                                                >
+                                                                    Cancel
+                                                                </DialogClose>
+                                                                <DialogClose
+                                                                    render={
+                                                                        <Button
+                                                                            variant="destructive"
+                                                                            onClick={() => handleDelete(stage.id)}
+                                                                        />
+                                                                    }
+                                                                >
+                                                                    Delete Stage
+                                                                </DialogClose>
+                                                            </DialogFooter>
+                                                        </DialogContent>
+                                                    </Dialog>
                                                 </div>
                                             </TableCell>
                                         </TableRow>
                                     ))
                                 )}
-                            </TableBody>
-                        </Table>
-                    </div>
+                                </TableBody>
+                            </Table>
+                        </div>
+                    )}
 
                     {/* Create/Edit Dialog */}
                     <Dialog open={dialogOpen} onOpenChange={(open) => {
