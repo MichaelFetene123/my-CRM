@@ -2,9 +2,20 @@ import { Head } from '@inertiajs/react';
 import { ListSkeleton } from '@/components/skeleton/list-skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import {
+    Dialog,
+    DialogTrigger,
+    DialogContent,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+    DialogClose,
+} from '@/components/ui/dialog';
 import activities from '@/routes/activities';
 import { useActivities } from '@/hooks/activities/use-activities';
 import { useCompleteActivity } from '@/hooks/activities/use-complete-activity';
+import { useDeleteActivity } from '@/hooks/activities/use-delete-activity';
+import { Trash2 } from 'lucide-react';
 import type { Activity, BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -13,7 +24,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Activities() {
     const { data: activityList, isLoading } = useActivities();
-    const { mutate: completeActivity, isPending } = useCompleteActivity();
+    const { mutate: completeActivity, isPending: isCompleting } = useCompleteActivity();
+    const { mutate: deleteActivity, isPending: isDeleting } = useDeleteActivity();
 
     function complete(id: number) {
         completeActivity({ id });
@@ -80,7 +92,7 @@ export default function Activities() {
                                                     <Button
                                                         size="sm"
                                                         variant="outline"
-                                                        disabled={isPending}
+                                                        disabled={isCompleting || isDeleting}
                                                         onClick={() =>
                                                             complete(
                                                                 activity.id,
@@ -89,6 +101,45 @@ export default function Activities() {
                                                     >
                                                         Complete
                                                     </Button>
+                                                )}
+                                                {activity.completed_at && (
+                                                    <Dialog>
+                                                        <DialogTrigger
+                                                            render={
+                                                                <Button
+                                                                    size="sm"
+                                                                    variant="ghost"
+                                                                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                                                    disabled={isDeleting}
+                                                                />
+                                                            }
+                                                        >
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </DialogTrigger>
+                                                        <DialogContent>
+                                                            <DialogTitle>Delete Activity</DialogTitle>
+                                                            <DialogDescription>
+                                                                Are you sure you want to delete this activity? This action cannot be undone.
+                                                            </DialogDescription>
+                                                            <DialogFooter className="gap-2 sm:justify-end">
+                                                                <DialogClose
+                                                                    render={<Button variant="secondary" />}
+                                                                >
+                                                                    Cancel
+                                                                </DialogClose>
+                                                                <DialogClose
+                                                                    render={
+                                                                        <Button
+                                                                            variant="destructive"
+                                                                            onClick={() => deleteActivity({ id: activity.id })}
+                                                                        />
+                                                                    }
+                                                                >
+                                                                    Delete Activity
+                                                                </DialogClose>
+                                                            </DialogFooter>
+                                                        </DialogContent>
+                                                    </Dialog>
                                                 )}
                                             </li>
                                         );

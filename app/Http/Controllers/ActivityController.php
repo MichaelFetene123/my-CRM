@@ -90,4 +90,13 @@ class ActivityController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    public function apiDestroy(Activity $activity)
+    {
+        Gate::authorize('delete', $activity);
+
+        $activity->delete();
+
+        return response()->noContent();
+    }
 }

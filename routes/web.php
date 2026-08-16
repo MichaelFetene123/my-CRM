@@ -41,12 +41,14 @@ Route::middleware('auth')->group(function () {
         Route::post('opportunities/{opportunity}/move', [OpportunityController::class, 'apiMove'])->name('move');
         Route::post('opportunities/{opportunity}/won', [OpportunityController::class, 'apiMarkWon'])->name('won');
         Route::post('opportunities/{opportunity}/lost', [OpportunityController::class, 'apiMarkLost'])->name('lost');
+        Route::delete('opportunities/{opportunity}', [OpportunityController::class, 'apiDestroy'])->name('destroy');
     });
 
     Route::prefix('api')->name('apiActivities.')->group(function () {
         Route::get('activities', [ActivityController::class, 'apiIndex'])->name('index');
         Route::post('activities', [ActivityController::class, 'apiStore'])->name('store');
         Route::post('activities/{activity}/complete', [ActivityController::class, 'apiComplete'])->name('complete');
+        Route::delete('activities/{activity}', [ActivityController::class, 'apiDestroy'])->name('destroy');
     });
 
     Route::prefix('api')->name('apiNotes.')->group(function () {
