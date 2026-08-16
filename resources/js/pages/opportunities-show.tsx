@@ -1,5 +1,6 @@
 import { Head, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useOpportunity } from '@/hooks/opportunities/use-opportunity';
 import { useWonOpportunity } from '@/hooks/opportunities/use-won-opportunity';
@@ -49,7 +50,7 @@ export default function OpportunityShow({
         initialOpportunity.id,
         initialOpportunity,
     );
-    const { mutate: markWonMutate } = useWonOpportunity();
+    const { mutate: markWonMutate, isPending: isWinning } = useWonOpportunity();
     const { mutate: markLostMutate, isPending: isLosing } =
         useLostOpportunity();
 
@@ -138,7 +139,12 @@ export default function OpportunityShow({
 
                 {isOpen && (
                     <div className="flex gap-2">
-                        <Button onClick={markWon}>Mark Won</Button>
+                        <Button onClick={markWon} disabled={isWinning}>
+                            {isWinning && (
+                                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                            )}
+                            Mark Won
+                        </Button>
                         <Dialog open={lostOpen} onOpenChange={setLostOpen}>
                             <DialogTrigger
                                 render={<Button variant="destructive" />}
@@ -173,6 +179,9 @@ export default function OpportunityShow({
                                         variant="destructive"
                                         disabled={isLosing}
                                     >
+                                        {isLosing && (
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        )}
                                         Confirm Lost
                                     </Button>
                                 </form>
