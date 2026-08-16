@@ -17,9 +17,10 @@ export function useDiscardLead() {
         mutationFn: async ({ id, ...data }) => {
             return await api.post(apiLeadsRoute.discard(id).url, data);
         },
-        onSuccess: () => {
+        onSuccess: (_, variables) => {
             toast.success('Lead discarded');
             queryClient.invalidateQueries({ queryKey: leadKeys.list() });
+            queryClient.invalidateQueries({ queryKey: leadKeys.detail(variables.id) });
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');

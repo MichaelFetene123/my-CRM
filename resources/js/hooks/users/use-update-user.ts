@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/api';
 import { toast } from 'sonner';
 
-import adminUsersRoute from '@/routes/admin/users';
+import adminApiUsersRoute from '@/routes/adminApiUsers';
 import { userKeys, roleKeys } from '@/components/query-keys';
 
 export type UpdateUserData = {
@@ -16,7 +16,7 @@ export function useUpdateUser(userId: number) {
 
     return useMutation<any, ApiError, UpdateUserData>({
         mutationFn: async (data) => {
-            return await api.put(adminUsersRoute.update(userId).url, data);
+            return await api.put(adminApiUsersRoute.update(userId).url, data);
         },
         onSuccess: () => {
             const key = userKeys.list();

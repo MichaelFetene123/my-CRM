@@ -1,14 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/api';
-import leadsRoute from '@/routes/leads';
+import apiLeadsRoute from '@/routes/apiLeads';
 import { leadKeys } from '@/components/query-keys';
 import type { Lead } from '@/types';
 import { toast } from 'sonner';
 
 type CreateLeadData = {
-    name: string;
-    email?: string;
-    source?: string;
+    title: string;
+    company: string;
+    value: number;
+    contact_id: number;
 };
 
 export function useCreateLead() {
@@ -16,7 +17,7 @@ export function useCreateLead() {
 
     return useMutation<Lead, ApiError, CreateLeadData>({
         mutationFn: async (data) => {
-            return await api.post(leadsRoute.store().url, data);
+            return await api.post(apiLeadsRoute.store().url, data);
         },
         onSuccess: () => {
             toast.success('Lead created');

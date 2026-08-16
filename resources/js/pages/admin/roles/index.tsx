@@ -21,11 +21,11 @@ import { usePermissions } from '@/hooks/roles/use-permissions';
 import { useState, useMemo } from 'react';
 
 function RoleCard({ role, onEdit }: { role: Role; onEdit: (role: Role) => void }) {
-    const deleteMutation = useDeleteRole(role.id);
+    const deleteMutation = useDeleteRole();
 
     const onDelete = () => {
         if (window.confirm(`Are you sure you want to delete the role "${role.name}"?`)) {
-            deleteMutation.mutate();
+            deleteMutation.mutate(role.id);
         }
     };
 

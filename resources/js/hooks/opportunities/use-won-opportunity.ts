@@ -19,6 +19,7 @@ export function useWonOpportunity() {
         onSuccess: (_, variables) => {
             toast.success('Opportunity marked as won');
             queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
+            queryClient.invalidateQueries({ queryKey: opportunityKeys.detail(variables.id) });
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');

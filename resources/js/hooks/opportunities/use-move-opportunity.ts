@@ -17,9 +17,10 @@ export function useMoveOpportunity() {
         mutationFn: async ({ id, ...data }) => {
             return await api.post(apiOpportunitiesRoute.move(id).url, data);
         },
-        onSuccess: () => {
+        onSuccess: (_, variables) => {
             toast.success('Opportunity moved');
             queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
+            queryClient.invalidateQueries({ queryKey: opportunityKeys.detail(variables.id) });
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');

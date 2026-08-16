@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/api';
 import { toast } from 'sonner';
-import adminRolesRoute from '@/routes/admin/roles';
+import apiRolesRoute from '@/routes/apiRoles';
 import { roleKeys } from '@/components/query-keys';
 
 export type UpdateRoleData = {
@@ -15,7 +15,7 @@ export function useUpdateRole(roleId: number) {
 
     return useMutation<any, ApiError, UpdateRoleData>({
         mutationFn: async (data) => {
-            return await api.put(adminRolesRoute.update(roleId).url, data);
+            return await api.put(apiRolesRoute.update(roleId).url, data);
         },
         onSuccess: () => {
             toast.success('Role updated successfully');

@@ -48,6 +48,27 @@ class RoleController extends Controller
         return back()->with('success', 'Role created successfully.');
     }
 
+    public function apiStore(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:roles,name',
+            'description' => 'nullable|string|max:255',
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,id',
+        ]);
+
+        $role = Role::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+        ]);
+
+        if (! empty($validated['permissions'])) {
+            $role->permissions()->sync($validated['permissions']);
+        }
+
+        return response()->json(['message' => 'Role created successfully.', 'role' => $role->load('permissions')]);
+    }
+
     public function assignPermission(Request $request, Role $role)
     {
         $request->validate([
@@ -69,6 +90,21 @@ class RoleController extends Controller
         }
 
         return back()->with('success', 'Permission assigned successfully.');
+    }
+
+    public function apiAssignPermission(Request $request, Role $role)
+    {
+        $request->validate([
+            'permission_id' => 'required|exists:permissions,id',
+        ]);
+
+        if ($role->name === 'Super Admin') {
+            return response()->json(['message' => 'Cannot modify Super Admin permissions directly.'], 422);
+        }
+
+        $role->permissions()->syncWithoutDetaching([$request->permission_id]);
+
+        return response()->json(['message' => 'Permission assigned successfully.']);
     }
 
     public function update(Request $request, Role $role)
@@ -106,6 +142,33 @@ class RoleController extends Controller
         return back()->with('success', 'Role updated successfully.');
     }
 
+    public function apiUpdate(Request $request, Role $role)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:roles,name,'.$role->id,
+            'description' => 'nullable|string|max:255',
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,id',
+        ]);
+
+        if ($role->name === 'Super Admin') {
+            return response()->json(['message' => 'Cannot modify Super Admin directly.'], 422);
+        }
+
+        $role->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+        ]);
+
+        if (isset($validated['permissions'])) {
+            $role->permissions()->sync($validated['permissions']);
+        } else {
+            $role->permissions()->sync([]);
+        }
+
+        return response()->json(['message' => 'Role updated successfully.', 'role' => $role->load('permissions')]);
+    }
+
     public function destroy(Request $request, Role $role)
     {
         if ($role->name === 'Super Admin') {
@@ -123,5 +186,16 @@ class RoleController extends Controller
         }
 
         return back()->with('success', 'Role deleted successfully.');
+    }
+
+    public function apiDestroy(Request $request, Role $role)
+    {
+        if ($role->name === 'Super Admin') {
+            return response()->json(['message' => 'Cannot delete Super Admin role.'], 422);
+        }
+
+        $role->delete();
+
+        return response()->json(['message' => 'Role deleted successfully.']);
     }
 }

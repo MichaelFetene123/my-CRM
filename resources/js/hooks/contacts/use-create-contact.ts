@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/api';
-import contactsRoute from '@/routes/contacts';
+import apiContactsRoute from '@/routes/apiContacts';
 import { contactKeys } from '@/components/query-keys';
 import type { Contact } from '@/types';
 import { toast } from 'sonner';
@@ -17,7 +17,7 @@ export function useCreateContact() {
 
     return useMutation<Contact, ApiError, CreateContactData>({
         mutationFn: async (data) => {
-            return await api.post(contactsRoute.store().url, data);
+            return await api.post(apiContactsRoute.store().url, data);
         },
         onSuccess: () => {
             toast.success('Contact created');

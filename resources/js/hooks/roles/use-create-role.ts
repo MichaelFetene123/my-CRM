@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/api';
 import { toast } from 'sonner';
-import adminRolesRoute from '@/routes/admin/roles';
+import apiRolesRoute from '@/routes/apiRoles';
 import { roleKeys } from '@/components/query-keys';
 
 export type CreateRoleData = {
@@ -15,7 +15,7 @@ export function useCreateRole() {
 
     return useMutation<any, ApiError, CreateRoleData>({
         mutationFn: async (data) => {
-            return await api.post(adminRolesRoute.store().url, data);
+            return await api.post(apiRolesRoute.store().url, data);
         },
         onSuccess: (response) => {
             if (response?.role) {

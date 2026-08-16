@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/api';
 import { toast } from 'sonner';
-import adminRolesRoute from '@/routes/admin/roles';
-import { roleKeys } from '@/components/query-keys';
+import apiRolesRoute from '@/routes/apiRoles';
+import { roleKeys, userKeys } from '@/components/query-keys';
 
-export function useDeleteRole(roleId: number) {
+export function useDeleteRole() {
     const queryClient = useQueryClient();
 
-    return useMutation<any, ApiError, void>({
-        mutationFn: async () => {
-            return await api.delete(adminRolesRoute.destroy(roleId).url);
+    return useMutation<any, ApiError, number>({
+        mutationFn: async (roleId) => {
+            return await api.delete(apiRolesRoute.destroy(roleId).url);
         },
         onSuccess: () => {
             toast.success('Role deleted successfully');

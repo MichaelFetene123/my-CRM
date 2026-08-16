@@ -21,9 +21,10 @@ export function useCompleteActivity() {
         mutationFn: async ({ id }) => {
             return await api.post(apiActivitiesRoute.complete(id).url);
         },
-        onSuccess: () => {
+        onSuccess: (_, variables) => {
             toast.success('Activity marked as complete');
             queryClient.invalidateQueries({ queryKey: activityKeys.list() });
+            queryClient.invalidateQueries({ queryKey: activityKeys.detail(variables.id) });
             queryClient.invalidateQueries({ queryKey: contactKeys.list() });
             queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
             queryClient.invalidateQueries({ queryKey: leadKeys.list() });

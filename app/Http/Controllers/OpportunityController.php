@@ -50,6 +50,19 @@ class OpportunityController extends Controller
         return redirect()->route('opportunities.index');
     }
 
+    public function apiStore(StoreOpportunityRequest $request)
+    {
+        Gate::authorize('create', Opportunity::class);
+
+        $opportunity = Opportunity::create([
+            ...$request->validated(),
+            'owner_id' => $request->user()->id,
+            'stage_entered_at' => now(),
+        ]);
+
+        return response()->json($opportunity);
+    }
+
     public function show(Opportunity $opportunity): Response
     {
         Gate::authorize('view', $opportunity);

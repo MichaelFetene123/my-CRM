@@ -35,6 +35,15 @@ class ContactController extends Controller
         return redirect()->route('contacts.index');
     }
 
+    public function apiStore(StoreContactRequest $request)
+    {
+        Gate::authorize('create', Contact::class);
+
+        $contact = Contact::create($request->validated());
+
+        return response()->json($contact);
+    }
+
     public function show(Contact $contact): Response
     {
         Gate::authorize('view', $contact);
@@ -60,6 +69,15 @@ class ContactController extends Controller
         return redirect()->back();
     }
 
+    public function apiUpdate(StoreContactRequest $request, Contact $contact)
+    {
+        Gate::authorize('update', $contact);
+
+        $contact->update($request->validated());
+
+        return response()->json($contact);
+    }
+
     public function destroy(Contact $contact)
     {
         Gate::authorize('delete', $contact);
@@ -67,5 +85,14 @@ class ContactController extends Controller
         $contact->delete();
 
         return redirect()->route('contacts.index');
+    }
+
+    public function apiDestroy(Contact $contact)
+    {
+        Gate::authorize('delete', $contact);
+
+        $contact->delete();
+
+        return response()->json(['success' => true]);
     }
 }

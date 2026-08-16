@@ -17,10 +17,11 @@ export function useConvertLead() {
         mutationFn: async ({ id, ...data }) => {
             return await api.post(apiLeadsRoute.convert(id).url, data);
         },
-        onSuccess: () => {
+        onSuccess: (_, variables) => {
             toast.success('Lead converted to opportunity');
             queryClient.invalidateQueries({ queryKey: leadKeys.list() });
             queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
+            queryClient.invalidateQueries({ queryKey: leadKeys.detail(variables.id) });
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');

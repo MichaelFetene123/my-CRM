@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/api';
 import { toast } from 'sonner';
-    import adminRolesRoute from '@/routes/admin/roles';
+import apiRolesRoute from '@/routes/apiRoles';
 import { roleKeys } from '@/components/query-keys';
 
 export type AssignPermissionData = {
-    permission_id: string;
+    permission_id: number;
 };
 
 export function useAssignPermission(roleId: number) {
@@ -13,7 +13,7 @@ export function useAssignPermission(roleId: number) {
 
     return useMutation<any, ApiError, AssignPermissionData>({
         mutationFn: async (data) => {
-            return await api.post(adminRolesRoute.assignPermission(roleId).url, data);
+            return await api.post(apiRolesRoute.assignPermission(roleId).url, data);
         },
         onSuccess: () => {
             toast.success('Permissions updated successfully');

@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/api';
-import opportunitiesRoute from '@/routes/opportunities';
+import apiOpportunitiesRoute from '@/routes/apiOpportunities';
 import { opportunityKeys } from '@/components/query-keys';
 import type { Opportunity } from '@/types';
 import { toast } from 'sonner';
 
 type CreateOpportunityData = {
     title: string;
-    value: string;
+    value: number;
     stage_id: number;
-    contact_id?: number;
+    contact_id: number;
 };
 
 export function useCreateOpportunity() {
@@ -17,7 +17,7 @@ export function useCreateOpportunity() {
 
     return useMutation<Opportunity, ApiError, CreateOpportunityData>({
         mutationFn: async (data) => {
-            return await api.post(opportunitiesRoute.store().url, data);
+            return await api.post(apiOpportunitiesRoute.store().url, data);
         },
         onSuccess: () => {
             toast.success('Opportunity created');

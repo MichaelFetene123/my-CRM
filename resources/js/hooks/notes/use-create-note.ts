@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/api';
-import notesRoute from '@/routes/notes';
+import apiNotesRoute from '@/routes/apiNotes';
 import {
     contactKeys,
     leadKeys,
@@ -20,7 +20,7 @@ export function useCreateNote() {
 
     return useMutation<Note, ApiError, CreateNoteData>({
         mutationFn: async (data) => {
-            return await api.post(notesRoute.store().url, data);
+            return await api.post(apiNotesRoute.store().url, data);
         },
         onSuccess: (data, variables) => {
             toast.success('Note created');

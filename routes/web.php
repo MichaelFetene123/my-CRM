@@ -20,17 +20,23 @@ Route::middleware('auth')->group(function () {
     Route::resource('contacts', ContactController::class)->except(['create', 'edit']);
     Route::prefix('api')->name('apiContacts.')->group(function () {
         Route::get('contacts', [ContactController::class, 'apiIndex'])->name('index');
+        Route::post('contacts', [ContactController::class, 'apiStore'])->name('store');
         Route::get('contacts/{contact}', [ContactController::class, 'apiShow'])->name('show');
+        Route::put('contacts/{contact}', [ContactController::class, 'apiUpdate'])->name('update');
+        Route::delete('contacts/{contact}', [ContactController::class, 'apiDestroy'])->name('destroy');
     });
 
     Route::prefix('api')->name('apiLeads.')->group(function () {
         Route::get('leads', [LeadController::class, 'apiIndex'])->name('index');
+        Route::post('leads', [LeadController::class, 'apiStore'])->name('store');
         Route::post('leads/{lead}/convert', [LeadController::class, 'apiConvert'])->name('convert');
         Route::post('leads/{lead}/discard', [LeadController::class, 'apiDiscard'])->name('discard');
+        Route::delete('leads/{lead}', [LeadController::class, 'apiDestroy'])->name('destroy');
     });
 
     Route::prefix('api')->name('apiOpportunities.')->group(function () {
         Route::get('opportunities', [OpportunityController::class, 'apiIndex'])->name('index');
+        Route::post('opportunities', [OpportunityController::class, 'apiStore'])->name('store');
         Route::get('opportunities/{opportunity}', [OpportunityController::class, 'apiShow'])->name('show');
         Route::post('opportunities/{opportunity}/move', [OpportunityController::class, 'apiMove'])->name('move');
         Route::post('opportunities/{opportunity}/won', [OpportunityController::class, 'apiMarkWon'])->name('won');
@@ -39,7 +45,12 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('api')->name('apiActivities.')->group(function () {
         Route::get('activities', [ActivityController::class, 'apiIndex'])->name('index');
+        Route::post('activities', [ActivityController::class, 'apiStore'])->name('store');
         Route::post('activities/{activity}/complete', [ActivityController::class, 'apiComplete'])->name('complete');
+    });
+
+    Route::prefix('api')->name('apiNotes.')->group(function () {
+        Route::post('notes', [NoteController::class, 'apiStore'])->name('store');
     });
     Route::resource('leads', LeadController::class)->except(['create', 'edit']);
     Route::post('leads/{lead}/convert', [LeadController::class, 'convert'])->name('leads.convert');
@@ -59,8 +70,20 @@ Route::middleware('auth')->group(function () {
         'count' => $request->user()->unreadNotifications()->count(),
     ]))->name('notifications.unread-count');
 
-    Route::prefix('api')->name('apiRoles.')->group(function () {
+    Route::prefix('api')->name('apiRoles.')->middleware('can:manage_roles')->group(function () {
         Route::get('roles', [RoleController::class, 'apiIndex'])->name('index');
+        Route::post('roles', [RoleController::class, 'apiStore'])->name('store');
+        Route::post('roles/{role}/permissions', [RoleController::class, 'apiAssignPermission'])->name('assign-permission');
+        Route::put('roles/{role}', [RoleController::class, 'apiUpdate'])->name('update');
+        Route::delete('roles/{role}', [RoleController::class, 'apiDestroy'])->name('destroy');
+    });
+
+    Route::prefix('api/admin')->name('adminApiUsers.')->middleware('can:manage_users')->group(function () {
+        Route::post('users', [UserController::class, 'apiStore'])->name('store');
+        Route::put('users/{user}', [UserController::class, 'apiUpdate'])->name('update');
+        Route::delete('users/{user}', [UserController::class, 'apiDestroy'])->name('destroy');
+        Route::post('users/{user}/roles', [UserController::class, 'apiAssignRole'])->name('assign-role');
+        Route::post('users/{user}/reset-password', [UserController::class, 'apiResetPassword'])->name('reset-password');
     });
 
     Route::prefix('admin')->name('admin.')->group(function () {

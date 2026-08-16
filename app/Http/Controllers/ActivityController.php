@@ -46,6 +46,15 @@ class ActivityController extends Controller
         return redirect()->back();
     }
 
+    public function apiStore(StoreActivityRequest $request)
+    {
+        Gate::authorize('create', Activity::class);
+
+        $activity = Activity::create([...$request->validated(), 'owner_id' => $request->user()->id]);
+
+        return response()->json($activity);
+    }
+
     public function update(StoreActivityRequest $request, Activity $activity)
     {
         Gate::authorize('update', $activity);

@@ -39,6 +39,15 @@ class LeadController extends Controller
         return redirect()->route('leads.index');
     }
 
+    public function apiStore(StoreLeadRequest $request)
+    {
+        Gate::authorize('create', Lead::class);
+
+        $lead = Lead::create([...$request->validated(), 'owner_id' => $request->user()->id, 'status' => 'new']);
+
+        return response()->json($lead);
+    }
+
     public function convert(ConvertLeadRequest $request, Lead $lead, ConvertLeadToOpportunity $action)
     {
         Gate::authorize('update', $lead);
@@ -82,5 +91,14 @@ class LeadController extends Controller
         $lead->delete();
 
         return redirect()->route('leads.index');
+    }
+
+    public function apiDestroy(Lead $lead)
+    {
+        Gate::authorize('delete', $lead);
+
+        $lead->delete();
+
+        return response()->json(['success' => true]);
     }
 }

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/api';
 import { toast } from 'sonner';
 
-import adminUsersRoute from '@/routes/admin/users';
+import adminApiUsersRoute from '@/routes/adminApiUsers';
 import { userKeys, roleKeys } from '@/components/query-keys';
 
 export type AssignRoleData = {
@@ -14,7 +14,7 @@ export function useAssignRole(userId: number) {
 
     return useMutation<any, ApiError, AssignRoleData>({
         mutationFn: async (data) => {
-            return await api.post(adminUsersRoute.assignRole(userId).url, data);
+            return await api.post(adminApiUsersRoute.assignRole(userId).url, data);
         },
         onSuccess: () => {
             toast.success('Role assigned successfully');
