@@ -18,7 +18,6 @@ export function useDeleteOpportunity() {
         },
         onSuccess: () => {
             toast.success('Opportunity deleted successfully');
-            queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
             queryClient.invalidateQueries({ queryKey: opportunityKeys.all });
             
             // Redirect to opportunities list

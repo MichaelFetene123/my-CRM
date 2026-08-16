@@ -13,7 +13,6 @@ export function useDeleteRole() {
         },
         onSuccess: () => {
             toast.success('Role deleted successfully');
-            queryClient.invalidateQueries({ queryKey: roleKeys.list() });
             queryClient.invalidateQueries({ queryKey: roleKeys.all });
         },
         onError: (error) => {

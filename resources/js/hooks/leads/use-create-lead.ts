@@ -21,7 +21,7 @@ export function useCreateLead() {
         },
         onSuccess: () => {
             toast.success('Lead created');
-            queryClient.invalidateQueries({ queryKey: leadKeys.list() });
+            queryClient.invalidateQueries({ queryKey: leadKeys.all });
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');

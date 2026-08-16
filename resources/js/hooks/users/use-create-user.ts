@@ -20,7 +20,7 @@ export function useCreateUser() {
         },
         onSuccess: () => {
             toast.success('User created successfully');
-            queryClient.invalidateQueries({ queryKey: userKeys.list() });
+            queryClient.invalidateQueries({ queryKey: userKeys.all });
             queryClient.invalidateQueries({ queryKey: roleKeys.all });
         },
         onError: (error) => {

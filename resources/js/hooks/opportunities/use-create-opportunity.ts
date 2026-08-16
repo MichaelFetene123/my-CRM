@@ -21,7 +21,7 @@ export function useCreateOpportunity() {
         },
         onSuccess: () => {
             toast.success('Opportunity created');
-            queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
+            queryClient.invalidateQueries({ queryKey: opportunityKeys.all });
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');

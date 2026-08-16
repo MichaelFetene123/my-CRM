@@ -19,9 +19,9 @@ export function useConvertLead() {
         },
         onSuccess: (_, variables) => {
             toast.success('Lead converted to opportunity');
-            queryClient.invalidateQueries({ queryKey: leadKeys.list() });
-            queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
-            queryClient.invalidateQueries({ queryKey: leadKeys.detail(variables.id) });
+            queryClient.invalidateQueries({ queryKey: leadKeys.all });
+            queryClient.invalidateQueries({ queryKey: opportunityKeys.all });
+            queryClient.invalidateQueries({ queryKey: leadKeys.all });
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');

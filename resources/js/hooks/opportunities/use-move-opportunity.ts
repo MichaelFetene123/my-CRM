@@ -19,8 +19,7 @@ export function useMoveOpportunity() {
         },
         onSuccess: (_, variables) => {
             toast.success('Opportunity moved');
-            queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
-            queryClient.invalidateQueries({ queryKey: opportunityKeys.detail(variables.id) });
+            queryClient.invalidateQueries({ queryKey: opportunityKeys.all });
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');

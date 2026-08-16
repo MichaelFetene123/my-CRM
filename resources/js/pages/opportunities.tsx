@@ -217,7 +217,9 @@ export default function OpportunitiesIndex({
                                         }
                                     >
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Select a contact" />
+                                            <SelectValue placeholder="Select a contact">
+                                                {contacts.find((c) => c.id.toString() === watch('contact_id')?.toString())?.name}
+                                            </SelectValue>
                                         </SelectTrigger>
                                         <SelectContent>
                                             {contacts.map((c) => (
@@ -250,7 +252,9 @@ export default function OpportunitiesIndex({
                                         }
                                     >
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Select initial stage" />
+                                            <SelectValue placeholder="Select initial stage">
+                                                {stages?.find((s) => s.id.toString() === watch('stage_id')?.toString())?.name}
+                                            </SelectValue>
                                         </SelectTrigger>
                                         <SelectContent>
                                             {stages?.map((stage) => (

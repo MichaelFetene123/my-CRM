@@ -22,11 +22,10 @@ export function useDeleteActivity() {
         },
         onSuccess: (_, variables) => {
             toast.success('Activity deleted successfully');
-            queryClient.invalidateQueries({ queryKey: activityKeys.list() });
-            queryClient.invalidateQueries({ queryKey: activityKeys.detail(variables.id) });
-            queryClient.invalidateQueries({ queryKey: contactKeys.list() });
-            queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
-            queryClient.invalidateQueries({ queryKey: leadKeys.list() });
+            queryClient.invalidateQueries({ queryKey: activityKeys.all });
+            queryClient.invalidateQueries({ queryKey: contactKeys.all });
+            queryClient.invalidateQueries({ queryKey: opportunityKeys.all });
+            queryClient.invalidateQueries({ queryKey: leadKeys.all });
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');

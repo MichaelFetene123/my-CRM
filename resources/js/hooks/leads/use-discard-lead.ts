@@ -19,8 +19,7 @@ export function useDiscardLead() {
         },
         onSuccess: (_, variables) => {
             toast.success('Lead discarded');
-            queryClient.invalidateQueries({ queryKey: leadKeys.list() });
-            queryClient.invalidateQueries({ queryKey: leadKeys.detail(variables.id) });
+            queryClient.invalidateQueries({ queryKey: leadKeys.all });
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');

@@ -18,8 +18,7 @@ export function useAssignRole(userId: number) {
         },
         onSuccess: () => {
             toast.success('Role assigned successfully');
-            queryClient.invalidateQueries({ queryKey: userKeys.list() });
-            queryClient.invalidateQueries({ queryKey: userKeys.detail(userId) });
+            queryClient.invalidateQueries({ queryKey: userKeys.all });
             queryClient.invalidateQueries({ queryKey: roleKeys.all });
         },
         onError: (error) => {

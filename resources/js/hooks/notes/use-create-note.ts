@@ -25,14 +25,11 @@ export function useCreateNote() {
         onSuccess: (data, variables) => {
             toast.success('Note created');
             if (variables.entity_type === 'contact') {
-                queryClient.invalidateQueries({ queryKey: contactKeys.list() });
-                queryClient.invalidateQueries({ queryKey: contactKeys.detail(variables.entity_id) });
+                queryClient.invalidateQueries({ queryKey: contactKeys.all });
             } else if (variables.entity_type === 'opportunity') {
-                queryClient.invalidateQueries({ queryKey: opportunityKeys.list() });
-                queryClient.invalidateQueries({ queryKey: opportunityKeys.detail(variables.entity_id) });
+                queryClient.invalidateQueries({ queryKey: opportunityKeys.all });
             } else if (variables.entity_type === 'lead') {
-                queryClient.invalidateQueries({ queryKey: leadKeys.list() });
-                queryClient.invalidateQueries({ queryKey: leadKeys.detail(variables.entity_id) });
+                queryClient.invalidateQueries({ queryKey: leadKeys.all });
             }
         },
         onError: (error) => {

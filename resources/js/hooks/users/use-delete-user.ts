@@ -14,8 +14,7 @@ export function useDeleteUser() {
         },
         onSuccess: (_, userId) => {
             toast.success('User deleted successfully');
-            queryClient.invalidateQueries({ queryKey: userKeys.list() });
-            queryClient.invalidateQueries({ queryKey: userKeys.detail(userId) });
+            queryClient.invalidateQueries({ queryKey: userKeys.all });
             queryClient.invalidateQueries({ queryKey: roleKeys.all });
         },
         onError: (error) => {

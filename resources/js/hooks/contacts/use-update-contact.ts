@@ -21,7 +21,6 @@ export function useUpdateContact(id: number) {
         },
         onSuccess: () => {
             toast.success('Contact updated');
-            queryClient.invalidateQueries({ queryKey: contactKeys.list() });
             queryClient.invalidateQueries({ queryKey: contactKeys.all });
             queryClient.invalidateQueries({
                 queryKey: contactKeys.detail(id),

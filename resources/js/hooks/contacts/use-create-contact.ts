@@ -21,7 +21,7 @@ export function useCreateContact() {
         },
         onSuccess: () => {
             toast.success('Contact created');
-            queryClient.invalidateQueries({ queryKey: contactKeys.list() });
+            queryClient.invalidateQueries({ queryKey: contactKeys.all });
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred');
