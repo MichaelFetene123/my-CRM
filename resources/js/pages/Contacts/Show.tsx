@@ -53,8 +53,10 @@ interface Props {
 export default function ContactShow({ contact: initialContact }: Props) {
     const { data } = useContact(initialContact.id, initialContact);
     const contact = data || initialContact;
-    const { mutate, isPending } = useUpdateContact();
+    const { mutate, isPending } = useUpdateContact(contact.id);
     const [open, setOpen] = useState(false);
+    const [noteOpen, setNoteOpen] = useState(false);
+    const [activityOpen, setActivityOpen] = useState(false);
 
     const {
         register,
@@ -324,7 +326,7 @@ export default function ContactShow({ contact: initialContact }: Props) {
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle>Timeline</CardTitle>
                         <div className="flex gap-2">
-                            <Dialog>
+                            <Dialog open={noteOpen} onOpenChange={setNoteOpen}>
                                 <DialogTrigger
                                     render={
                                         <Button size="sm" variant="outline" />
@@ -339,13 +341,13 @@ export default function ContactShow({ contact: initialContact }: Props) {
                                     <NoteForm
                                         entityType="contact"
                                         entityId={contact.id}
-                                        onSuccess={() =>
-                                            router.reload({ only: ['contact'] })
-                                        }
+                                        onSuccess={() => {
+                                            setNoteOpen(false);
+                                        }}
                                     />
                                 </DialogContent>
                             </Dialog>
-                            <Dialog>
+                            <Dialog open={activityOpen} onOpenChange={setActivityOpen}>
                                 <DialogTrigger
                                     render={
                                         <Button size="sm" variant="outline" />
@@ -360,9 +362,9 @@ export default function ContactShow({ contact: initialContact }: Props) {
                                     <ActivityForm
                                         entityType="contact"
                                         entityId={contact.id}
-                                        onSuccess={() =>
-                                            router.reload({ only: ['contact'] })
-                                        }
+                                        onSuccess={() => {
+                                            setActivityOpen(false);
+                                        }}
                                     />
                                 </DialogContent>
                             </Dialog>

@@ -1,4 +1,4 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head, usePage, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -55,6 +55,8 @@ export default function OpportunityShow({
         useLostOpportunity();
 
     const [lostOpen, setLostOpen] = useState(false);
+    const [noteOpen, setNoteOpen] = useState(false);
+    const [activityOpen, setActivityOpen] = useState(false);
 
     const {
         register,
@@ -202,7 +204,7 @@ export default function OpportunityShow({
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle>Timeline</CardTitle>
                         <div className="flex gap-2">
-                            <Dialog>
+                            <Dialog open={noteOpen} onOpenChange={setNoteOpen}>
                                 <DialogTrigger
                                     render={
                                         <Button size="sm" variant="outline" />
@@ -217,10 +219,13 @@ export default function OpportunityShow({
                                     <NoteForm
                                         entityType="opportunity"
                                         entityId={opportunity.id}
+                                        onSuccess={() => {
+                                            setNoteOpen(false);
+                                        }}
                                     />
                                 </DialogContent>
                             </Dialog>
-                            <Dialog>
+                            <Dialog open={activityOpen} onOpenChange={setActivityOpen}>
                                 <DialogTrigger
                                     render={
                                         <Button size="sm" variant="outline" />
@@ -235,6 +240,9 @@ export default function OpportunityShow({
                                     <ActivityForm
                                         entityType="opportunity"
                                         entityId={opportunity.id}
+                                        onSuccess={() => {
+                                            setActivityOpen(false);
+                                        }}
                                     />
                                 </DialogContent>
                             </Dialog>
