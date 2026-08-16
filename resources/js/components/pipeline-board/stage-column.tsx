@@ -13,7 +13,7 @@ interface Props {
 
 export function StageColumn({ stage, opportunities }: Props) {
     const { setNodeRef } = useDroppable({
-        id: stage.id,
+        id: `stage-${stage.id}`,
         disabled: stage.is_won || stage.is_lost,
     });
 
@@ -34,7 +34,7 @@ export function StageColumn({ stage, opportunities }: Props) {
             </div>
             <div ref={setNodeRef} className="min-h-25 flex-1 space-y-2">
                 <SortableContext
-                    items={opportunities.map((o) => o.id)}
+                    items={opportunities.map((o) => `opp-${o.id}`)}
                     strategy={verticalListSortingStrategy}
                 >
                     {opportunities.map((opp) => (

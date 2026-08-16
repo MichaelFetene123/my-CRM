@@ -14,7 +14,7 @@ export function OpportunityCard({ opportunity }: { opportunity: Opportunity }) {
         transition,
         isDragging,
     } = useSortable({
-        id: opportunity.id,
+        id: `opp-${opportunity.id}`,
         disabled: opportunity.status !== 'open',
     });
 

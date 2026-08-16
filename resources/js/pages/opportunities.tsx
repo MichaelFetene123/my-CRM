@@ -101,15 +101,7 @@ export default function OpportunitiesIndex({
     // -----------------------------------------------------
     // Drag and Drop Board State
     // -----------------------------------------------------
-    // Local optimistic copy — lets the card move instantly, independent of the next Inertia reload
-    const [board, setBoard] = useState(stages || []);
     const [activeOpp, setActiveOpp] = useState<Opportunity | null>(null);
-
-    useEffect(() => {
-        if (stages) {
-            setBoard(stages);
-        }
-    }, [stages]);
 
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -118,6 +110,7 @@ export default function OpportunitiesIndex({
     function findOpp(
         id: number,
     ): { opp: Opportunity; stageIndex: number } | null {
+        const board = stages || [];
         for (let i = 0; i < board.length; i++) {
             const opp = board[i].opportunities.find((o) => o.id === id);
             if (opp) return { opp, stageIndex: i };
@@ -126,7 +119,8 @@ export default function OpportunitiesIndex({
     }
 
     function handleDragStart(event: DragStartEvent) {
-        const found = findOpp(Number(event.active.id));
+        const activeId = Number(event.active.id.toString().replace('opp-', ''));
+        const found = findOpp(activeId);
         if (found) setActiveOpp(found.opp);
     }
 
@@ -135,48 +129,27 @@ export default function OpportunitiesIndex({
         const { active, over } = event;
         if (!over) return;
 
-        const oppId = Number(active.id);
+        const board = stages || [];
+        const oppId = Number(active.id.toString().replace('opp-', ''));
         const found = findOpp(oppId);
         if (!found) return;
 
-        // over.id is either a stage id (dropped on empty column) or another opportunity's id (dropped on a card)
-        let targetStageIndex = board.findIndex((s) => s.id === over.id);
-        if (targetStageIndex === -1) {
-            const overOpp = findOpp(Number(over.id));
-            if (!overOpp) return;
-            targetStageIndex = overOpp.stageIndex;
+        let targetStageIndex = -1;
+
+        if (over.id.toString().startsWith('stage-')) {
+            const overStageId = Number(over.id.toString().replace('stage-', ''));
+            targetStageIndex = board.findIndex((s) => s.id === overStageId);
+        } else if (over.id.toString().startsWith('opp-')) {
+            const overOppId = Number(over.id.toString().replace('opp-', ''));
+            const overOpp = findOpp(overOppId);
+            if (overOpp) targetStageIndex = overOpp.stageIndex;
         }
 
-        if (targetStageIndex === found.stageIndex) return; // dropped in same column, no-op
+        if (targetStageIndex === -1 || targetStageIndex === found.stageIndex) return; // dropped in same column or unknown, no-op
 
         const targetStage = board[targetStageIndex];
-        const previousBoard = board;
 
-        // Optimistic update: move card immediately
-        setBoard((prev) => {
-            const next = prev.map((s) => ({
-                ...s,
-                opportunities: [...s.opportunities],
-            }));
-            next[found.stageIndex].opportunities = next[
-                found.stageIndex
-            ].opportunities.filter((o) => o.id !== oppId);
-            next[targetStageIndex].opportunities = [
-                ...next[targetStageIndex].opportunities,
-                { ...found.opp, stage_id: targetStage.id },
-            ];
-            return next;
-        });
-
-        moveOpportunity(
-            { id: oppId, stage_id: targetStage.id },
-            {
-                onError: () => {
-                    // rollback on rejection
-                    setBoard(previousBoard);
-                },
-            },
-        );
+        moveOpportunity({ id: oppId, stage_id: targetStage.id });
     }
 
     return (
@@ -308,7 +281,7 @@ export default function OpportunitiesIndex({
                     >
                         <div className="flex-1 overflow-x-auto pb-4">
                             <div className="flex h-full min-w-max gap-4">
-                                {board.map((stage) => (
+                                {(stages || []).map((stage) => (
                                     <StageColumn
                                         key={stage.id}
                                         stage={stage}
