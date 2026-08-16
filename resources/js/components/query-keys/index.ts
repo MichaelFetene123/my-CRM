@@ -17,6 +17,12 @@ export const opportunityKeys = {
     detail: (id: number) => [...opportunityKeys.all, 'detail', id] as const,
 };
 
+export const stageKeys = {
+    all: ['stages'] as const,
+    list: () => [...stageKeys.all, 'list'] as const,
+    detail: (id: number) => [...stageKeys.all, 'detail', id] as const,
+};
+
 export const activityKeys = {
     all: ['activities'] as const,
     list: () => [...activityKeys.all, 'list'] as const,

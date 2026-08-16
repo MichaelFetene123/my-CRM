@@ -44,6 +44,13 @@ Route::middleware('auth')->group(function () {
         Route::delete('opportunities/{opportunity}', [OpportunityController::class, 'apiDestroy'])->name('destroy');
     });
 
+    Route::prefix('api')->name('apiPipelineStages.')->group(function () {
+        Route::get('pipeline-stages', [\App\Http\Controllers\PipelineStageController::class, 'apiIndex'])->name('index');
+        Route::post('pipeline-stages', [\App\Http\Controllers\PipelineStageController::class, 'apiStore'])->name('store');
+        Route::put('pipeline-stages/{pipeline_stage}', [\App\Http\Controllers\PipelineStageController::class, 'apiUpdate'])->name('update');
+        Route::delete('pipeline-stages/{pipeline_stage}', [\App\Http\Controllers\PipelineStageController::class, 'apiDestroy'])->name('destroy');
+    });
+
     Route::prefix('api')->name('apiActivities.')->group(function () {
         Route::get('activities', [ActivityController::class, 'apiIndex'])->name('index');
         Route::post('activities', [ActivityController::class, 'apiStore'])->name('store');
