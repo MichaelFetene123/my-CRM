@@ -35,7 +35,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2Icon } from 'lucide-react';
 import { StageColumn } from '@/components/pipeline-board/stage-column';
-import { ManageStagesDialog } from '@/components/pipeline-board/manage-stages-dialog';
 import opportunitiesRoute from '@/routes/opportunities';
 import type {
     Opportunity,
@@ -189,7 +188,9 @@ export default function OpportunitiesIndex({
                         Opportunities Pipeline
                     </h1>
                     <div className="flex items-center gap-2">
-                        <ManageStagesDialog />
+                        <Link href={opportunitiesRoute.stages().url}>
+                            <Button variant="outline">Manage Stages</Button>
+                        </Link>
                         <Dialog open={open} onOpenChange={setOpen}>
                             <DialogTrigger render={<Button />}>
                                 New Opportunity

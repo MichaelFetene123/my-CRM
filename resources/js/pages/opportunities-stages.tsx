@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { Head, Link } from '@inertiajs/react';
 import { useForm } from 'react-hook-form';
-import { Loader2Icon, Trash2Icon, PlusIcon, PencilIcon, XIcon } from 'lucide-react';
+import { Loader2Icon, Trash2Icon, PlusIcon, PencilIcon, XIcon, ArrowLeftIcon } from 'lucide-react';
 import { usePipelineStages } from '@/hooks/pipeline-stages/use-pipeline-stages';
 import { useCreateStage } from '@/hooks/pipeline-stages/use-create-stage';
 import { useUpdateStage } from '@/hooks/pipeline-stages/use-update-stage';
@@ -10,7 +11,6 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,10 +25,11 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import opportunitiesRoute from '@/routes/opportunities';
 
-export function ManageStagesDialog() {
-    const [open, setOpen] = useState(false);
+export default function OpportunitiesStages() {
     const [editingStageId, setEditingStageId] = useState<number | null>(null);
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     const { data: stages, isLoading } = usePipelineStages();
     const { mutate: createStage, isPending: isCreating } = useCreateStage();
@@ -65,7 +66,7 @@ export function ManageStagesDialog() {
         } else {
             createStage(payload, {
                 onSuccess: () => {
-                    reset({ name: '', order: '', is_won: false, is_lost: false });
+                    handleCancelEdit();
                 },
             });
         }
@@ -79,11 +80,19 @@ export function ManageStagesDialog() {
             is_won: stage.is_won,
             is_lost: stage.is_lost,
         });
+        setDialogOpen(true);
+    };
+
+    const handleOpenCreate = () => {
+        setEditingStageId(null);
+        reset({ name: '', order: '', is_won: false, is_lost: false });
+        setDialogOpen(true);
     };
 
     const handleCancelEdit = () => {
         setEditingStageId(null);
         reset({ name: '', order: '', is_won: false, is_lost: false });
+        setDialogOpen(false);
     };
 
     const handleDelete = (id: number) => {
@@ -93,20 +102,29 @@ export function ManageStagesDialog() {
     };
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant="outline" size="sm">
-                    Manage Stages
-                </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                    <DialogTitle>Manage Pipeline Stages</DialogTitle>
-                </DialogHeader>
-                
-                <div className="space-y-6">
+        <>
+            <Head title="Manage Stages" />
+            <div className="flex flex-1 flex-col space-y-4 p-6">
+                <div className="flex items-center gap-4">
+                    <Link href={opportunitiesRoute.index().url}>
+                        <Button variant="outline" size="icon">
+                            <ArrowLeftIcon className="h-4 w-4" />
+                        </Button>
+                    </Link>
+                    <h1 className="text-2xl font-semibold">
+                        Manage Pipeline Stages
+                    </h1>
+                    <div className="ml-auto">
+                        <Button onClick={handleOpenCreate}>
+                            <PlusIcon className="mr-2 h-4 w-4" />
+                            Add Stage
+                        </Button>
+                    </div>
+                </div>
+
+                <div className="space-y-6 mt-4">
                     {/* List */}
-                    <div className="rounded-md border">
+                    <div className="rounded-md border bg-card">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -171,61 +189,61 @@ export function ManageStagesDialog() {
                         </Table>
                     </div>
 
-                    {/* Create/Edit Form */}
-                    <div>
-                        <div className="flex items-center justify-between mb-3">
-                            <h4 className="text-sm font-medium">
-                                {editingStageId ? 'Edit Stage' : 'Add New Stage'}
-                            </h4>
-                            {editingStageId && (
-                                <Button variant="ghost" size="sm" onClick={handleCancelEdit} className="h-6 px-2 text-xs">
-                                    <XIcon className="h-3 w-3 mr-1" /> Cancel Edit
-                                </Button>
-                            )}
-                        </div>
-                        <form onSubmit={handleSubmit(onSubmit)} className="flex items-end gap-3 rounded-md bg-muted/50 p-3">
-                            <div className="grid grid-cols-2 gap-3 flex-1">
-                                <div className="space-y-1">
-                                    <Label htmlFor="name" className="text-xs">Name</Label>
-                                    <Input id="name" size={1} className="h-8 text-sm" {...register('name', { required: true })} />
+                    {/* Create/Edit Dialog */}
+                    <Dialog open={dialogOpen} onOpenChange={(open) => {
+                        if (!open) handleCancelEdit();
+                    }}>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>{editingStageId ? 'Edit Stage' : 'Add New Stage'}</DialogTitle>
+                            </DialogHeader>
+                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">
+                                <div className="space-y-2">
+                                    <Label htmlFor="name">Name</Label>
+                                    <Input id="name" {...register('name', { required: true })} />
                                 </div>
-                                <div className="space-y-1">
-                                    <Label htmlFor="order" className="text-xs">Order</Label>
-                                    <Input id="order" type="number" size={1} className="h-8 text-sm" {...register('order', { required: true })} />
+                                <div className="space-y-2">
+                                    <Label htmlFor="order">Order</Label>
+                                    <Input id="order" type="number" {...register('order', { required: true })} />
                                 </div>
-                            </div>
-                            <div className="flex flex-col gap-2 pb-1 px-2 border-l border-r border-border/50">
-                                <div className="flex items-center gap-2">
-                                    <Checkbox 
-                                        id="is_won" 
-                                        checked={watch('is_won')} 
-                                        onCheckedChange={(c) => setValue('is_won', c as boolean)} 
-                                    />
-                                    <Label htmlFor="is_won" className="text-xs">Won</Label>
+                                <div className="flex gap-6">
+                                    <div className="flex items-center gap-2">
+                                        <Checkbox 
+                                            id="is_won" 
+                                            checked={watch('is_won')} 
+                                            onCheckedChange={(c) => setValue('is_won', c as boolean)} 
+                                        />
+                                        <Label htmlFor="is_won">Won Stage</Label>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Checkbox 
+                                            id="is_lost" 
+                                            checked={watch('is_lost')} 
+                                            onCheckedChange={(c) => setValue('is_lost', c as boolean)} 
+                                        />
+                                        <Label htmlFor="is_lost">Lost Stage</Label>
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <Checkbox 
-                                        id="is_lost" 
-                                        checked={watch('is_lost')} 
-                                        onCheckedChange={(c) => setValue('is_lost', c as boolean)} 
-                                    />
-                                    <Label htmlFor="is_lost" className="text-xs">Lost</Label>
+                                <div className="flex justify-end gap-2 pt-4">
+                                    <Button type="button" variant="ghost" onClick={handleCancelEdit}>
+                                        Cancel
+                                    </Button>
+                                    <Button type="submit" disabled={isCreating || isUpdating}>
+                                        {isCreating || isUpdating ? (
+                                            <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                                        ) : editingStageId ? (
+                                            <PencilIcon className="mr-2 h-4 w-4" />
+                                        ) : (
+                                            <PlusIcon className="mr-2 h-4 w-4" />
+                                        )}
+                                        {editingStageId ? 'Update' : 'Add'}
+                                    </Button>
                                 </div>
-                            </div>
-                            <Button type="submit" size="sm" disabled={isCreating || isUpdating} className="h-8">
-                                {isCreating || isUpdating ? (
-                                    <Loader2Icon className="mr-2 h-3 w-3 animate-spin" />
-                                ) : editingStageId ? (
-                                    <PencilIcon className="mr-2 h-3 w-3" />
-                                ) : (
-                                    <PlusIcon className="mr-2 h-3 w-3" />
-                                )}
-                                {editingStageId ? 'Update' : 'Add'}
-                            </Button>
-                        </form>
-                    </div>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
                 </div>
-            </DialogContent>
-        </Dialog>
+            </div>
+        </>
     );
 }

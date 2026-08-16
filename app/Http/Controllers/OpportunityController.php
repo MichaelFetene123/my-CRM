@@ -28,6 +28,13 @@ class OpportunityController extends Controller
         ]);
     }
 
+    public function stages(): Response
+    {
+        Gate::authorize('viewAny', Opportunity::class);
+
+        return Inertia::render('opportunities-stages');
+    }
+
     public function apiIndex()
     {
         Gate::authorize('viewAny', Opportunity::class);

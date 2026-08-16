@@ -65,6 +65,7 @@ Route::middleware('auth')->group(function () {
     Route::post('leads/{lead}/convert', [LeadController::class, 'convert'])->name('leads.convert');
     Route::post('leads/{lead}/discard', [LeadController::class, 'discard'])->name('leads.discard');
 
+    Route::get('opportunities/stages', [OpportunityController::class, 'stages'])->name('opportunities.stages');
     Route::resource('opportunities', OpportunityController::class)->except(['create', 'edit']);
     Route::post('opportunities/{opportunity}/move', [OpportunityController::class, 'move'])->name('opportunities.move');
     Route::post('opportunities/{opportunity}/won', [OpportunityController::class, 'markWon'])->name('opportunities.won');
