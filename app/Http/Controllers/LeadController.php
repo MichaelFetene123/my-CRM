@@ -84,6 +84,22 @@ class LeadController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function show(Lead $lead): Response
+    {
+        Gate::authorize('view', $lead);
+
+        return Inertia::render('Leads/Show', [
+            'lead' => $lead->load(['contact', 'owner']),
+        ]);
+    }
+
+    public function apiShow(Lead $lead)
+    {
+        Gate::authorize('view', $lead);
+
+        return response()->json($lead->load(['contact', 'owner']));
+    }
+
     public function destroy(Lead $lead)
     {
         Gate::authorize('delete', $lead);

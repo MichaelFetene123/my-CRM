@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\Contact;
 use App\Models\Lead;
 use App\Models\Opportunity;
@@ -26,16 +27,16 @@ class SearchController extends Controller
         $isSuperAdmin = $user->hasRole('Super Admin');
 
         if ($isSuperAdmin || $user->hasPermission('contacts.view')) {
-            $contacts = Contact::where('first_name', 'like', "%{$query}%")
-                ->orWhere('last_name', 'like', "%{$query}%")
+            $contacts = Contact::where('name', 'like', "%{$query}%")
+                ->orWhere('company', 'like', "%{$query}%")
                 ->orWhere('email', 'like', "%{$query}%")
                 ->limit(5)
                 ->get()
                 ->map(fn ($contact) => [
                     'id' => $contact->id,
                     'type' => 'contact',
-                    'title' => trim($contact->first_name . ' ' . $contact->last_name),
-                    'subtitle' => $contact->email,
+                    'title' => $contact->name,
+                    'subtitle' => $contact->company ?? $contact->email,
                     'url' => route('contacts.show', $contact, false),
                 ]);
             if ($contacts->isNotEmpty()) {
@@ -44,17 +45,15 @@ class SearchController extends Controller
         }
 
         if ($isSuperAdmin || $user->hasPermission('leads.view')) {
-            $leads = Lead::where('first_name', 'like', "%{$query}%")
-                ->orWhere('last_name', 'like', "%{$query}%")
+            $leads = Lead::where('name', 'like', "%{$query}%")
                 ->orWhere('email', 'like', "%{$query}%")
-                ->orWhere('company', 'like', "%{$query}%")
                 ->limit(5)
                 ->get()
                 ->map(fn ($lead) => [
                     'id' => $lead->id,
                     'type' => 'lead',
-                    'title' => trim($lead->first_name . ' ' . $lead->last_name),
-                    'subtitle' => $lead->company ?? $lead->email,
+                    'title' => $lead->name,
+                    'subtitle' => $lead->email,
                     'url' => route('leads.show', $lead, false),
                 ]);
             if ($leads->isNotEmpty()) {
@@ -75,6 +74,40 @@ class SearchController extends Controller
                 ]);
             if ($opportunities->isNotEmpty()) {
                 $results['Opportunities'] = $opportunities;
+            }
+        }
+
+        if ($isSuperAdmin || $user->hasPermission('activities.view')) {
+            $activities = Activity::with('entity')
+                ->where('type', 'like', "%{$query}%")
+                ->limit(5)
+                ->get()
+                ->map(function ($activity) {
+                    $url = '#';
+                    $entityName = 'Unknown';
+                    if ($activity->entity) {
+                        if ($activity->entity_type === Contact::class) {
+                            $url = route('contacts.show', $activity->entity_id, false);
+                            $entityName = $activity->entity->name;
+                        } elseif ($activity->entity_type === Lead::class) {
+                            $url = route('leads.show', $activity->entity_id, false);
+                            $entityName = $activity->entity->name;
+                        } elseif ($activity->entity_type === Opportunity::class) {
+                            $url = route('opportunities.show', $activity->entity_id, false);
+                            $entityName = $activity->entity->title;
+                        }
+                    }
+                    
+                    return [
+                        'id' => $activity->id,
+                        'type' => 'activity',
+                        'title' => ucfirst($activity->type) . ' (' . $entityName . ')',
+                        'subtitle' => 'Due: ' . $activity->due_at->format('M d, Y'),
+                        'url' => $url,
+                    ];
+                });
+            if ($activities->isNotEmpty()) {
+                $results['Activities'] = $activities;
             }
         }
 
