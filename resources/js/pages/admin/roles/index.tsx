@@ -18,10 +18,12 @@ import { useUpdateRole, UpdateRoleData } from '@/hooks/roles/use-update-role';
 import { useDeleteRole } from '@/hooks/roles/use-delete-role';
 import { useRoles } from '@/hooks/roles/use-roles';
 import { usePermissions } from '@/hooks/roles/use-permissions';
+import { usePermissions as useAppPermissions } from '@/hooks/use-permissions';
 import { useState, useMemo } from 'react';
 
 function RoleCard({ role, onEdit }: { role: Role; onEdit: (role: Role) => void }) {
     const deleteMutation = useDeleteRole();
+    const { hasPermission } = useAppPermissions();
 
     const onDelete = () => {
         if (window.confirm(`Are you sure you want to delete the role "${role.name}"?`)) {
@@ -39,13 +41,17 @@ function RoleCard({ role, onEdit }: { role: Role; onEdit: (role: Role) => void }
             <div className="flex items-center gap-2 self-start sm:self-auto">
                 {role.name !== 'Super Admin' && (
                     <>
+                        {hasPermission('roles.update') && (
                         <Button variant="outline" size="sm" onClick={() => onEdit(role)}>
                             <Edit className="mr-2 h-4 w-4" />
                             Edit
                         </Button>
+                        )}
+                        {hasPermission('roles.delete') && (
                         <Button variant="destructive" size="sm" onClick={onDelete} disabled={deleteMutation.isPending}>
                             {deleteMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                         </Button>
+                        )}
                     </>
                 )}
             </div>
@@ -56,6 +62,7 @@ function RoleCard({ role, onEdit }: { role: Role; onEdit: (role: Role) => void }
 export default function RolesIndex({ roles: initialRoles, permissions: initialPermissions }: PageProps<{ roles: Role[], permissions: Permission[] }>) {
     const { data: roles = [] } = useRoles(initialRoles);
     const { data: permissions = [] } = usePermissions(initialPermissions);
+    const { hasPermission } = useAppPermissions();
 
     const [view, setView] = useState<'list' | 'create' | 'edit'>('list');
     const [editingRole, setEditingRole] = useState<Role | null>(null);
@@ -144,10 +151,12 @@ export default function RolesIndex({ roles: initialRoles, permissions: initialPe
                                     Create custom roles and assign granular permissions for staff members.
                                 </p>
                             </div>
+                            {hasPermission('roles.create') && (
                             <Button onClick={openCreate} className="self-start sm:self-auto">
                                 <Plus className="mr-2 h-4 w-4" />
                                 New Role
                             </Button>
+                            )}
                         </div>
 
                         <div className="flex flex-col gap-4 mt-2">

@@ -6,12 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class RoleController extends Controller
 {
     public function index()
     {
+        Gate::authorize('viewAny', Role::class);
+
         return Inertia::render('admin/roles/index', [
             'roles' => Role::with('permissions')->get(),
             'permissions' => Permission::all(),
@@ -20,11 +23,15 @@ class RoleController extends Controller
 
     public function apiIndex()
     {
+        Gate::authorize('viewAny', Role::class);
+
         return response()->json(Role::where('name', '!=', 'Super Admin')->get());
     }
 
     public function store(Request $request)
     {
+        Gate::authorize('create', Role::class);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:roles,name',
             'description' => 'nullable|string|max:255',
@@ -50,6 +57,8 @@ class RoleController extends Controller
 
     public function apiStore(Request $request)
     {
+        Gate::authorize('create', Role::class);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:roles,name',
             'description' => 'nullable|string|max:255',
@@ -71,6 +80,8 @@ class RoleController extends Controller
 
     public function assignPermission(Request $request, Role $role)
     {
+        Gate::authorize('update', $role);
+
         $request->validate([
             'permission_id' => 'required|exists:permissions,id',
         ]);
@@ -94,6 +105,8 @@ class RoleController extends Controller
 
     public function apiAssignPermission(Request $request, Role $role)
     {
+        Gate::authorize('update', $role);
+
         $request->validate([
             'permission_id' => 'required|exists:permissions,id',
         ]);
@@ -109,6 +122,8 @@ class RoleController extends Controller
 
     public function update(Request $request, Role $role)
     {
+        Gate::authorize('update', $role);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:roles,name,'.$role->id,
             'description' => 'nullable|string|max:255',
@@ -144,6 +159,8 @@ class RoleController extends Controller
 
     public function apiUpdate(Request $request, Role $role)
     {
+        Gate::authorize('update', $role);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:roles,name,'.$role->id,
             'description' => 'nullable|string|max:255',
@@ -171,6 +188,8 @@ class RoleController extends Controller
 
     public function destroy(Request $request, Role $role)
     {
+        Gate::authorize('delete', $role);
+
         if ($role->name === 'Super Admin') {
             if ($request->wantsJson()) {
                 return response()->json(['message' => 'Cannot delete Super Admin role.'], 422);
@@ -190,6 +209,8 @@ class RoleController extends Controller
 
     public function apiDestroy(Request $request, Role $role)
     {
+        Gate::authorize('delete', $role);
+
         if ($role->name === 'Super Admin') {
             return response()->json(['message' => 'Cannot delete Super Admin role.'], 422);
         }

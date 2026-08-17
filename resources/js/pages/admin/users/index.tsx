@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, Plus, Edit, Key, Trash } from 'lucide-react';
 import { useUsers } from '@/hooks/users/use-users';
+import { usePermissions } from '@/hooks/use-permissions';
 
 import { CreateUserDialog } from './components/create-user-dialog';
 import { EditUserDialog } from './components/edit-user-dialog';
@@ -31,6 +32,7 @@ function UserRow({
     onDelete: (user: User) => void;
 }) {
     const roleName = user.roles?.[0]?.name || 'No Role';
+    const { hasPermission } = usePermissions();
 
     return (
         <TableRow>
@@ -46,15 +48,21 @@ function UserRow({
                         <MoreHorizontal className="h-4 w-4" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
-                        <DropdownMenuItem onClick={() => onEdit(user)}>
-                            <Edit className="mr-2 h-4 w-4" /> Edit Profile
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onResetPassword(user)}>
-                            <Key className="mr-2 h-4 w-4" /> Reset Password
-                        </DropdownMenuItem>
+                        {hasPermission('users.update') && (
+                        <>
+                            <DropdownMenuItem onClick={() => onEdit(user)}>
+                                <Edit className="mr-2 h-4 w-4" /> Edit Profile
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => onResetPassword(user)}>
+                                <Key className="mr-2 h-4 w-4" /> Reset Password
+                            </DropdownMenuItem>
+                        </>
+                        )}
+                        {hasPermission('users.delete') && (
                         <DropdownMenuItem onClick={() => onDelete(user)} className="text-red-600 focus:text-red-600">
                             <Trash className="mr-2 h-4 w-4" /> Delete User
                         </DropdownMenuItem>
+                        )}
                     </DropdownMenuContent>
                 </DropdownMenu>
             </TableCell>
@@ -73,6 +81,7 @@ export default function UsersIndex({ users: initialUsers }: PageProps<{ users: U
     const [userToEdit, setUserToEdit] = useState<User | null>(null);
     const [userToReset, setUserToReset] = useState<User | null>(null);
     const [userToDelete, setUserToDelete] = useState<User | null>(null);
+    const { hasPermission } = usePermissions();
 
     return (
         <>
@@ -87,9 +96,11 @@ export default function UsersIndex({ users: initialUsers }: PageProps<{ users: U
                                 <Trash className="mr-2 h-4 w-4" /> Delete All Users
                             </Button>
                         )}
-                        <Button onClick={() => setIsCreateOpen(true)}>
-                            <Plus className="mr-2 h-4 w-4" /> Add User
-                        </Button>
+                        {hasPermission('users.create') && (
+                            <Button onClick={() => setIsCreateOpen(true)}>
+                                <Plus className="mr-2 h-4 w-4" /> Add User
+                            </Button>
+                        )}
                     </div>
                 </div>
 

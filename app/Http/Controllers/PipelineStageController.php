@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\PipelineStage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class PipelineStageController extends Controller
 {
     public function apiIndex(): JsonResponse
     {
+        Gate::authorize('viewAny', PipelineStage::class);
+
         $stages = PipelineStage::withCount('opportunities')
             ->orderBy('order')
             ->get();
@@ -19,6 +22,8 @@ class PipelineStageController extends Controller
 
     public function apiStore(Request $request): JsonResponse
     {
+        Gate::authorize('create', PipelineStage::class);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'order' => 'required|integer',
@@ -38,6 +43,8 @@ class PipelineStageController extends Controller
 
     public function apiUpdate(Request $request, PipelineStage $pipeline_stage): JsonResponse
     {
+        Gate::authorize('update', $pipeline_stage);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'order' => 'required|integer',
@@ -57,6 +64,8 @@ class PipelineStageController extends Controller
 
     public function apiDestroy(PipelineStage $pipeline_stage): JsonResponse
     {
+        Gate::authorize('delete', $pipeline_stage);
+
         if ($pipeline_stage->opportunities()->exists()) {
             return response()->json([
                 'message' => 'Cannot delete stage because it contains opportunities. Please move them to another stage first.',

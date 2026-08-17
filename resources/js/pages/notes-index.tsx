@@ -32,6 +32,7 @@ import type { Note, BreadcrumbItem } from '@/types';
 import contacts from '@/routes/contacts';
 import leads from '@/routes/leads';
 import opportunities from '@/routes/opportunities';
+import { usePermissions } from '@/hooks/use-permissions';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Notes', href: '/notes' },
@@ -42,6 +43,7 @@ export default function NotesIndex() {
     const { data: noteList, isLoading } = useNotes(page);
     const { mutate: deleteNote, isPending: isDeleting } = useDeleteNote();
     const { mutate: updateNote, isPending: isUpdating } = useUpdateNote();
+    const { hasPermission } = usePermissions();
 
     const [editNote, setEditNote] = useState<Note | null>(null);
     const [editBody, setEditBody] = useState('');
@@ -119,6 +121,7 @@ export default function NotesIndex() {
                                                     </TableCell>
                                                     <TableCell className="pr-6 text-right">
                                                         <div className="flex justify-end gap-2">
+                                                            {hasPermission('notes.update') && (
                                                             <Button
                                                                 variant="ghost"
                                                                 size="icon"
@@ -129,6 +132,8 @@ export default function NotesIndex() {
                                                             >
                                                                 <Edit className="h-4 w-4" />
                                                             </Button>
+                                                            )}
+                                                            {hasPermission('notes.delete') && (
                                                             <Button
                                                                 variant="ghost"
                                                                 size="icon"
@@ -137,6 +142,7 @@ export default function NotesIndex() {
                                                             >
                                                                 <Trash2 className="h-4 w-4" />
                                                             </Button>
+                                                            )}
                                                         </div>
                                                     </TableCell>
                                                 </TableRow>

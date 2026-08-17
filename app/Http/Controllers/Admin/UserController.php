@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
@@ -15,6 +16,8 @@ class UserController extends Controller
 {
     public function index()
     {
+        Gate::authorize('viewAny', User::class);
+
         return Inertia::render('admin/users/index', [
             'users' => User::whereDoesntHave('roles', function ($query) {
                 $query->where('name', 'Super Admin');
@@ -25,6 +28,8 @@ class UserController extends Controller
 
     public function assignRole(Request $request, User $user)
     {
+        Gate::authorize('update', $user);
+
         $request->validate([
             'role_id' => 'required|exists:roles,id',
         ]);
@@ -54,6 +59,8 @@ class UserController extends Controller
 
     public function apiAssignRole(Request $request, User $user)
     {
+        Gate::authorize('update', $user);
+
         $request->validate([
             'role_id' => 'required|exists:roles,id',
         ]);
@@ -79,6 +86,8 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('create', User::class);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -112,6 +121,8 @@ class UserController extends Controller
 
     public function apiStore(Request $request)
     {
+        Gate::authorize('create', User::class);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -145,6 +156,8 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        Gate::authorize('update', $user);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
@@ -180,6 +193,8 @@ class UserController extends Controller
 
     public function apiUpdate(Request $request, User $user)
     {
+        Gate::authorize('update', $user);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
@@ -215,6 +230,8 @@ class UserController extends Controller
 
     public function destroy(Request $request, User $user)
     {
+        Gate::authorize('delete', $user);
+
         if ($user->id === $request->user()->id) {
             return response()->json(['message' => 'You cannot delete yourself.'], 403);
         }
@@ -230,6 +247,8 @@ class UserController extends Controller
 
     public function apiDestroy(Request $request, User $user)
     {
+        Gate::authorize('delete', $user);
+
         if ($user->id === $request->user()->id) {
             return response()->json(['message' => 'You cannot delete yourself.'], 403);
         }
@@ -245,6 +264,8 @@ class UserController extends Controller
 
     public function apiDestroyAll(Request $request)
     {
+        Gate::authorize('delete', new User);
+
         if (! $request->user()->hasRole('Super Admin')) {
             return response()->json(['message' => 'Unauthorized action.'], 403);
         }
@@ -258,6 +279,8 @@ class UserController extends Controller
 
     public function resetPassword(Request $request, User $user)
     {
+        Gate::authorize('update', $user);
+
         if ($user->hasRole('Super Admin') && ! $request->user()->hasRole('Super Admin')) {
             return response()->json(['message' => 'You cannot reset password for a Super Admin.'], 403);
         }
@@ -276,6 +299,8 @@ class UserController extends Controller
 
     public function apiResetPassword(Request $request, User $user)
     {
+        Gate::authorize('update', $user);
+
         if ($user->hasRole('Super Admin') && ! $request->user()->hasRole('Super Admin')) {
             return response()->json(['message' => 'You cannot reset password for a Super Admin.'], 403);
         }

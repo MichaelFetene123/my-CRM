@@ -32,8 +32,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Contacts', href: contacts.index().url },
 ];
 
+import { usePermissions } from '@/hooks/use-permissions';
+
 export default function Contacts() {
     const [open, setOpen] = useState(false);
+    const { hasPermission } = usePermissions();
 
     const { data: contactList, isLoading } = useContacts();
     const { mutate, isPending } = useCreateContact();
@@ -84,60 +87,62 @@ export default function Contacts() {
             <div className="space-y-4 p-6">
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-semibold">Contacts</h1>
-                    <Dialog open={open} onOpenChange={setOpen}>
-                        <DialogTrigger render={<Button />}>
-                            New Contact
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>New Contact</DialogTitle>
-                            </DialogHeader>
-                            <form
-                                onSubmit={handleSubmit(onSubmit)}
-                                className="space-y-4"
-                            >
-                                <div>
-                                    <Label htmlFor="name">Name</Label>
-                                    <Input id="name" {...register('name')} />
-                                    {errors.name && (
-                                        <p className="text-sm text-destructive">
-                                            {errors.name.message as string}
-                                        </p>
-                                    )}
-                                </div>
-                                <div>
-                                    <Label htmlFor="company">Company</Label>
-                                    <Input
-                                        id="company"
-                                        {...register('company')}
-                                    />
-                                </div>
-                                <div>
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        {...register('email')}
-                                    />
-                                    {errors.email && (
-                                        <p className="text-sm text-destructive">
-                                            {errors.email.message as string}
-                                        </p>
-                                    )}
-                                </div>
-                                <div>
-                                    <Label htmlFor="phone">Phone</Label>
-                                    <Input id="phone" {...register('phone')} />
-                                </div>
-                                <Button type="submit" disabled={isPending}>
-                                    {isPending && (
-                                        <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                                    )}
-                                    Save
-                                </Button>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
+                    {hasPermission('contacts.create') && (
+                        <Dialog open={open} onOpenChange={setOpen}>
+                            <DialogTrigger render={<Button />}>
+                                New Contact
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>New Contact</DialogTitle>
+                                </DialogHeader>
+                                <form
+                                    onSubmit={handleSubmit(onSubmit)}
+                                    className="space-y-4"
+                                >
+                                    <div>
+                                        <Label htmlFor="name">Name</Label>
+                                        <Input id="name" {...register('name')} />
+                                        {errors.name && (
+                                            <p className="text-sm text-destructive">
+                                                {errors.name.message as string}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="company">Company</Label>
+                                        <Input
+                                            id="company"
+                                            {...register('company')}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="email">Email</Label>
+                                        <Input
+                                            id="email"
+                                            type="email"
+                                            {...register('email')}
+                                        />
+                                        {errors.email && (
+                                            <p className="text-sm text-destructive">
+                                                {errors.email.message as string}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="phone">Phone</Label>
+                                        <Input id="phone" {...register('phone')} />
+                                    </div>
+                                    <Button type="submit" disabled={isPending}>
+                                        {isPending && (
+                                            <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                                        )}
+                                        Save
+                                    </Button>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
+                    )}
                 </div>
 
                 <Card>

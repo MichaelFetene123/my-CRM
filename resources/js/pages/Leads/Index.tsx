@@ -39,8 +39,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Leads', href: leadsRoute.index().url },
 ];
 
+import { usePermissions } from '@/hooks/use-permissions';
+
 export default function LeadsIndex() {
     const [open, setOpen] = useState(false);
+    const { hasPermission } = usePermissions();
 
     const { data: leads, isLoading } = useLeads();
     const { mutate, isPending } = useCreateLead();
@@ -91,70 +94,72 @@ export default function LeadsIndex() {
             <div className="w-full space-y-4 p-6">
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-semibold">Leads</h1>
-                    <Dialog open={open} onOpenChange={setOpen}>
-                        <DialogTrigger render={<Button />}>
-                            New Lead
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>New Lead</DialogTitle>
-                            </DialogHeader>
-                            <form
-                                onSubmit={handleSubmit(onSubmit)}
-                                className="mt-4 space-y-4"
-                            >
-                                <div>
-                                    <Label htmlFor="name">Name</Label>
-                                    <Input id="name" {...register('name')} />
-                                    {errors.name && (
-                                        <p className="mt-1 text-sm text-destructive">
-                                            {errors.name.message as string}
-                                        </p>
-                                    )}
-                                </div>
-                                <div>
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        {...register('email')}
-                                    />
-                                    {errors.email && (
-                                        <p className="mt-1 text-sm text-destructive">
-                                            {errors.email.message as string}
-                                        </p>
-                                    )}
-                                </div>
-                                <div>
-                                    <Label htmlFor="source">Source</Label>
-                                    <Input
-                                        id="source"
-                                        {...register('source')}
-                                    />
-                                    {errors.source && (
-                                        <p className="mt-1 text-sm text-destructive">
-                                            {errors.source.message as string}
-                                        </p>
-                                    )}
-                                </div>
-                                <div className="flex justify-end gap-2 pt-2">
-                                    <Button
-                                        type="button"
-                                        variant="ghost"
-                                        onClick={() => setOpen(false)}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button type="submit" disabled={isPending}>
-                                        {isPending && (
-                                            <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                    {hasPermission('leads.create') && (
+                        <Dialog open={open} onOpenChange={setOpen}>
+                            <DialogTrigger render={<Button />}>
+                                New Lead
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>New Lead</DialogTitle>
+                                </DialogHeader>
+                                <form
+                                    onSubmit={handleSubmit(onSubmit)}
+                                    className="mt-4 space-y-4"
+                                >
+                                    <div>
+                                        <Label htmlFor="name">Name</Label>
+                                        <Input id="name" {...register('name')} />
+                                        {errors.name && (
+                                            <p className="mt-1 text-sm text-destructive">
+                                                {errors.name.message as string}
+                                            </p>
                                         )}
-                                        Save Lead
-                                    </Button>
-                                </div>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="email">Email</Label>
+                                        <Input
+                                            id="email"
+                                            type="email"
+                                            {...register('email')}
+                                        />
+                                        {errors.email && (
+                                            <p className="mt-1 text-sm text-destructive">
+                                                {errors.email.message as string}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="source">Source</Label>
+                                        <Input
+                                            id="source"
+                                            {...register('source')}
+                                        />
+                                        {errors.source && (
+                                            <p className="mt-1 text-sm text-destructive">
+                                                {errors.source.message as string}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div className="flex justify-end gap-2 pt-2">
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            onClick={() => setOpen(false)}
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button type="submit" disabled={isPending}>
+                                            {isPending && (
+                                                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                                            )}
+                                            Save Lead
+                                        </Button>
+                                    </div>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
+                    )}
                 </div>
 
                 <Card>

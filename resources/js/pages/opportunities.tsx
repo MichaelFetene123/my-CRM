@@ -43,6 +43,7 @@ import type {
     BreadcrumbItem,
 } from '@/types';
 import AppLayout from '@/layouts/app-layout';
+import { usePermissions } from '@/hooks/use-permissions';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Opportunities', href: opportunitiesRoute.index().url },
@@ -57,6 +58,7 @@ export default function OpportunitiesIndex({
     const { mutate: createOpportunity, isPending: isCreating } =
         useCreateOpportunity();
     const { mutate: moveOpportunity } = useMoveOpportunity();
+    const { hasPermission } = usePermissions();
 
     // -----------------------------------------------------
     // Create Opportunity Form State
@@ -119,6 +121,7 @@ export default function OpportunitiesIndex({
     }
 
     function handleDragStart(event: DragStartEvent) {
+        if (!hasPermission('opportunities.update')) return;
         const activeId = Number(event.active.id.toString().replace('opp-', ''));
         const found = findOpp(activeId);
         if (found) setActiveOpp(found.opp);
@@ -126,6 +129,7 @@ export default function OpportunitiesIndex({
 
     function handleDragEnd(event: DragEndEvent) {
         setActiveOpp(null);
+        if (!hasPermission('opportunities.update')) return;
         const { active, over } = event;
         if (!over) return;
 
@@ -161,14 +165,17 @@ export default function OpportunitiesIndex({
                         Opportunities Pipeline
                     </h1>
                     <div className="flex items-center gap-2">
-                        <Link href={opportunitiesRoute.stages().url}>
-                            <Button variant="outline">Manage Stages</Button>
-                        </Link>
-                        <Dialog open={open} onOpenChange={setOpen}>
-                            <DialogTrigger render={<Button />}>
-                                New Opportunity
-                            </DialogTrigger>
-                            <DialogContent>
+                        {hasPermission('opportunities.update') && (
+                            <Link href={opportunitiesRoute.stages().url}>
+                                <Button variant="outline">Manage Stages</Button>
+                            </Link>
+                        )}
+                        {hasPermission('opportunities.create') && (
+                            <Dialog open={open} onOpenChange={setOpen}>
+                                <DialogTrigger render={<Button />}>
+                                    New Opportunity
+                                </DialogTrigger>
+                                <DialogContent>
                             <DialogHeader>
                                 <DialogTitle>New Opportunity</DialogTitle>
                             </DialogHeader>
@@ -268,6 +275,7 @@ export default function OpportunitiesIndex({
                             </form>
                         </DialogContent>
                         </Dialog>
+                        )}
                     </div>
                 </div>
 

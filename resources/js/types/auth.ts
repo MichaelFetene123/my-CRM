@@ -15,14 +15,7 @@ export type User = {
 
 export type Auth = {
     user: User;
-    permissions?: {
-        manage_users: boolean;
-        manage_roles: boolean;
-        contacts_view?: boolean;
-        leads_view?: boolean;
-        opportunities_view?: boolean;
-        activities_view?: boolean;
-    };
+    permissions?: string[];
 };
 
 /* @chisel-passkeys */

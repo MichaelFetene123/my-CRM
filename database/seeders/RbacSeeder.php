@@ -18,13 +18,10 @@ class RbacSeeder extends Seeder
         $superAdminRole = Role::firstOrCreate(['name' => 'Super Admin', 'description' => 'Has all permissions']);
         $standardRole = Role::firstOrCreate(['name' => 'Restricted/Standard User', 'description' => 'Default user role']);
 
-        $superAdminPermissions = [
-            Permission::firstOrCreate(['name' => 'manage_users', 'description' => 'Can manage users'])->id,
-            Permission::firstOrCreate(['name' => 'manage_roles', 'description' => 'Can manage roles and permissions'])->id,
-        ];
+        $superAdminPermissions = [];
         $standardPermissions = [];
 
-        $modules = ['contacts', 'leads', 'opportunities', 'activities'];
+        $modules = ['contacts', 'leads', 'opportunities', 'activities', 'notes', 'users', 'roles'];
         $actions = ['view' => 'Can view %s', 'create' => 'Can create %s', 'update' => 'Can update %s', 'delete' => 'Can delete %s'];
 
         foreach ($modules as $module) {
@@ -42,8 +39,8 @@ class RbacSeeder extends Seeder
             }
         }
 
-        $superAdminRole->permissions()->syncWithoutDetaching($superAdminPermissions);
-        $standardRole->permissions()->syncWithoutDetaching($standardPermissions);
+        $superAdminRole->permissions()->sync($superAdminPermissions);
+        $standardRole->permissions()->sync($standardPermissions);
 
         $admin = User::firstOrCreate(
             ['email' => 'admin@gmail.com'],

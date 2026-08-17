@@ -37,6 +37,7 @@ import type {
     Note,
     Activity,
 } from '@/types';
+import { usePermissions } from '@/hooks/use-permissions';
 
 interface Props {
     contact: Contact & {
@@ -54,6 +55,7 @@ export default function ContactShow({ contact: initialContact }: Props) {
     const [open, setOpen] = useState(false);
     const [noteOpen, setNoteOpen] = useState(false);
     const [activityOpen, setActivityOpen] = useState(false);
+    const { hasPermission } = usePermissions();
 
     const {
         register,
@@ -124,13 +126,14 @@ export default function ContactShow({ contact: initialContact }: Props) {
                             {contact.status}
                         </Badge>
                     </div>
-                    <Dialog open={open} onOpenChange={setOpen}>
-                        <DialogTrigger render={<Button variant="outline" />}>
-                            Edit Contact
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Edit Contact</DialogTitle>
+                    {hasPermission('contacts.update') && (
+                        <Dialog open={open} onOpenChange={setOpen}>
+                            <DialogTrigger render={<Button variant="outline" />}>
+                                Edit Contact
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Edit Contact</DialogTitle>
                             </DialogHeader>
                             <form
                                 onSubmit={handleSubmit(onSubmit)}
@@ -187,6 +190,7 @@ export default function ContactShow({ contact: initialContact }: Props) {
                             </form>
                         </DialogContent>
                     </Dialog>
+                    )}
                 </div>
 
                 <Card>
@@ -323,14 +327,15 @@ export default function ContactShow({ contact: initialContact }: Props) {
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle>Timeline</CardTitle>
                         <div className="flex gap-2">
-                            <Dialog open={noteOpen} onOpenChange={setNoteOpen}>
-                                <DialogTrigger
-                                    render={
-                                        <Button size="sm" variant="outline" />
-                                    }
-                                >
-                                    Add Note
-                                </DialogTrigger>
+                            {hasPermission('notes.create') && (
+                                <Dialog open={noteOpen} onOpenChange={setNoteOpen}>
+                                    <DialogTrigger
+                                        render={
+                                            <Button size="sm" variant="outline" />
+                                        }
+                                    >
+                                        Add Note
+                                    </DialogTrigger>
                                 <DialogContent>
                                     <DialogHeader>
                                         <DialogTitle>New Note</DialogTitle>
@@ -341,15 +346,17 @@ export default function ContactShow({ contact: initialContact }: Props) {
                                         onSuccess={() => {
                                             setNoteOpen(false);
                                         }}
-                                    />
-                                </DialogContent>
-                            </Dialog>
-                            <Dialog open={activityOpen} onOpenChange={setActivityOpen}>
-                                <DialogTrigger
-                                    render={
-                                        <Button size="sm" variant="outline" />
-                                    }
-                                >
+                                        />
+                                    </DialogContent>
+                                </Dialog>
+                            )}
+                            {hasPermission('activities.create') && (
+                                <Dialog open={activityOpen} onOpenChange={setActivityOpen}>
+                                    <DialogTrigger
+                                        render={
+                                            <Button size="sm" variant="outline" />
+                                        }
+                                    >
                                     Add Activity
                                 </DialogTrigger>
                                 <DialogContent>
@@ -362,9 +369,10 @@ export default function ContactShow({ contact: initialContact }: Props) {
                                         onSuccess={() => {
                                             setActivityOpen(false);
                                         }}
-                                    />
-                                </DialogContent>
-                            </Dialog>
+                                        />
+                                    </DialogContent>
+                                </Dialog>
+                            )}
                         </div>
                     </CardHeader>
                     <CardContent>

@@ -32,9 +32,9 @@ import type {
     Contact,
     PipelineStage,
     Note,
-    Activity,
     BreadcrumbItem,
 } from '@/types';
+import { usePermissions } from '@/hooks/use-permissions';
 
 interface Props {
     opportunity: Opportunity & {
@@ -61,6 +61,7 @@ export default function OpportunityShow({
     const [lostOpen, setLostOpen] = useState(false);
     const [noteOpen, setNoteOpen] = useState(false);
     const [activityOpen, setActivityOpen] = useState(false);
+    const { hasPermission } = usePermissions();
 
     const {
         register,
@@ -145,6 +146,7 @@ export default function OpportunityShow({
                                 </Badge>
                             )}
 
+                        {hasPermission('opportunities.delete') && (
                         <Dialog>
                             <DialogTrigger
                                 render={
@@ -182,10 +184,11 @@ export default function OpportunityShow({
                                 </DialogFooter>
                             </DialogContent>
                         </Dialog>
+                        )}
                     </div>
                 </div>
 
-                {isOpen && (
+                {isOpen && hasPermission('opportunities.update') && (
                     <div className="flex gap-2">
                         <Button onClick={markWon} disabled={isWinning}>
                             {isWinning && (
@@ -238,7 +241,7 @@ export default function OpportunityShow({
                     </div>
                 )}
 
-                {!isOpen && (
+                {!isOpen && hasPermission('opportunities.update') && (
                     <div className="flex gap-2">
                         <Button onClick={reopen} disabled={isReopening} variant="outline">
                             {isReopening && (
@@ -261,35 +264,38 @@ export default function OpportunityShow({
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle>Timeline</CardTitle>
                         <div className="flex gap-2">
-                            <Dialog open={noteOpen} onOpenChange={setNoteOpen}>
-                                <DialogTrigger
-                                    render={
-                                        <Button size="sm" variant="outline" />
-                                    }
-                                >
-                                    Add Note
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>New Note</DialogTitle>
-                                    </DialogHeader>
+                            {hasPermission('notes.create') && (
+                                <Dialog open={noteOpen} onOpenChange={setNoteOpen}>
+                                    <DialogTrigger
+                                        render={
+                                            <Button size="sm" variant="outline" />
+                                        }
+                                    >
+                                        Add Note
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>New Note</DialogTitle>
+                                        </DialogHeader>
                                     <NoteForm
                                         entityType="opportunity"
                                         entityId={opportunity.id}
                                         onSuccess={() => {
                                             setNoteOpen(false);
                                         }}
-                                    />
-                                </DialogContent>
-                            </Dialog>
-                            <Dialog open={activityOpen} onOpenChange={setActivityOpen}>
-                                <DialogTrigger
-                                    render={
-                                        <Button size="sm" variant="outline" />
-                                    }
-                                >
-                                    Add Activity
-                                </DialogTrigger>
+                                        />
+                                    </DialogContent>
+                                </Dialog>
+                            )}
+                            {hasPermission('activities.create') && (
+                                <Dialog open={activityOpen} onOpenChange={setActivityOpen}>
+                                    <DialogTrigger
+                                        render={
+                                            <Button size="sm" variant="outline" />
+                                        }
+                                    >
+                                        Add Activity
+                                    </DialogTrigger>
                                 <DialogContent>
                                     <DialogHeader>
                                         <DialogTitle>New Activity</DialogTitle>
@@ -300,9 +306,10 @@ export default function OpportunityShow({
                                         onSuccess={() => {
                                             setActivityOpen(false);
                                         }}
-                                    />
-                                </DialogContent>
-                            </Dialog>
+                                        />
+                                    </DialogContent>
+                                </Dialog>
+                            )}
                         </div>
                     </CardHeader>
                     <CardContent>

@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useUpdateActivity } from '@/hooks/activities/use-update-activity';
 import { useUpdateNote } from '@/hooks/notes/use-update-note';
+import { usePermissions } from '@/hooks/use-permissions';
 
 type TimelineEntry =
     | { kind: 'note'; data: Note }
@@ -36,6 +37,7 @@ function NoteItem({ note, date }: { note: Note; date: string }) {
     const [isEditing, setIsEditing] = useState(false);
     const [body, setBody] = useState(note.body);
     const { mutate: updateNote, isPending } = useUpdateNote();
+    const { hasPermission } = usePermissions();
 
     const handleSave = () => {
         updateNote(
@@ -52,7 +54,7 @@ function NoteItem({ note, date }: { note: Note; date: string }) {
                 <div className="flex items-center gap-2">
                     <span className="text-xs text-muted-foreground">{date}</span>
                 </div>
-                {!isEditing && (
+                {!isEditing && hasPermission('notes.update') && (
                     <Button
                         variant="ghost"
                         size="icon"
@@ -110,6 +112,7 @@ function ActivityItem({ activity, date }: { activity: Activity; date: string }) 
     const [dueAt, setDueAt] = useState(formattedDueAt);
     
     const { mutate: updateActivity, isPending } = useUpdateActivity();
+    const { hasPermission } = usePermissions();
 
     const handleSave = () => {
         // Only sending updated fields
@@ -150,7 +153,7 @@ function ActivityItem({ activity, date }: { activity: Activity; date: string }) 
                     )}
                     <span className="text-xs text-muted-foreground">{date}</span>
                 </div>
-                {!isEditing && (
+                {!isEditing && hasPermission('activities.update') && (
                     <Button
                         variant="ghost"
                         size="icon"

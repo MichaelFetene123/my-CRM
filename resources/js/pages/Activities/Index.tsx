@@ -22,6 +22,7 @@ import { useActivities } from '@/hooks/activities/use-activities';
 import { useCompleteActivity } from '@/hooks/activities/use-complete-activity';
 import { useUncompleteActivity } from '@/hooks/activities/use-uncomplete-activity';
 import { useDeleteActivity } from '@/hooks/activities/use-delete-activity';
+import { usePermissions } from '@/hooks/use-permissions';
 import { Trash2, Undo2 } from 'lucide-react';
 import type { Activity, BreadcrumbItem } from '@/types';
 
@@ -34,6 +35,7 @@ export default function Activities() {
     const { mutate: completeActivity, isPending: isCompleting } = useCompleteActivity();
     const { mutate: uncompleteActivity, isPending: isUncompleting } = useUncompleteActivity();
     const { mutate: deleteActivity, isPending: isDeleting } = useDeleteActivity();
+    const { hasPermission } = usePermissions();
 
     function complete(id: number) {
         completeActivity({ id });
@@ -102,6 +104,7 @@ export default function Activities() {
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     {!activity.completed_at ? (
+                                                        hasPermission('activities.update') && (
                                                         <Button
                                                             size="sm"
                                                             variant="outline"
@@ -114,7 +117,9 @@ export default function Activities() {
                                                         >
                                                             Complete
                                                         </Button>
+                                                        )
                                                     ) : (
+                                                        hasPermission('activities.update') && (
                                                         <TooltipProvider delay={200}>
                                                             <Tooltip>
                                                                 <TooltipTrigger
@@ -136,8 +141,9 @@ export default function Activities() {
                                                                 <TooltipContent>Uncomplete</TooltipContent>
                                                             </Tooltip>
                                                         </TooltipProvider>
+                                                        )
                                                     )}
-                                                    {activity.completed_at && (
+                                                    {activity.completed_at && hasPermission('activities.delete') && (
                                                         <Dialog>
                                                             <DialogTrigger
                                                                 render={

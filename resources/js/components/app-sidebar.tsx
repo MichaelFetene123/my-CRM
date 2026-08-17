@@ -20,10 +20,13 @@ import opportunities from '@/routes/opportunities';
 import activities from '@/routes/activities';
 import admin from '@/routes/admin';
 import type { NavItem, PageProps } from '@/types';
+import { usePermissions } from '@/hooks/use-permissions';
 
 export function AppSidebar() {
     const unreadCount = useUnreadCount();
     const { auth } = usePage<PageProps>().props;
+
+    const { hasPermission } = usePermissions();
 
     const mainNavItems: NavItem[] = [
         {
@@ -33,7 +36,7 @@ export function AppSidebar() {
         }
     ];
 
-    if (auth.permissions?.contacts_view !== false) {
+    if (hasPermission('contacts.view')) {
         mainNavItems.push({
             title: 'Contacts',
             href: contacts.index().url,
@@ -41,7 +44,7 @@ export function AppSidebar() {
         });
     }
 
-    if (auth.permissions?.leads_view !== false) {
+    if (hasPermission('leads.view')) {
         mainNavItems.push({
             title: 'Leads',
             href: leads.index().url,
@@ -49,7 +52,7 @@ export function AppSidebar() {
         });
     }
 
-    if (auth.permissions?.opportunities_view !== false) {
+    if (hasPermission('opportunities.view')) {
         mainNavItems.push({
             title: 'Opportunities',
             href: opportunities.index().url,
@@ -57,7 +60,7 @@ export function AppSidebar() {
         });
     }
 
-    if (auth.permissions?.activities_view !== false) {
+    if (hasPermission('activities.view')) {
         mainNavItems.push({
             title: 'Activities',
             href: activities.index().url,
@@ -66,13 +69,15 @@ export function AppSidebar() {
         });
     }
 
-    mainNavItems.push({
-        title: 'Notes',
-        href: '/notes',
-        icon: StickyNote,
-    });
+    if (hasPermission('notes.view')) {
+        mainNavItems.push({
+            title: 'Notes',
+            href: '/notes',
+            icon: StickyNote,
+        });
+    }
 
-    if (auth.permissions?.manage_users) {
+    if (hasPermission('users.view')) {
         mainNavItems.push({
             title: 'Users',
             href: admin.users.index().url,
@@ -80,7 +85,7 @@ export function AppSidebar() {
         });
     }
 
-    if (auth.permissions?.manage_roles) {
+    if (hasPermission('roles.view')) {
         mainNavItems.push({
             title: 'Roles',
             href: admin.roles.index().url,
