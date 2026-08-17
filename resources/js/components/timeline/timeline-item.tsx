@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import type { Note, Activity } from '@/types';
-import { CheckCircle2, Edit2 } from 'lucide-react';
+import { CheckCircle2, Edit2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -39,7 +39,7 @@ function NoteItem({ note, date }: { note: Note; date: string }) {
 
     const handleSave = () => {
         updateNote(
-            { id: note.id, body },
+            { id: note.id, body, entity_type: note.entity_type as 'lead' | 'opportunity' | 'contact' },
             {
                 onSuccess: () => setIsEditing(false),
             }
@@ -50,9 +50,6 @@ function NoteItem({ note, date }: { note: Note; date: string }) {
         <li className="space-y-1 border-l-2 py-1 pl-3 text-sm group">
             <div className="flex items-center gap-2 justify-between">
                 <div className="flex items-center gap-2">
-                    {note.is_system_generated && (
-                        <Badge variant="outline">system</Badge>
-                    )}
                     <span className="text-xs text-muted-foreground">{date}</span>
                 </div>
                 {!isEditing && (
@@ -86,6 +83,7 @@ function NoteItem({ note, date }: { note: Note; date: string }) {
                             Cancel
                         </Button>
                         <Button size="sm" onClick={handleSave} disabled={isPending}>
+                            {isPending && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
                             Save
                         </Button>
                     </div>
@@ -166,7 +164,9 @@ function ActivityItem({ activity, date }: { activity: Activity; date: string }) 
             {isEditing ? (
                 <div className="space-y-2 mt-2 bg-muted/30 p-2 rounded-md border border-border/50">
                     <div className="grid grid-cols-2 gap-2">
-                        <Select value={type} onValueChange={(v: Activity['type']) => setType(v)}>
+                        <Select value={type} onValueChange={(v) => {
+                            if (v) setType(v as Activity['type']);
+                        }}>
                             <SelectTrigger className="h-8 text-xs">
                                 <SelectValue />
                             </SelectTrigger>
@@ -198,6 +198,7 @@ function ActivityItem({ activity, date }: { activity: Activity; date: string }) 
                             Cancel
                         </Button>
                         <Button size="sm" onClick={handleSave} disabled={isPending}>
+                            {isPending && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
                             Save
                         </Button>
                     </div>
@@ -205,10 +206,10 @@ function ActivityItem({ activity, date }: { activity: Activity; date: string }) 
             ) : (
                 <p>
                     {activity.completed_at
-                        ? `Due ${new Date(activity.due_at).toLocaleDateString()}`
+                        ? `Due ${new Date(activity.due_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}`
                         : isOverdue
-                          ? `Overdue — was due ${new Date(activity.due_at).toLocaleDateString()}`
-                          : `Due ${new Date(activity.due_at).toLocaleDateString()}`}
+                          ? `Overdue — was due ${new Date(activity.due_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}`
+                          : `Due ${new Date(activity.due_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}`}
                 </p>
             )}
         </li>
@@ -216,16 +217,29 @@ function ActivityItem({ activity, date }: { activity: Activity; date: string }) 
 }
 
 export function TimelineItem({ entry }: { entry: TimelineEntry }) {
-    const date = new Date(entry.data.created_at).toLocaleDateString(undefined, {
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    });
+    const formatDate = (dateStr: string) => {
+        return new Date(dateStr).toLocaleDateString(undefined, {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+    };
 
-    if (entry.kind === 'note') {
-        return <NoteItem note={entry.data} date={date} />;
+    const createdDateStr = formatDate(entry.data.created_at);
+    let dateDisplay = createdDateStr;
+
+    if (entry.data.updated_at) {
+        const createdTime = new Date(entry.data.created_at).getTime();
+        const updatedTime = new Date(entry.data.updated_at).getTime();
+        if (updatedTime - createdTime > 1000) {
+            dateDisplay = `Created ${createdDateStr} · Updated ${formatDate(entry.data.updated_at)}`;
+        }
     }
 
-    return <ActivityItem activity={entry.data} date={date} />;
+    if (entry.kind === 'note') {
+        return <NoteItem note={entry.data} date={dateDisplay} />;
+    }
+
+    return <ActivityItem activity={entry.data} date={dateDisplay} />;
 }

@@ -75,6 +75,7 @@ export interface Activity {
     completed_at: string | null;
     owner_id: number;
     created_at: string;
+    updated_at: string;
 }
 
 export interface Note {
@@ -84,6 +85,7 @@ export interface Note {
     body: string;
     created_by: number | null;
     created_at: string;
+    updated_at: string;
     entity?: {
         id?: number;
         name?: string;
