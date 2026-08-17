@@ -65,6 +65,15 @@ class ActivityController extends Controller
         return redirect()->back();
     }
 
+    public function apiUpdate(StoreActivityRequest $request, Activity $activity)
+    {
+        Gate::authorize('update', $activity);
+
+        $activity->update($request->validated());
+
+        return response()->json($activity);
+    }
+
     public function destroy(Activity $activity)
     {
         Gate::authorize('delete', $activity);

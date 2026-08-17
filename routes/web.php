@@ -57,6 +57,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('api')->name('apiActivities.')->group(function () {
         Route::get('activities', [ActivityController::class, 'apiIndex'])->name('index');
         Route::post('activities', [ActivityController::class, 'apiStore'])->name('store');
+        Route::put('activities/{activity}', [ActivityController::class, 'apiUpdate'])->name('update');
         Route::post('activities/{activity}/complete', [ActivityController::class, 'apiComplete'])->name('complete');
         Route::post('activities/{activity}/uncomplete', [ActivityController::class, 'apiUncomplete'])->name('uncomplete');
         Route::delete('activities/{activity}', [ActivityController::class, 'apiDestroy'])->name('destroy');
