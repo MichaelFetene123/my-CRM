@@ -42,14 +42,6 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('Super Admin') ? true : null;
         });
 
-        // Add gates for permissions
-        Gate::define('manage_users', function ($user) {
-            return $user->hasPermission('manage_users');
-        });
-
-        Gate::define('manage_roles', function ($user) {
-            return $user->hasPermission('manage_roles');
-        });
     }
 
     /**

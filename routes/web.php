@@ -90,7 +90,7 @@ Route::middleware('auth')->group(function () {
         'count' => $request->user()->unreadNotifications()->count(),
     ]))->name('notifications.unread-count');
 
-    Route::prefix('api')->name('apiRoles.')->middleware('can:manage_roles')->group(function () {
+    Route::prefix('api')->name('apiRoles.')->group(function () {
         Route::get('roles', [RoleController::class, 'apiIndex'])->name('index');
         Route::post('roles', [RoleController::class, 'apiStore'])->name('store');
         Route::post('roles/{role}/permissions', [RoleController::class, 'apiAssignPermission'])->name('assign-permission');
@@ -98,7 +98,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('roles/{role}', [RoleController::class, 'apiDestroy'])->name('destroy');
     });
 
-    Route::prefix('api/admin')->name('adminApiUsers.')->middleware('can:manage_users')->group(function () {
+    Route::prefix('api/admin')->name('adminApiUsers.')->group(function () {
         Route::post('users', [UserController::class, 'apiStore'])->name('store');
         Route::put('users/{user}', [UserController::class, 'apiUpdate'])->name('update');
         Route::delete('users/{user}', [UserController::class, 'apiDestroy'])->name('destroy');
@@ -108,7 +108,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('admin')->name('admin.')->group(function () {
-        Route::middleware('can:manage_users')->group(function () {
+        Route::group([], function () {
             Route::get('users', [UserController::class, 'index'])->name('users.index');
             Route::post('users', [UserController::class, 'store'])->name('users.store');
             Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
@@ -117,7 +117,7 @@ Route::middleware('auth')->group(function () {
             Route::post('users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
         });
 
-        Route::middleware('can:manage_roles')->group(function () {
+        Route::group([], function () {
             Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
             Route::post('roles', [RoleController::class, 'store'])->name('roles.store');
             Route::post('roles/{role}/permissions', [RoleController::class, 'assignPermission'])->name('roles.assign-permission');
