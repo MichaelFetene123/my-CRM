@@ -3,13 +3,17 @@
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+use Database\Seeders\RbacSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use function Pest\Laravel\{actingAs, post, seed};
+
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\post;
+use function Pest\Laravel\seed;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    seed(\Database\Seeders\RbacSeeder::class);
+    seed(RbacSeeder::class);
 });
 
 it('assigns standard role on registration', function () {
@@ -22,14 +26,14 @@ it('assigns standard role on registration', function () {
 
     $response->assertRedirect('/dashboard');
     $user = User::where('email', 'new@example.com')->first();
-    
+
     expect($user->hasRole('Restricted/Standard User'))->toBeTrue()
         ->and($user->hasRole('Super Admin'))->toBeFalse();
 });
 
 it('allows super admin to access user management', function () {
     $admin = User::where('email', 'admin@gmail.com')->first();
-    
+
     $response = actingAs($admin)->get('/admin/users');
     $response->assertStatus(200);
 });
@@ -86,7 +90,7 @@ it('allows super admin to edit and delete roles', function () {
         'name' => 'Updated Role',
         'description' => 'Updated',
     ]);
-    
+
     $response->assertSessionHasNoErrors();
     expect($role->fresh()->name)->toBe('Updated Role');
 
@@ -102,7 +106,7 @@ it('prevents deletion and modification of super admin role', function () {
     $response = actingAs($admin)->put("/admin/roles/{$superAdminRole->id}", [
         'name' => 'Hacked Admin',
     ]);
-    
+
     $response->assertSessionHasErrors(['role' => 'Cannot modify Super Admin directly.']);
     expect($superAdminRole->fresh()->name)->toBe('Super Admin');
 

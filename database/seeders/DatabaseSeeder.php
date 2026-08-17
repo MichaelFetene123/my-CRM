@@ -2,6 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Activity;
+use App\Models\Contact;
+use App\Models\Lead;
+use App\Models\Opportunity;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -29,19 +33,19 @@ class DatabaseSeeder extends Seeder
 
         $user = User::where('email', 'admin@gmail.com')->first() ?? User::factory()->create();
 
-        $contacts = \App\Models\Contact::factory(10)->create();
-        
-        \App\Models\Lead::factory(10)
+        $contacts = Contact::factory(10)->create();
+
+        Lead::factory(10)
             ->recycle($user)
             ->recycle($contacts)
             ->create();
 
-        \App\Models\Opportunity::factory(10)
+        Opportunity::factory(10)
             ->recycle($user)
             ->recycle($contacts)
             ->create();
 
-        \App\Models\Activity::factory(10)
+        Activity::factory(10)
             ->recycle($user)
             ->recycle($contacts)
             ->create();

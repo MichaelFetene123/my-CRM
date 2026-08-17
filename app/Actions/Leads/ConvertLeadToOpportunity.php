@@ -6,14 +6,14 @@ use App\Models\Contact;
 use App\Models\Lead;
 use App\Models\Opportunity;
 use App\Models\PipelineStage;
-use Illuminate\Support\Facades\DB;
 use DomainException;
+use Illuminate\Support\Facades\DB;
 
 class ConvertLeadToOpportunity
 {
     public function __invoke(Lead $lead, string $title): Opportunity
     {
-        if (!\in_array($lead->status, ['new', 'qualified'])) {
+        if (! \in_array($lead->status, ['new', 'qualified'])) {
             throw new DomainException('Only new or qualified leads can be converted.');
         }
 
@@ -54,21 +54,21 @@ class ConvertLeadToOpportunity
     }
 
     private function findOrCreateContact(Lead $lead): Contact
-{
-    $existing = null;
+    {
+        $existing = null;
 
-    if ($lead->email) {
-        $existing = Contact::where('email', $lead->email)->first();
+        if ($lead->email) {
+            $existing = Contact::where('email', $lead->email)->first();
+        }
+
+        if (! $existing) {
+            $existing = Contact::where('name', $lead->name)->first();
+        }
+
+        return $existing ?? Contact::create([
+            'name' => $lead->name,
+            'email' => $lead->email,
+            'status' => 'prospect',
+        ]);
     }
-
-    if (!$existing) {
-        $existing = Contact::where('name', $lead->name)->first();
-    }
-
-    return $existing ?? Contact::create([
-        'name' => $lead->name,
-        'email' => $lead->email,
-        'status' => 'prospect',
-    ]);
-}
 }

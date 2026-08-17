@@ -4,8 +4,8 @@ namespace App\Actions\Opportunities;
 
 use App\Models\Opportunity;
 use App\Models\PipelineStage;
-use Illuminate\Support\Facades\DB;
 use DomainException;
+use Illuminate\Support\Facades\DB;
 
 class MarkOpportunityWon
 {

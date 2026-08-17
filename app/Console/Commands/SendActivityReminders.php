@@ -9,6 +9,7 @@ use Illuminate\Console\Command;
 class SendActivityReminders extends Command
 {
     protected $signature = 'crm:send-activity-reminders';
+
     protected $description = 'Notify owners of overdue and soon-due activities';
 
     public function handle(): void

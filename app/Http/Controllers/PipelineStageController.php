@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\PipelineStage;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class PipelineStageController extends Controller
 {
@@ -13,7 +13,7 @@ class PipelineStageController extends Controller
         $stages = PipelineStage::withCount('opportunities')
             ->orderBy('order')
             ->get();
-            
+
         return response()->json($stages);
     }
 
@@ -59,7 +59,7 @@ class PipelineStageController extends Controller
     {
         if ($pipeline_stage->opportunities()->exists()) {
             return response()->json([
-                'message' => 'Cannot delete stage because it contains opportunities. Please move them to another stage first.'
+                'message' => 'Cannot delete stage because it contains opportunities. Please move them to another stage first.',
             ], 422);
         }
 

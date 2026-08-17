@@ -7,6 +7,8 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -48,7 +50,7 @@ class User extends Authenticatable implements PasskeyUser
         ];
     }
 
-    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class);
     }
@@ -65,22 +67,22 @@ class User extends Authenticatable implements PasskeyUser
         })->exists();
     }
 
-    public function leads(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function leads(): HasMany
     {
         return $this->hasMany(Lead::class, 'owner_id');
     }
 
-    public function opportunities(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function opportunities(): HasMany
     {
         return $this->hasMany(Opportunity::class, 'owner_id');
     }
 
-    public function activities(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function activities(): HasMany
     {
         return $this->hasMany(Activity::class, 'owner_id');
     }
 
-    public function notes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function notes(): HasMany
     {
         return $this->hasMany(Note::class, 'created_by');
     }

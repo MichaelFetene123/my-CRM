@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-      Schema::create('contacts', function (Blueprint $table) {
-    $table->id();
-    $table->string('name');
-    $table->string('company')->nullable();
-    $table->string('email')->nullable();
-    $table->string('phone')->nullable();
-    $table->enum('status', ['prospect', 'customer', 'inactive'])->default('prospect');
-    $table->timestamps();
-});
+        Schema::create('contacts', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('company')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->enum('status', ['prospect', 'customer', 'inactive'])->default('prospect');
+            $table->timestamps();
+        });
     }
 
     /**

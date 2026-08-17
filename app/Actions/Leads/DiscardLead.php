@@ -9,7 +9,7 @@ class DiscardLead
 {
     public function __invoke(Lead $lead, string $reason): Lead
     {
-        if (!\in_array($lead->status, ['new', 'qualified'])) {
+        if (! \in_array($lead->status, ['new', 'qualified'])) {
             throw new DomainException('Only new or qualified leads can be discarded.');
         }
 

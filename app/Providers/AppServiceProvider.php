@@ -2,12 +2,17 @@
 
 namespace App\Providers;
 
+use App\Models\Contact;
+use App\Models\Lead;
+use App\Models\Opportunity;
+use App\Models\User;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
-use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,22 +32,22 @@ class AppServiceProvider extends ServiceProvider
         $this->configureDefaults();
 
         Relation::enforceMorphMap([
-            'lead' => \App\Models\Lead::class,
-            'opportunity' => \App\Models\Opportunity::class,
-            'contact' => \App\Models\Contact::class,
-            'user' => \App\Models\User::class,
+            'lead' => Lead::class,
+            'opportunity' => Opportunity::class,
+            'contact' => Contact::class,
+            'user' => User::class,
         ]);
 
-        \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
+        Gate::before(function ($user, $ability) {
             return $user->hasRole('Super Admin') ? true : null;
         });
 
         // Add gates for permissions
-        \Illuminate\Support\Facades\Gate::define('manage_users', function ($user) {
+        Gate::define('manage_users', function ($user) {
             return $user->hasPermission('manage_users');
         });
 
-        \Illuminate\Support\Facades\Gate::define('manage_roles', function ($user) {
+        Gate::define('manage_roles', function ($user) {
             return $user->hasPermission('manage_roles');
         });
     }

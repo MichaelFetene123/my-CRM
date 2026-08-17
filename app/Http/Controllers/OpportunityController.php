@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\Opportunities\MarkOpportunityLost;
 use App\Actions\Opportunities\MarkOpportunityWon;
 use App\Actions\Opportunities\MoveOpportunityStage;
+use App\Actions\Opportunities\ReopenOpportunity;
 use App\Http\Requests\MarkLostRequest;
 use App\Http\Requests\MoveStageRequest;
 use App\Http\Requests\StoreOpportunityRequest;
@@ -139,6 +140,24 @@ class OpportunityController extends Controller
         Gate::authorize('update', $opportunity);
 
         $action($opportunity, $request->validated('reason'));
+
+        return response()->json(['success' => true]);
+    }
+
+    public function reopen(Opportunity $opportunity, ReopenOpportunity $action)
+    {
+        Gate::authorize('update', $opportunity);
+
+        $action($opportunity);
+
+        return redirect()->back();
+    }
+
+    public function apiReopen(Opportunity $opportunity, ReopenOpportunity $action)
+    {
+        Gate::authorize('update', $opportunity);
+
+        $action($opportunity);
 
         return response()->json(['success' => true]);
     }

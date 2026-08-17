@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\OpportunityController;
+use App\Http\Controllers\PipelineStageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -41,14 +42,15 @@ Route::middleware('auth')->group(function () {
         Route::post('opportunities/{opportunity}/move', [OpportunityController::class, 'apiMove'])->name('move');
         Route::post('opportunities/{opportunity}/won', [OpportunityController::class, 'apiMarkWon'])->name('won');
         Route::post('opportunities/{opportunity}/lost', [OpportunityController::class, 'apiMarkLost'])->name('lost');
+        Route::post('opportunities/{opportunity}/reopen', [OpportunityController::class, 'apiReopen'])->name('reopen');
         Route::delete('opportunities/{opportunity}', [OpportunityController::class, 'apiDestroy'])->name('destroy');
     });
 
     Route::prefix('api')->name('apiPipelineStages.')->group(function () {
-        Route::get('pipeline-stages', [\App\Http\Controllers\PipelineStageController::class, 'apiIndex'])->name('index');
-        Route::post('pipeline-stages', [\App\Http\Controllers\PipelineStageController::class, 'apiStore'])->name('store');
-        Route::put('pipeline-stages/{pipeline_stage}', [\App\Http\Controllers\PipelineStageController::class, 'apiUpdate'])->name('update');
-        Route::delete('pipeline-stages/{pipeline_stage}', [\App\Http\Controllers\PipelineStageController::class, 'apiDestroy'])->name('destroy');
+        Route::get('pipeline-stages', [PipelineStageController::class, 'apiIndex'])->name('index');
+        Route::post('pipeline-stages', [PipelineStageController::class, 'apiStore'])->name('store');
+        Route::put('pipeline-stages/{pipeline_stage}', [PipelineStageController::class, 'apiUpdate'])->name('update');
+        Route::delete('pipeline-stages/{pipeline_stage}', [PipelineStageController::class, 'apiDestroy'])->name('destroy');
     });
 
     Route::prefix('api')->name('apiActivities.')->group(function () {
@@ -70,6 +72,7 @@ Route::middleware('auth')->group(function () {
     Route::post('opportunities/{opportunity}/move', [OpportunityController::class, 'move'])->name('opportunities.move');
     Route::post('opportunities/{opportunity}/won', [OpportunityController::class, 'markWon'])->name('opportunities.won');
     Route::post('opportunities/{opportunity}/lost', [OpportunityController::class, 'markLost'])->name('opportunities.lost');
+    Route::post('opportunities/{opportunity}/reopen', [OpportunityController::class, 'reopen'])->name('opportunities.reopen');
 
     Route::resource('activities', ActivityController::class)->except(['create', 'edit', 'show']);
     Route::post('activities/{activity}/complete', [ActivityController::class, 'complete'])->name('activities.complete');

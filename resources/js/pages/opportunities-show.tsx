@@ -6,6 +6,7 @@ import { useOpportunity } from '@/hooks/opportunities/use-opportunity';
 import { useWonOpportunity } from '@/hooks/opportunities/use-won-opportunity';
 import { useLostOpportunity } from '@/hooks/opportunities/use-lost-opportunity';
 import { useDeleteOpportunity } from '@/hooks/opportunities/use-delete-opportunity';
+import { useReopenOpportunity } from '@/hooks/opportunities/use-reopen-opportunity';
 import AppLayout from '@/layouts/app-layout';
 import {
     mergeTimeline,
@@ -58,6 +59,7 @@ export default function OpportunityShow({
     const { mutate: markLostMutate, isPending: isLosing } =
         useLostOpportunity();
     const { mutate: deleteMutate, isPending: isDeleting } = useDeleteOpportunity();
+    const { mutate: reopenMutate, isPending: isReopening } = useReopenOpportunity();
 
     const [lostOpen, setLostOpen] = useState(false);
     const [noteOpen, setNoteOpen] = useState(false);
@@ -77,6 +79,10 @@ export default function OpportunityShow({
 
     function markWon() {
         markWonMutate({ id: opportunity.id });
+    }
+
+    function reopen() {
+        reopenMutate({ id: opportunity.id });
     }
 
     const submitLost = (formData: any) => {
@@ -232,6 +238,17 @@ export default function OpportunityShow({
                                 </form>
                             </DialogContent>
                         </Dialog>
+                    </div>
+                )}
+
+                {!isOpen && (
+                    <div className="flex gap-2">
+                        <Button onClick={reopen} disabled={isReopening} variant="outline">
+                            {isReopening && (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            )}
+                            Reopen Opportunity
+                        </Button>
                     </div>
                 )}
 

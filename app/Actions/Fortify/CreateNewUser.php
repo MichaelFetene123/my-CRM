@@ -4,6 +4,7 @@ namespace App\Actions\Fortify;
 
 use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
@@ -30,7 +31,7 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $input['password'],
         ]);
 
-        $defaultRole = \App\Models\Role::where('name', 'Restricted/Standard User')->first();
+        $defaultRole = Role::where('name', 'Restricted/Standard User')->first();
         if ($defaultRole) {
             $user->roles()->attach($defaultRole);
         }

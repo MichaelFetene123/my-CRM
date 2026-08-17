@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('notes', function (Blueprint $table) {
-    $table->id();
-    $table->string('entity_type');
-    $table->unsignedBigInteger('entity_id');
-    $table->text('body');
-    $table->boolean('is_system_generated')->default(false);
-    $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
-    $table->timestamps();
+        Schema::create('notes', function (Blueprint $table) {
+            $table->id();
+            $table->string('entity_type');
+            $table->unsignedBigInteger('entity_id');
+            $table->text('body');
+            $table->boolean('is_system_generated')->default(false);
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamps();
 
-    $table->index(['entity_type', 'entity_id']);
-});
+            $table->index(['entity_type', 'entity_id']);
+        });
     }
 
     /**

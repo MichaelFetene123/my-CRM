@@ -14,6 +14,7 @@ class NoteController extends Controller
             'is_system_generated' => false,
             'created_by' => $request->user()->id,
         ]);
+
         return redirect()->back();
     }
 
