@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreNoteRequest;
 use App\Http\Requests\UpdateNoteRequest;
 use App\Models\Note;
+use App\Models\User;
+use App\Notifications\NoteMentionNotification;
 use Illuminate\Support\Facades\Gate;
 
 class NoteController extends Controller
@@ -13,10 +15,17 @@ class NoteController extends Controller
     {
         Gate::authorize('create', Note::class);
 
-        Note::create([
+        $note = Note::create([
             ...$request->validated(),
             'created_by' => $request->user()->id,
         ]);
+
+        if (!empty($note->mentioned_user_ids)) {
+            $users = User::whereIn('id', $note->mentioned_user_ids)->get();
+            foreach ($users as $user) {
+                $user->notify(new NoteMentionNotification($note));
+            }
+        }
 
         return redirect()->back();
     }
@@ -29,6 +38,13 @@ class NoteController extends Controller
             ...$request->validated(),
             'created_by' => $request->user()->id,
         ]);
+
+        if (!empty($note->mentioned_user_ids)) {
+            $users = User::whereIn('id', $note->mentioned_user_ids)->get();
+            foreach ($users as $user) {
+                $user->notify(new NoteMentionNotification($note));
+            }
+        }
 
         return response()->json($note);
     }

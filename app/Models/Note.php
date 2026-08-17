@@ -20,9 +20,10 @@ use Illuminate\Support\Carbon;
  */
 class Note extends Model
 {
-    protected $fillable = ['entity_type', 'entity_id', 'body', 'created_by'];
+    protected $fillable = ['entity_type', 'entity_id', 'body', 'created_by', 'mentioned_user_ids'];
 
     protected $casts = [
+        'mentioned_user_ids' => 'array',
     ];
 
     public function entity(): MorphTo

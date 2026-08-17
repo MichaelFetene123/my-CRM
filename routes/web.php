@@ -9,6 +9,7 @@ use App\Http\Controllers\LeadController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\OpportunityController;
 use App\Http\Controllers\PipelineStageController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -69,6 +70,12 @@ Route::middleware('auth')->group(function () {
         Route::put('notes/{note}', [NoteController::class, 'apiUpdate'])->name('update');
         Route::delete('notes/{note}', [NoteController::class, 'apiDestroy'])->name('destroy');
     });
+
+    Route::prefix('api')->name('apiSearch.')->group(function () {
+        Route::get('search', [SearchController::class, 'apiIndex'])->name('index');
+        Route::get('users', [SearchController::class, 'apiUsers'])->name('users');
+    });
+    
     Route::resource('leads', LeadController::class)->except(['create', 'edit']);
     Route::post('leads/{lead}/convert', [LeadController::class, 'convert'])->name('leads.convert');
     Route::post('leads/{lead}/discard', [LeadController::class, 'discard'])->name('leads.discard');
