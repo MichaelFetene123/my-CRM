@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCreateUser, CreateUserData } from '@/hooks/users/use-create-user';
 import { useRolesApi } from '@/hooks/roles/use-roles-api';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, Loader2 } from 'lucide-react';
 
 export function CreateUserDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
     const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm<CreateUserData>();
@@ -100,7 +100,8 @@ export function CreateUserDialog({ open, onOpenChange }: { open: boolean; onOpen
                                 Cancel
                             </Button>
                             <Button type="submit" disabled={isPending}>
-                                {isPending ? 'Saving...' : 'Add User'}
+                                {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                Add User
                             </Button>
                         </DialogFooter>
                     </form>
