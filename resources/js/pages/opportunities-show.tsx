@@ -32,6 +32,7 @@ import type {
     Contact,
     PipelineStage,
     Note,
+    Activity,
     BreadcrumbItem,
 } from '@/types';
 import { usePermissions } from '@/hooks/use-permissions';
