@@ -1,9 +1,22 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head, usePage, router } from '@inertiajs/react';
+import { useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import leadsRoute from '@/routes/leads';
 import type { Lead, BreadcrumbItem } from '@/types';
+import { usePermissions } from '@/hooks/use-permissions';
+import { Button } from '@/components/ui/button';
+import { Edit, Trash2 } from 'lucide-react';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
+import { LeadForm } from '@/components/leads/lead-form';
+import { useDeleteLead } from '@/hooks/leads/use-delete-lead';
 
 interface Props {
     lead: Lead & {
@@ -13,6 +26,20 @@ interface Props {
 }
 
 export default function LeadShow({ lead }: Props) {
+    const [open, setOpen] = useState(false);
+    const { hasPermission } = usePermissions();
+    const { mutate: deleteLead } = useDeleteLead();
+
+    const handleDelete = () => {
+        if (confirm('Are you sure you want to delete this lead?')) {
+            deleteLead(lead.id, {
+                onSuccess: () => {
+                    router.visit(leadsRoute.index().url);
+                },
+            });
+        }
+    };
+
     const statusVariant: Record<string, any> = {
         new: 'info',
         qualified: 'warning',
@@ -23,7 +50,7 @@ export default function LeadShow({ lead }: Props) {
     return (
         <>
             <Head title={lead.name} />
-            <div className="mx-auto max-w-7xl space-y-6 p-6">
+            <div className="w-full space-y-6 p-6">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <h1 className="text-2xl font-semibold">
@@ -34,6 +61,39 @@ export default function LeadShow({ lead }: Props) {
                         >
                             {lead.status}
                         </Badge>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        {hasPermission('leads.update') && (
+                            <Dialog open={open} onOpenChange={setOpen}>
+                                <DialogTrigger
+                                    render={
+                                        <Button variant="outline">
+                                            <Edit className="mr-2 h-4 w-4" />
+                                            Edit Lead
+                                        </Button>
+                                    }
+                                />
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Edit Lead</DialogTitle>
+                                    </DialogHeader>
+                                    <LeadForm
+                                        lead={lead}
+                                        onSuccess={() => {
+                                            setOpen(false);
+                                            router.reload({ only: ['lead'] });
+                                        }}
+                                        onCancel={() => setOpen(false)}
+                                    />
+                                </DialogContent>
+                            </Dialog>
+                        )}
+                        {hasPermission('leads.delete') && (
+                            <Button variant="destructive" onClick={handleDelete}>
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete Lead
+                            </Button>
+                        )}
                     </div>
                 </div>
 

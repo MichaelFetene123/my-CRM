@@ -100,6 +100,24 @@ class LeadController extends Controller
         return response()->json($lead->load(['contact', 'owner']));
     }
 
+    public function update(StoreLeadRequest $request, Lead $lead)
+    {
+        Gate::authorize('update', $lead);
+
+        $lead->update($request->validated());
+
+        return redirect()->back();
+    }
+
+    public function apiUpdate(StoreLeadRequest $request, Lead $lead)
+    {
+        Gate::authorize('update', $lead);
+
+        $lead->update($request->validated());
+
+        return response()->json($lead);
+    }
+
     public function destroy(Lead $lead)
     {
         Gate::authorize('delete', $lead);

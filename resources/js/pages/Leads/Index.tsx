@@ -1,12 +1,9 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { useLeads } from '@/hooks/leads/use-leads';
-import { useCreateLead } from '@/hooks/leads/use-create-lead';
+import { useDeleteLead } from '@/hooks/leads/use-delete-lead';
 import { TableSkeleton } from '@/components/skeleton/table-skeleton';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
     Dialog,
     DialogContent,
@@ -28,57 +25,31 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Loader2Icon } from 'lucide-react';
+import { MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import leadsRoute from '@/routes/leads';
 import type { Lead, PaginatedData, BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/app-layout';
+import { usePermissions } from '@/hooks/use-permissions';
+import { LeadForm } from '@/components/leads/lead-form';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Leads', href: leadsRoute.index().url },
 ];
 
-import { usePermissions } from '@/hooks/use-permissions';
-
 export default function LeadsIndex() {
     const [open, setOpen] = useState(false);
+    const [editingLead, setEditingLead] = useState<Lead | null>(null);
     const { hasPermission } = usePermissions();
 
     const { data: leads, isLoading } = useLeads();
-    const { mutate, isPending } = useCreateLead();
+    const { mutate: deleteLead } = useDeleteLead();
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        setError,
-        formState: { errors },
-    } = useForm({
-        defaultValues: {
-            name: '',
-            email: '',
-            source: '',
-        },
-    });
-
-    const onSubmit = (formData: any) => {
-        mutate(formData, {
-            onSuccess: () => {
-                reset();
-                setOpen(false);
-            },
-            onError: (error) => {
-                if (error.errors) {
-                    Object.entries(error.errors).forEach(([key, messages]) => {
-                        setError(key as any, {
-                            type: 'server',
-                            message: messages[0],
-                        });
-                    });
-                }
-            },
-        });
+    const handleDelete = (id: number) => {
+        if (confirm('Are you sure you want to delete this lead?')) {
+            deleteLead(id);
+        }
     };
 
     const statusVariant: Record<string, any> = {
@@ -95,68 +66,26 @@ export default function LeadsIndex() {
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-semibold">Leads</h1>
                     {hasPermission('leads.create') && (
-                        <Dialog open={open} onOpenChange={setOpen}>
-                            <DialogTrigger render={<Button />}>
-                                New Lead
-                            </DialogTrigger>
+                        <Dialog open={open} onOpenChange={(isOpen) => {
+                            if (!isOpen) setEditingLead(null);
+                            setOpen(isOpen);
+                        }}>
+                            <DialogTrigger
+                                render={
+                                    <Button onClick={() => setEditingLead(null)}>
+                                        New Lead
+                                    </Button>
+                                }
+                            />
                             <DialogContent>
                                 <DialogHeader>
-                                    <DialogTitle>New Lead</DialogTitle>
+                                    <DialogTitle>{editingLead ? 'Edit Lead' : 'New Lead'}</DialogTitle>
                                 </DialogHeader>
-                                <form
-                                    onSubmit={handleSubmit(onSubmit)}
-                                    className="mt-4 space-y-4"
-                                >
-                                    <div>
-                                        <Label htmlFor="name">Name</Label>
-                                        <Input id="name" {...register('name')} />
-                                        {errors.name && (
-                                            <p className="mt-1 text-sm text-destructive">
-                                                {errors.name.message as string}
-                                            </p>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <Label htmlFor="email">Email</Label>
-                                        <Input
-                                            id="email"
-                                            type="email"
-                                            {...register('email')}
-                                        />
-                                        {errors.email && (
-                                            <p className="mt-1 text-sm text-destructive">
-                                                {errors.email.message as string}
-                                            </p>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <Label htmlFor="source">Source</Label>
-                                        <Input
-                                            id="source"
-                                            {...register('source')}
-                                        />
-                                        {errors.source && (
-                                            <p className="mt-1 text-sm text-destructive">
-                                                {errors.source.message as string}
-                                            </p>
-                                        )}
-                                    </div>
-                                    <div className="flex justify-end gap-2 pt-2">
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            onClick={() => setOpen(false)}
-                                        >
-                                            Cancel
-                                        </Button>
-                                        <Button type="submit" disabled={isPending}>
-                                            {isPending && (
-                                                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                                            )}
-                                            Save Lead
-                                        </Button>
-                                    </div>
-                                </form>
+                                <LeadForm
+                                    lead={editingLead || undefined}
+                                    onSuccess={() => setOpen(false)}
+                                    onCancel={() => setOpen(false)}
+                                />
                             </DialogContent>
                         </Dialog>
                     )}
@@ -175,9 +104,10 @@ export default function LeadsIndex() {
                                         </TableHead>
                                         <TableHead>Email</TableHead>
                                         <TableHead>Source</TableHead>
-                                        <TableHead className="pr-6 text-right">
+                                        <TableHead className="text-right">
                                             Status
                                         </TableHead>
+                                        <TableHead className="w-[50px] pr-6"></TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -196,7 +126,7 @@ export default function LeadsIndex() {
                                             <TableCell>
                                                 {lead.source ?? '—'}
                                             </TableCell>
-                                            <TableCell className="pr-6 text-right">
+                                            <TableCell className="text-right">
                                                 <Badge
                                                     variant={
                                                         statusVariant[
@@ -207,13 +137,45 @@ export default function LeadsIndex() {
                                                     {lead.status}
                                                 </Badge>
                                             </TableCell>
+                                            <TableCell className="pr-6 text-right" onClick={(e) => e.stopPropagation()}>
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger
+                                                        render={
+                                                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                                                <span className="sr-only">Open menu</span>
+                                                                <MoreHorizontal className="h-4 w-4" />
+                                                            </Button>
+                                                        }
+                                                    />
+                                                    <DropdownMenuContent align="end">
+                                                        {hasPermission('leads.update') && (
+                                                            <DropdownMenuItem onClick={() => {
+                                                                setEditingLead(lead);
+                                                                setOpen(true);
+                                                            }}>
+                                                                <Edit className="mr-2 h-4 w-4" />
+                                                                Edit
+                                                            </DropdownMenuItem>
+                                                        )}
+                                                        {hasPermission('leads.delete') && (
+                                                            <DropdownMenuItem 
+                                                                className="text-destructive focus:text-destructive"
+                                                                onClick={() => handleDelete(lead.id)}
+                                                            >
+                                                                <Trash2 className="mr-2 h-4 w-4" />
+                                                                Delete
+                                                            </DropdownMenuItem>
+                                                        )}
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                     {(!leads?.data ||
                                         leads.data.length === 0) && (
                                         <TableRow>
                                             <TableCell
-                                                colSpan={4}
+                                                colSpan={5}
                                                 className="h-24 text-center text-muted-foreground"
                                             >
                                                 No leads found.
