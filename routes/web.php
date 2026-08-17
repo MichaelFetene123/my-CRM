@@ -102,6 +102,7 @@ Route::middleware('auth')->group(function () {
         Route::post('users', [UserController::class, 'apiStore'])->name('store');
         Route::put('users/{user}', [UserController::class, 'apiUpdate'])->name('update');
         Route::delete('users/{user}', [UserController::class, 'apiDestroy'])->name('destroy');
+        Route::delete('users', [UserController::class, 'apiDestroyAll'])->name('destroyAll');
         Route::post('users/{user}/roles', [UserController::class, 'apiAssignRole'])->name('assign-role');
         Route::post('users/{user}/reset-password', [UserController::class, 'apiResetPassword'])->name('reset-password');
     });

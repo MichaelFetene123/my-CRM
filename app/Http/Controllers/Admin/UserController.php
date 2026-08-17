@@ -243,6 +243,19 @@ class UserController extends Controller
         return response()->json(['message' => 'User deleted successfully.']);
     }
 
+    public function apiDestroyAll(Request $request)
+    {
+        if (! $request->user()->hasRole('Super Admin')) {
+            return response()->json(['message' => 'Unauthorized action.'], 403);
+        }
+
+        User::whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'Super Admin');
+        })->delete();
+
+        return response()->json(['message' => 'Users deleted successfully.']);
+    }
+
     public function resetPassword(Request $request, User $user)
     {
         if ($user->hasRole('Super Admin') && ! $request->user()->hasRole('Super Admin')) {

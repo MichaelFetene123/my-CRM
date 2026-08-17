@@ -17,6 +17,7 @@ import { CreateUserDialog } from './components/create-user-dialog';
 import { EditUserDialog } from './components/edit-user-dialog';
 import { ResetPasswordDialog } from './components/reset-password-dialog';
 import { DeleteUserDialog } from './components/delete-user-dialog';
+import { DeleteAllUsersDialog } from './components/delete-all-users-dialog';
 
 function UserRow({
     user,
@@ -61,10 +62,14 @@ function UserRow({
     );
 }
 
+import { usePage } from '@inertiajs/react';
+
 export default function UsersIndex({ users: initialUsers }: PageProps<{ users: User[], roles: Role[] }>) {
+    const { auth } = usePage<PageProps>().props;
     const { data: users = [] } = useUsers(initialUsers);
     
     const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [isDeleteAllOpen, setIsDeleteAllOpen] = useState(false);
     const [userToEdit, setUserToEdit] = useState<User | null>(null);
     const [userToReset, setUserToReset] = useState<User | null>(null);
     const [userToDelete, setUserToDelete] = useState<User | null>(null);
@@ -76,9 +81,16 @@ export default function UsersIndex({ users: initialUsers }: PageProps<{ users: U
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="flex items-center justify-between">
                     <h1 className="text-xl font-semibold">Manage Users</h1>
-                    <Button onClick={() => setIsCreateOpen(true)}>
-                        <Plus className="mr-2 h-4 w-4" /> Add User
-                    </Button>
+                    <div className="flex gap-2">
+                        {auth.user.roles?.some((r) => r.name === 'Super Admin') && (
+                            <Button variant="destructive" onClick={() => setIsDeleteAllOpen(true)}>
+                                <Trash className="mr-2 h-4 w-4" /> Delete All Users
+                            </Button>
+                        )}
+                        <Button onClick={() => setIsCreateOpen(true)}>
+                            <Plus className="mr-2 h-4 w-4" /> Add User
+                        </Button>
+                    </div>
                 </div>
 
                 <div className="rounded-md border">
@@ -127,6 +139,12 @@ export default function UsersIndex({ users: initialUsers }: PageProps<{ users: U
                 user={userToDelete} 
                 open={!!userToDelete} 
                 onOpenChange={(open) => !open && setUserToDelete(null)} 
+            />
+
+            <DeleteAllUsersDialog
+                open={isDeleteAllOpen}
+                onOpenChange={setIsDeleteAllOpen}
+                userCount={users.length}
             />
         </>
     );
