@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Activities\CompleteActivity;
+use App\Actions\Activities\UncompleteActivity;
 use App\Http\Requests\StoreActivityRequest;
 use App\Models\Activity;
 use App\Models\User;
@@ -98,5 +99,23 @@ class ActivityController extends Controller
         $activity->delete();
 
         return response()->noContent();
+    }
+
+    public function uncomplete(Activity $activity, UncompleteActivity $action)
+    {
+        Gate::authorize('update', $activity);
+
+        $action($activity);
+
+        return redirect()->back();
+    }
+
+    public function apiUncomplete(Activity $activity, UncompleteActivity $action)
+    {
+        Gate::authorize('update', $activity);
+
+        $action($activity);
+
+        return response()->json(['success' => true]);
     }
 }

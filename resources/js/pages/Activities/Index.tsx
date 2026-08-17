@@ -11,11 +11,18 @@ import {
     DialogFooter,
     DialogClose,
 } from '@/components/ui/dialog';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 import activities from '@/routes/activities';
 import { useActivities } from '@/hooks/activities/use-activities';
 import { useCompleteActivity } from '@/hooks/activities/use-complete-activity';
+import { useUncompleteActivity } from '@/hooks/activities/use-uncomplete-activity';
 import { useDeleteActivity } from '@/hooks/activities/use-delete-activity';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Undo2 } from 'lucide-react';
 import type { Activity, BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -25,10 +32,15 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Activities() {
     const { data: activityList, isLoading } = useActivities();
     const { mutate: completeActivity, isPending: isCompleting } = useCompleteActivity();
+    const { mutate: uncompleteActivity, isPending: isUncompleting } = useUncompleteActivity();
     const { mutate: deleteActivity, isPending: isDeleting } = useDeleteActivity();
 
     function complete(id: number) {
         completeActivity({ id });
+    }
+
+    function uncomplete(id: number) {
+        uncompleteActivity({ id });
     }
 
     const grouped = activityList
@@ -88,59 +100,83 @@ export default function Activities() {
                                                         )}
                                                     </span>
                                                 </div>
-                                                {!activity.completed_at && (
-                                                    <Button
-                                                        size="sm"
-                                                        variant="outline"
-                                                        disabled={isCompleting || isDeleting}
-                                                        onClick={() =>
-                                                            complete(
-                                                                activity.id,
-                                                            )
-                                                        }
-                                                    >
-                                                        Complete
-                                                    </Button>
-                                                )}
-                                                {activity.completed_at && (
-                                                    <Dialog>
-                                                        <DialogTrigger
-                                                            render={
-                                                                <Button
-                                                                    size="sm"
-                                                                    variant="ghost"
-                                                                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                                                                    disabled={isDeleting}
-                                                                />
+                                                <div className="flex items-center gap-2">
+                                                    {!activity.completed_at ? (
+                                                        <Button
+                                                            size="sm"
+                                                            variant="outline"
+                                                            disabled={isCompleting || isDeleting || isUncompleting}
+                                                            onClick={() =>
+                                                                complete(
+                                                                    activity.id,
+                                                                )
                                                             }
                                                         >
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </DialogTrigger>
-                                                        <DialogContent>
-                                                            <DialogTitle>Delete Activity</DialogTitle>
-                                                            <DialogDescription>
-                                                                Are you sure you want to delete this activity? This action cannot be undone.
-                                                            </DialogDescription>
-                                                            <DialogFooter className="gap-2 sm:justify-end">
-                                                                <DialogClose
-                                                                    render={<Button variant="secondary" />}
-                                                                >
-                                                                    Cancel
-                                                                </DialogClose>
-                                                                <DialogClose
+                                                            Complete
+                                                        </Button>
+                                                    ) : (
+                                                        <TooltipProvider delay={200}>
+                                                            <Tooltip>
+                                                                <TooltipTrigger
                                                                     render={
                                                                         <Button
-                                                                            variant="destructive"
-                                                                            onClick={() => deleteActivity({ id: activity.id })}
+                                                                            size="sm"
+                                                                            variant="outline"
+                                                                            disabled={isCompleting || isDeleting || isUncompleting}
+                                                                            onClick={() =>
+                                                                                uncomplete(
+                                                                                    activity.id,
+                                                                                )
+                                                                            }
                                                                         />
                                                                     }
                                                                 >
-                                                                    Delete Activity
-                                                                </DialogClose>
-                                                            </DialogFooter>
-                                                        </DialogContent>
-                                                    </Dialog>
-                                                )}
+                                                                    <Undo2 className="h-4 w-4" />
+                                                                </TooltipTrigger>
+                                                                <TooltipContent>Uncomplete</TooltipContent>
+                                                            </Tooltip>
+                                                        </TooltipProvider>
+                                                    )}
+                                                    {activity.completed_at && (
+                                                        <Dialog>
+                                                            <DialogTrigger
+                                                                render={
+                                                                    <Button
+                                                                        size="sm"
+                                                                        variant="ghost"
+                                                                        className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                                                        disabled={isDeleting}
+                                                                    />
+                                                                }
+                                                            >
+                                                                <Trash2 className="h-4 w-4" />
+                                                            </DialogTrigger>
+                                                            <DialogContent>
+                                                                <DialogTitle>Delete Activity</DialogTitle>
+                                                                <DialogDescription>
+                                                                    Are you sure you want to delete this activity? This action cannot be undone.
+                                                                </DialogDescription>
+                                                                <DialogFooter className="gap-2 sm:justify-end">
+                                                                    <DialogClose
+                                                                        render={<Button variant="secondary" />}
+                                                                    >
+                                                                        Cancel
+                                                                    </DialogClose>
+                                                                    <DialogClose
+                                                                        render={
+                                                                            <Button
+                                                                                variant="destructive"
+                                                                                onClick={() => deleteActivity({ id: activity.id })}
+                                                                            />
+                                                                        }
+                                                                    >
+                                                                        Delete Activity
+                                                                    </DialogClose>
+                                                                </DialogFooter>
+                                                            </DialogContent>
+                                                        </Dialog>
+                                                    )}
+                                                </div>
                                             </li>
                                         );
                                     })}

@@ -58,6 +58,7 @@ Route::middleware('auth')->group(function () {
         Route::get('activities', [ActivityController::class, 'apiIndex'])->name('index');
         Route::post('activities', [ActivityController::class, 'apiStore'])->name('store');
         Route::post('activities/{activity}/complete', [ActivityController::class, 'apiComplete'])->name('complete');
+        Route::post('activities/{activity}/uncomplete', [ActivityController::class, 'apiUncomplete'])->name('uncomplete');
         Route::delete('activities/{activity}', [ActivityController::class, 'apiDestroy'])->name('destroy');
     });
 
@@ -80,6 +81,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('activities', ActivityController::class)->except(['create', 'edit', 'show']);
     Route::post('activities/{activity}/complete', [ActivityController::class, 'complete'])->name('activities.complete');
+    Route::post('activities/{activity}/uncomplete', [ActivityController::class, 'uncomplete'])->name('activities.uncomplete');
 
     Route::post('notes', [NoteController::class, 'store'])->name('notes.store');
 
