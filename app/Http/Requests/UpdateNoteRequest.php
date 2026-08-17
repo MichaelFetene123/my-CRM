@@ -13,10 +13,7 @@ class UpdateNoteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        /** @var Note $note */
-        $note = $this->route('note');
-
-        return ! $note->is_system_generated;
+        return true;
     }
 
     /**

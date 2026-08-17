@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import type { Note, Activity } from '@/types';
+import { CheckCircle2 } from 'lucide-react';
 
 type TimelineEntry =
     { kind: 'note'; data: Note } | { kind: 'activity'; data: Activity };
@@ -36,9 +37,7 @@ export function TimelineItem({ entry }: { entry: TimelineEntry }) {
         return (
             <li className="space-y-1 border-l-2 py-1 pl-3 text-sm">
                 <div className="flex items-center gap-2">
-                    {note.is_system_generated && (
-                        <Badge variant="outline">system</Badge>
-                    )}
+
                     <span className="text-xs text-muted-foreground">
                         {date}
                     </span>
@@ -66,11 +65,17 @@ export function TimelineItem({ entry }: { entry: TimelineEntry }) {
                 >
                     {activity.type}
                 </Badge>
+                {activity.completed_at && (
+                    <Badge variant="outline" className="gap-1 border-green-600 text-green-600 pl-1.5">
+                        <CheckCircle2 className="h-3 w-3" />
+                        Completed
+                    </Badge>
+                )}
                 <span className="text-xs text-muted-foreground">{date}</span>
             </div>
             <p>
                 {activity.completed_at
-                    ? 'Completed'
+                    ? `Due ${new Date(activity.due_at).toLocaleDateString()}`
                     : isOverdue
                       ? `Overdue — was due ${new Date(activity.due_at).toLocaleDateString()}`
                       : `Due ${new Date(activity.due_at).toLocaleDateString()}`}

@@ -26,11 +26,7 @@ class MarkOpportunityWon
 
             $opportunity->contact->update(['status' => 'customer']);
 
-            $opportunity->notes()->create([
-                'body' => 'Opportunity marked as Won',
-                'is_system_generated' => true,
-                'created_by' => $opportunity->owner_id,
-            ]);
+
 
             return $opportunity;
         });

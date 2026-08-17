@@ -12,7 +12,6 @@ class NoteController extends Controller
     {
         Note::create([
             ...$request->validated(),
-            'is_system_generated' => false,
             'created_by' => $request->user()->id,
         ]);
 
@@ -23,7 +22,6 @@ class NoteController extends Controller
     {
         $note = Note::create([
             ...$request->validated(),
-            'is_system_generated' => false,
             'created_by' => $request->user()->id,
         ]);
 
@@ -48,10 +46,6 @@ class NoteController extends Controller
 
     public function apiDestroy(Note $note)
     {
-        if ($note->is_system_generated) {
-            abort(403, 'System generated notes cannot be deleted.');
-        }
-
         $note->delete();
 
         return response()->noContent();

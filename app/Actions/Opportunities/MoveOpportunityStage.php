@@ -23,11 +23,7 @@ class MoveOpportunityStage
                 'stage_entered_at' => now(),
             ]);
 
-            $opportunity->notes()->create([
-                'body' => "Stage changed from {$oldStageName} to {$newStage->name}",
-                'is_system_generated' => true,
-                'created_by' => $opportunity->owner_id,
-            ]);
+
 
             return $opportunity;
         });

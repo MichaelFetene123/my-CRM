@@ -25,11 +25,7 @@ class MarkOpportunityLost
                 'stage_entered_at' => now(),
             ]);
 
-            $opportunity->notes()->create([
-                'body' => "Opportunity marked as Lost: {$reason}",
-                'is_system_generated' => true,
-                'created_by' => $opportunity->owner_id,
-            ]);
+
 
             return $opportunity;
         });

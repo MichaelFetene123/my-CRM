@@ -118,28 +118,26 @@ export default function NotesIndex() {
                                                         <p className="line-clamp-2 text-sm">{note.body}</p>
                                                     </TableCell>
                                                     <TableCell className="pr-6 text-right">
-                                                        {!note.is_system_generated && (
-                                                            <div className="flex justify-end gap-2">
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    onClick={() => {
-                                                                        setEditNote(note);
-                                                                        setEditBody(note.body);
-                                                                    }}
-                                                                >
-                                                                    <Edit className="h-4 w-4" />
-                                                                </Button>
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                                                                    onClick={() => setDeleteNoteId(note.id)}
-                                                                >
-                                                                    <Trash2 className="h-4 w-4" />
-                                                                </Button>
-                                                            </div>
-                                                        )}
+                                                        <div className="flex justify-end gap-2">
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                onClick={() => {
+                                                                    setEditNote(note);
+                                                                    setEditBody(note.body);
+                                                                }}
+                                                            >
+                                                                <Edit className="h-4 w-4" />
+                                                            </Button>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                                                onClick={() => setDeleteNoteId(note.id)}
+                                                            >
+                                                                <Trash2 className="h-4 w-4" />
+                                                            </Button>
+                                                        </div>
                                                     </TableCell>
                                                 </TableRow>
                                             );

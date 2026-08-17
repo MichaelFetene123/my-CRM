@@ -12,7 +12,6 @@ use Illuminate\Support\Carbon;
  * @property string $entity_type
  * @property int $entity_id
  * @property string $body
- * @property bool $is_system_generated
  * @property int|null $created_by
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -21,10 +20,9 @@ use Illuminate\Support\Carbon;
  */
 class Note extends Model
 {
-    protected $fillable = ['entity_type', 'entity_id', 'body', 'is_system_generated', 'created_by'];
+    protected $fillable = ['entity_type', 'entity_id', 'body', 'created_by'];
 
     protected $casts = [
-        'is_system_generated' => 'boolean',
     ];
 
     public function entity(): MorphTo

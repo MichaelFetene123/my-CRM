@@ -43,11 +43,7 @@ class ConvertLeadToOpportunity
 
             $lead->update(['status' => 'converted', 'contact_id' => $contact->id]);
 
-            $opportunity->notes()->create([
-                'body' => "Converted from Lead #{$lead->id}",
-                'is_system_generated' => true,
-                'created_by' => $lead->owner_id,
-            ]);
+
 
             return $opportunity;
         });

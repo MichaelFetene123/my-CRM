@@ -82,7 +82,6 @@ export interface Note {
     entity_type: string;
     entity_id: number;
     body: string;
-    is_system_generated: boolean;
     created_by: number | null;
     created_at: string;
     entity?: {
