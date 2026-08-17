@@ -4,10 +4,7 @@ import AppLayout from '@/layouts/app-layout';
 import { useForm } from 'react-hook-form';
 import { useContact } from '@/hooks/contacts/use-contact';
 import { useUpdateContact } from '@/hooks/contacts/use-update-contact';
-import {
-    mergeTimeline,
-    TimelineItem,
-} from '@/components/timeline/timeline-item';
+import { Timeline } from '@/components/timeline/timeline';
 import { ActivityForm } from '@/components/activities/activity-form';
 import { NoteForm } from '@/components/notes/note-form';
 import { Badge } from '@/components/ui/badge';
@@ -371,24 +368,7 @@ export default function ContactShow({ contact: initialContact }: Props) {
                         </div>
                     </CardHeader>
                     <CardContent>
-                        {contact.notes.length === 0 &&
-                        contact.activities.length === 0 ? (
-                            <p className="text-sm text-muted-foreground italic">
-                                No timeline entries yet.
-                            </p>
-                        ) : (
-                            <ul className="space-y-2">
-                                {mergeTimeline(
-                                    contact.notes,
-                                    contact.activities,
-                                ).map((entry) => (
-                                    <TimelineItem
-                                        key={`${entry.kind}-${entry.data.id}`}
-                                        entry={entry}
-                                    />
-                                ))}
-                            </ul>
-                        )}
+                        <Timeline notes={contact.notes} activities={contact.activities} />
                     </CardContent>
                 </Card>
             </div>

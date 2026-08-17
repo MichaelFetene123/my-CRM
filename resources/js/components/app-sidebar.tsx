@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, Users, Target, GitBranch, ListChecks, Shield, UserCog } from 'lucide-react';
+import { LayoutGrid, Users, Target, GitBranch, ListChecks, Shield, UserCog, StickyNote } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -65,6 +65,12 @@ export function AppSidebar() {
             badge: unreadCount > 0 ? unreadCount : undefined,
         });
     }
+
+    mainNavItems.push({
+        title: 'Notes',
+        href: '/notes',
+        icon: StickyNote,
+    });
 
     if (auth.permissions?.manage_users) {
         mainNavItems.push({

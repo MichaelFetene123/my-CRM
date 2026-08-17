@@ -17,6 +17,7 @@ Route::get('/', fn () => Inertia::render('welcome'))->name('home');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/notes', fn () => Inertia::render('notes-index'))->name('notes.index');
 
     Route::resource('contacts', ContactController::class)->except(['create', 'edit']);
     Route::prefix('api')->name('apiContacts.')->group(function () {
@@ -61,7 +62,10 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('api')->name('apiNotes.')->group(function () {
+        Route::get('notes', [NoteController::class, 'apiIndex'])->name('index');
         Route::post('notes', [NoteController::class, 'apiStore'])->name('store');
+        Route::put('notes/{note}', [NoteController::class, 'apiUpdate'])->name('update');
+        Route::delete('notes/{note}', [NoteController::class, 'apiDestroy'])->name('destroy');
     });
     Route::resource('leads', LeadController::class)->except(['create', 'edit']);
     Route::post('leads/{lead}/convert', [LeadController::class, 'convert'])->name('leads.convert');

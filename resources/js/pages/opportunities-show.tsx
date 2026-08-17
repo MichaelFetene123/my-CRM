@@ -8,10 +8,7 @@ import { useLostOpportunity } from '@/hooks/opportunities/use-lost-opportunity';
 import { useDeleteOpportunity } from '@/hooks/opportunities/use-delete-opportunity';
 import { useReopenOpportunity } from '@/hooks/opportunities/use-reopen-opportunity';
 import AppLayout from '@/layouts/app-layout';
-import {
-    mergeTimeline,
-    TimelineItem,
-} from '@/components/timeline/timeline-item';
+import { Timeline } from '@/components/timeline/timeline';
 import { ActivityForm } from '@/components/activities/activity-form';
 import { NoteForm } from '@/components/notes/note-form';
 import { Button } from '@/components/ui/button';
@@ -309,24 +306,7 @@ export default function OpportunityShow({
                         </div>
                     </CardHeader>
                     <CardContent>
-                        {opportunity.notes.length === 0 &&
-                        opportunity.activities.length === 0 ? (
-                            <p className="text-sm text-muted-foreground italic">
-                                No timeline entries yet.
-                            </p>
-                        ) : (
-                            <ul className="space-y-2">
-                                {mergeTimeline(
-                                    opportunity.notes,
-                                    opportunity.activities,
-                                ).map((entry) => (
-                                    <TimelineItem
-                                        key={`${entry.kind}-${entry.data.id}`}
-                                        entry={entry}
-                                    />
-                                ))}
-                            </ul>
-                        )}
+                        <Timeline notes={opportunity.notes} activities={opportunity.activities} />
                     </CardContent>
                 </Card>
             </div>

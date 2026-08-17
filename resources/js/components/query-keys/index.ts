@@ -29,10 +29,11 @@ export const activityKeys = {
     detail: (id: number) => [...activityKeys.all, 'detail', id] as const,
 };
 
-
-
-
-
+export const noteKeys = {
+    all: ['notes'] as const,
+    list: (params?: any) => [...noteKeys.all, 'list', params] as const,
+    detail: (id: number) => [...noteKeys.all, 'detail', id] as const,
+};
 export const userKeys = {
     all: ['users'] as const,
     list: () => [...userKeys.all, 'list'] as const,

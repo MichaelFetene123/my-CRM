@@ -79,12 +79,23 @@ export interface Activity {
 
 export interface Note {
     id: number;
-    entity_type: 'lead' | 'opportunity' | 'contact';
+    entity_type: string;
     entity_id: number;
     body: string;
     is_system_generated: boolean;
     created_by: number | null;
     created_at: string;
+    entity?: {
+        id?: number;
+        name?: string;
+        title?: string;
+        [key: string]: any;
+    };
+    creator?: {
+        id: number;
+        name: string;
+        [key: string]: any;
+    };
 }
 
 export interface PaginatedData<T> {
