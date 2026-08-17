@@ -64,9 +64,14 @@ function RoleCard({ role, onEdit }: { role: Role; onEdit: (role: Role) => void }
                                     <DialogClose render={<Button variant="secondary" />}>
                                         Cancel
                                     </DialogClose>
-                                    <DialogClose render={<Button variant="destructive" onClick={() => deleteMutation.mutate(role.id)} />}>
+                                    <Button 
+                                        variant="destructive" 
+                                        onClick={() => deleteMutation.mutate(role.id)}
+                                        disabled={deleteMutation.isPending}
+                                    >
+                                        {deleteMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                         Delete Role
-                                    </DialogClose>
+                                    </Button>
                                 </DialogFooter>
                             </DialogContent>
                         </Dialog>
