@@ -1,4 +1,5 @@
-import { Form } from '@inertiajs/react';
+import { Form, usePage } from '@inertiajs/react';
+import type { Auth } from '@/types';
 import { useRef } from 'react';
 import { toast } from 'sonner';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
@@ -19,6 +20,28 @@ import { Label } from '@/components/ui/label';
 
 export default function DeleteUser() {
     const passwordInput = useRef<HTMLInputElement>(null);
+    const { auth } = usePage<{ auth: Auth }>().props;
+
+    const isSuperAdmin = auth.user.roles?.some((role) => role.name === 'Super Admin');
+
+    if (isSuperAdmin) {
+        return (
+            <div className="space-y-6">
+                <Heading
+                    variant="small"
+                    title="Delete account"
+                    description="Delete your account and all of its resources"
+                />
+                <div className="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
+                    <div className="relative space-y-0.5 text-red-600 dark:text-red-500">
+                        <p className="text-sm font-medium">
+                            Super Admin accounts cannot be self-deleted.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6">

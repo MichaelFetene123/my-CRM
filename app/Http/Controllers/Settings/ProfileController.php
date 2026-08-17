@@ -50,6 +50,10 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
+        if ($user->hasRole('Super Admin')) {
+            return back()->withErrors(['password' => 'Super Admin accounts cannot be self-deleted.']);
+        }
+
         Auth::logout();
 
         $user->delete();
