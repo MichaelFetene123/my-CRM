@@ -70,7 +70,7 @@ function NoteItem({ note, date }: { note: Note; date: string }) {
                     <Textarea
                         value={body}
                         onChange={(e) => setBody(e.target.value)}
-                        className="text-sm min-h-[80px]"
+                        className="text-sm min-h-20"
                     />
                     <div className="flex gap-2 justify-end">
                         <Button
