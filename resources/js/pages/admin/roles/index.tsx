@@ -12,6 +12,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import {
+    Dialog,
+    DialogTrigger,
+    DialogContent,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+    DialogClose,
+} from '@/components/ui/dialog';
 import { useForm, Controller } from 'react-hook-form';
 import { useCreateRole, CreateRoleData } from '@/hooks/roles/use-create-role';
 import { useUpdateRole, UpdateRoleData } from '@/hooks/roles/use-update-role';
@@ -24,12 +33,6 @@ import { useState, useMemo } from 'react';
 function RoleCard({ role, onEdit }: { role: Role; onEdit: (role: Role) => void }) {
     const deleteMutation = useDeleteRole();
     const { hasPermission } = useAppPermissions();
-
-    const onDelete = () => {
-        if (window.confirm(`Are you sure you want to delete the role "${role.name}"?`)) {
-            deleteMutation.mutate(role.id);
-        }
-    };
 
     return (
         <Card className="flex flex-col sm:flex-row sm:items-center justify-between p-6 gap-4">
@@ -48,9 +51,25 @@ function RoleCard({ role, onEdit }: { role: Role; onEdit: (role: Role) => void }
                         </Button>
                         )}
                         {hasPermission('roles.delete') && (
-                        <Button variant="destructive" size="sm" onClick={onDelete} disabled={deleteMutation.isPending}>
-                            {deleteMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-                        </Button>
+                        <Dialog>
+                            <DialogTrigger render={<Button variant="destructive" size="sm" disabled={deleteMutation.isPending} />}>
+                                {deleteMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogTitle>Delete Role</DialogTitle>
+                                <DialogDescription>
+                                    Are you sure you want to delete the role "{role.name}"? This action cannot be undone.
+                                </DialogDescription>
+                                <DialogFooter className="gap-2 sm:justify-end">
+                                    <DialogClose render={<Button variant="secondary" />}>
+                                        Cancel
+                                    </DialogClose>
+                                    <DialogClose render={<Button variant="destructive" onClick={() => deleteMutation.mutate(role.id)} />}>
+                                        Delete Role
+                                    </DialogClose>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
                         )}
                     </>
                 )}
