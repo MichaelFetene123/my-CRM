@@ -38,7 +38,7 @@ export function GlobalSearch() {
                         onChange={(e) => setQuery(e.target.value)}
                         autoFocus
                     />
-                    {isLoading && <Loader2Icon className="h-4 w-4 animate-spin opacity-50" />}
+                    {isLoading && <Loader2Icon className="mr-8 h-4 w-4 animate-spin opacity-50" />}
                 </div>
                 
                 <div className="max-h-75 overflow-y-auto p-2">
