@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLeads } from '@/hooks/leads/use-leads';
@@ -182,7 +182,11 @@ export default function LeadsIndex() {
                                 </TableHeader>
                                 <TableBody>
                                     {leads?.data?.map((lead) => (
-                                        <TableRow key={lead.id}>
+                                        <TableRow 
+                                            key={lead.id}
+                                            className="cursor-pointer"
+                                            onClick={() => router.visit(leadsRoute.show(lead.id).url)}
+                                        >
                                             <TableCell className="pl-6 font-medium">
                                                 {lead.name}
                                             </TableCell>
