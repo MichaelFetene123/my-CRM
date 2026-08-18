@@ -4,6 +4,7 @@ import AppLayout from '@/layouts/app-layout';
 import { useForm } from 'react-hook-form';
 import { useContact } from '@/hooks/contacts/use-contact';
 import { useUpdateContact } from '@/hooks/contacts/use-update-contact';
+import { useDeleteContact } from '@/hooks/contacts/use-delete-contact';
 import { Timeline } from '@/components/timeline/timeline';
 import { ActivityForm } from '@/components/activities/activity-form';
 import { NoteForm } from '@/components/notes/note-form';
@@ -12,13 +13,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2Icon } from 'lucide-react';
+import { Loader2Icon, Trash2 } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
+    DialogDescription,
+    DialogFooter,
 } from '@/components/ui/dialog';
 import {
     Table,
@@ -52,7 +55,9 @@ export default function ContactShow({ contact: initialContact }: Props) {
     const { data } = useContact(initialContact.id, initialContact);
     const contact = data || initialContact;
     const { mutate, isPending } = useUpdateContact(contact.id);
+    const { mutate: deleteMutate, isPending: isDeleting } = useDeleteContact();
     const [open, setOpen] = useState(false);
+    const [deleteOpen, setDeleteOpen] = useState(false);
     const [noteOpen, setNoteOpen] = useState(false);
     const [activityOpen, setActivityOpen] = useState(false);
     const { hasPermission } = usePermissions();
@@ -126,11 +131,12 @@ export default function ContactShow({ contact: initialContact }: Props) {
                             {contact.status}
                         </Badge>
                     </div>
-                    {hasPermission('contacts.update') && (
-                        <Dialog open={open} onOpenChange={setOpen}>
-                            <DialogTrigger render={<Button variant="outline" />}>
-                                Edit Contact
-                            </DialogTrigger>
+                    <div className="flex items-center gap-2">
+                        {hasPermission('contacts.update') && (
+                            <Dialog open={open} onOpenChange={setOpen}>
+                                <DialogTrigger render={<Button variant="outline" />}>
+                                    Edit Contact
+                                </DialogTrigger>
                             <DialogContent>
                                 <DialogHeader>
                                     <DialogTitle>Edit Contact</DialogTitle>
@@ -189,8 +195,52 @@ export default function ContactShow({ contact: initialContact }: Props) {
                                 </div>
                             </form>
                         </DialogContent>
-                    </Dialog>
-                    )}
+                        </Dialog>
+                        )}
+
+                        {hasPermission('contacts.delete') && (
+                            <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+                                <DialogTrigger
+                                    render={
+                                        <Button
+                                            variant="ghost"
+                                            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                            disabled={isDeleting}
+                                        />
+                                    }
+                                >
+                                    <Trash2 className="h-5 w-5" />
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Delete Contact</DialogTitle>
+                                    </DialogHeader>
+                                    <DialogDescription>
+                                        Are you sure you want to delete this
+                                        contact? This action cannot be undone.
+                                    </DialogDescription>
+                                    <DialogFooter>
+                                        <Button
+                                            variant="outline"
+                                            onClick={() => setDeleteOpen(false)}
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            variant="destructive"
+                                            onClick={() => deleteMutate({ id: contact.id })}
+                                            disabled={isDeleting}
+                                        >
+                                            {isDeleting && (
+                                                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                                            )}
+                                            Delete
+                                        </Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                        )}
+                    </div>
                 </div>
 
                 <Card>

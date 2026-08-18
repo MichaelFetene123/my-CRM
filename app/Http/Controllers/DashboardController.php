@@ -28,6 +28,8 @@ class DashboardController extends Controller
                 ->count(...)),
             'leadsBySource' => Inertia::defer(Lead::selectRaw('COALESCE(source, "Unknown") as source, COUNT(*) as count')
                 ->groupBy('source')
+                ->orderByDesc('count')
+                ->limit(7)
                 ->get(...)),
         ]);
     }

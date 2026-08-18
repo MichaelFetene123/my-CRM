@@ -82,6 +82,10 @@ class ContactController extends Controller
     {
         Gate::authorize('delete', $contact);
 
+        if ($contact->opportunities()->exists() || $contact->leads()->exists()) {
+            return back()->withErrors(['error' => 'Cannot delete this contact because they have active opportunities or leads. Please delete or reassign them first.']);
+        }
+
         $contact->delete();
 
         return redirect()->route('contacts.index');
@@ -90,6 +94,15 @@ class ContactController extends Controller
     public function apiDestroy(Contact $contact)
     {
         Gate::authorize('delete', $contact);
+
+        if ($contact->opportunities()->exists() || $contact->leads()->exists()) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'contact' => ['Cannot delete this contact because they have active opportunities or leads. Please delete or reassign them first.']
+                ]
+            ], 422);
+        }
 
         $contact->delete();
 
