@@ -20,7 +20,7 @@ class DashboardController extends Controller
             'pipelineByStage' => Inertia::defer(fn () => PipelineStage::withCount(['opportunities' => fn ($q) => $q->where('status', 'open')])
                 ->orderBy('order')
                 ->get(['id', 'name', 'order'])
-                ->map(fn ($stage) => ['name' => $stage->name, 'count' => $stage->opportunities_count])),
+                ->map(fn ($stage) => ['id' => $stage->id, 'name' => $stage->name, 'count' => $stage->opportunities_count])),
             'winRate' => Inertia::defer($this->winRate(...)),
             'overdueActivities' => Inertia::defer(Activity::overdue()->count(...)),
             'upcomingActivities' => Inertia::defer(Activity::whereNull('completed_at')

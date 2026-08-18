@@ -1,7 +1,14 @@
 import { Head, Deferred } from '@inertiajs/react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ChartSkeleton } from '@/components/skeleton/chart-skeleton';
 import type { BreadcrumbItem } from '@/types';
+import AppLayout from '@/layouts/app-layout';
+
+import { MetricCard } from '@/components/dashboard/metric-card';
+import { PipelineChart } from '@/components/dashboard/pipeline-chart';
+import { WinRateChart } from '@/components/dashboard/win-rate-chart';
+import { LeadsChart } from '@/components/dashboard/leads-chart';
+import { ActivityChart } from '@/components/dashboard/activity-chart';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
@@ -9,30 +16,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface Props {
     openPipeline: { count: number };
-    pipelineByStage: { name: string; count: number }[];
+    pipelineByStage: { id: number; name: string; count: number }[];
     winRate: { won: number; lost: number; rate: number };
     overdueActivities: number;
     upcomingActivities: number;
     leadsBySource: { source: string; count: number }[];
-}
-
-function MetricCard({
-    title,
-    children,
-}: {
-    title: string;
-    children: React.ReactNode;
-}) {
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle className="text-sm text-muted-foreground">
-                    {title}
-                </CardTitle>
-            </CardHeader>
-            <CardContent>{children}</CardContent>
-        </Card>
-    );
 }
 
 export default function Dashboard(props: Props) {
@@ -96,7 +84,7 @@ export default function Dashboard(props: Props) {
                         <ul className="space-y-1 text-sm">
                             {props.pipelineByStage?.map((s) => (
                                 <li
-                                    key={s.name}
+                                    key={s.id}
                                     className="flex justify-between"
                                 >
                                     <span>{s.name}</span>
@@ -130,10 +118,36 @@ export default function Dashboard(props: Props) {
                     </Deferred>
                 </MetricCard>
             </div>
+
+            <div className="grid grid-cols-1 gap-4 px-6 pb-6 lg:grid-cols-2">
+                <MetricCard title="Pipeline by Stage">
+                    <Deferred data="pipelineByStage" fallback={<ChartSkeleton />}>
+                        <PipelineChart data={props.pipelineByStage} />
+                    </Deferred>
+                </MetricCard>
+
+                <MetricCard title="Win Rate">
+                    <Deferred data="winRate" fallback={<ChartSkeleton />}>
+                        <WinRateChart winRate={props.winRate} />
+                    </Deferred>
+                </MetricCard>
+
+                <MetricCard title="Leads by Source">
+                    <Deferred data="leadsBySource" fallback={<ChartSkeleton />}>
+                        <LeadsChart data={props.leadsBySource} />
+                    </Deferred>
+                </MetricCard>
+
+                <MetricCard title="Activity Overview">
+                    <Deferred data="upcomingActivities,overdueActivities" fallback={<ChartSkeleton />}>
+                        <ActivityChart upcoming={props.upcomingActivities} overdue={props.overdueActivities} />
+                    </Deferred>
+                </MetricCard>
+            </div>
         </>
     );
 }
 
-Dashboard.layout = {
-    breadcrumbs,
-};
+Dashboard.layout = (page: React.ReactNode) => (
+    <AppLayout breadcrumbs={breadcrumbs}>{page}</AppLayout>
+);
