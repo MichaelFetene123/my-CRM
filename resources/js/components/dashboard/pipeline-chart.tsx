@@ -1,11 +1,10 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 
 const chartConfig = {
     count: {
         label: "Opportunities",
-        color: "hsl(var(--primary))",
     }
 } satisfies ChartConfig;
 
@@ -18,7 +17,11 @@ export function PipelineChart({ data }: { data: any[] }) {
                 <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={10} />
                 <YAxis tickLine={false} axisLine={false} tickMargin={10} />
                 <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-                <Bar dataKey="count" fill="var(--color-count)" radius={4} />
+                <Bar dataKey="count" radius={4}>
+                    {data.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={`var(--chart-${(index % 5) + 1})`} />
+                    ))}
+                </Bar>
             </BarChart>
         </ChartContainer>
     );

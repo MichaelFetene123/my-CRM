@@ -16,8 +16,8 @@ const chartConfig = {
 export function WinRateChart({ winRate }: { winRate: any }) {
     if (!winRate) return null;
     const data = [
-        { name: 'won', value: winRate.won || 0, fill: "var(--color-won)" },
-        { name: 'lost', value: winRate.lost || 0, fill: "var(--color-lost)" },
+        { name: 'won', value: winRate.won || 0, fill: "var(--chart-1)" },
+        { name: 'lost', value: winRate.lost || 0, fill: "var(--chart-5)" },
     ];
     return (
         <div className="relative flex h-72 w-full items-center justify-center">

@@ -18,8 +18,8 @@ const chartConfig = {
 
 export function ActivityChart({ upcoming, overdue }: { upcoming: number; overdue: number }) {
     const data = [
-        { name: 'Upcoming', count: upcoming || 0, fill: "var(--color-upcoming)" },
-        { name: 'Overdue', count: overdue || 0, fill: "var(--color-overdue)" },
+        { name: 'Upcoming', count: upcoming || 0, fill: "var(--chart-4)" },
+        { name: 'Overdue', count: overdue || 0, fill: "var(--chart-1)" },
     ];
     return (
         <ChartContainer config={chartConfig} className="h-72 w-full">
