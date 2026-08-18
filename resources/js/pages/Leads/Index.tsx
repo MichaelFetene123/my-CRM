@@ -10,6 +10,8 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
+    DialogFooter,
+    DialogDescription,
 } from '@/components/ui/dialog';
 import {
     Table,
@@ -25,7 +27,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, Edit, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Edit, Trash2, Loader2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import leadsRoute from '@/routes/leads';
@@ -41,14 +43,17 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function LeadsIndex() {
     const [open, setOpen] = useState(false);
     const [editingLead, setEditingLead] = useState<Lead | null>(null);
+    const [leadToDelete, setLeadToDelete] = useState<number | null>(null);
     const { hasPermission } = usePermissions();
 
     const { data: leads, isLoading } = useLeads();
-    const { mutate: deleteLead } = useDeleteLead();
+    const { mutate: deleteLead, isPending: deletePending } = useDeleteLead();
 
-    const handleDelete = (id: number) => {
-        if (confirm('Are you sure you want to delete this lead?')) {
-            deleteLead(id);
+    const handleDelete = () => {
+        if (leadToDelete) {
+            deleteLead(leadToDelete, {
+                onSuccess: () => setLeadToDelete(null)
+            });
         }
     };
 
@@ -62,6 +67,25 @@ export default function LeadsIndex() {
     return (
         <>
             <Head title="Leads" />
+            <Dialog open={leadToDelete !== null} onOpenChange={(isOpen) => !isOpen && setLeadToDelete(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Delete Lead</DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to delete this lead? This action cannot be undone.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setLeadToDelete(null)}>
+                            Cancel
+                        </Button>
+                        <Button variant="destructive" onClick={handleDelete} disabled={deletePending}>
+                            {deletePending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Delete
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
             <div className="w-full space-y-4 p-6">
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-semibold">Leads</h1>
@@ -107,7 +131,7 @@ export default function LeadsIndex() {
                                         <TableHead className="text-right">
                                             Status
                                         </TableHead>
-                                        <TableHead className="w-[50px] pr-6"></TableHead>
+                                        <TableHead className="w-12.5 pr-6"></TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -160,7 +184,7 @@ export default function LeadsIndex() {
                                                         {hasPermission('leads.delete') && (
                                                             <DropdownMenuItem 
                                                                 className="text-destructive focus:text-destructive"
-                                                                onClick={() => handleDelete(lead.id)}
+                                                                onClick={() => setLeadToDelete(lead.id)}
                                                             >
                                                                 <Trash2 className="mr-2 h-4 w-4" />
                                                                 Delete

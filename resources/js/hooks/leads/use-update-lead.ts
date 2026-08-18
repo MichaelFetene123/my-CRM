@@ -18,11 +18,14 @@ export function useUpdateLead(leadId: number) {
     return useMutation<Lead, ApiError, UpdateLeadData>({
         mutationFn: async (data) => {
             const { id, ...payload } = data;
-            return await api.put(apiLeadsRoute.update(id).url, payload);
+            return await api.post(apiLeadsRoute.update(id).url, {
+                _method: 'PUT',
+                ...payload,
+            });
         },
         onSuccess: (updatedLead) => {
             toast.success('Lead updated successfully');
-            queryClient.invalidateQueries({ queryKey: leadKeys.all });
+            return queryClient.invalidateQueries({ queryKey: leadKeys.all });
         },
         onError: (error) => {
             toast.error(error.message || 'An error occurred while updating the lead');

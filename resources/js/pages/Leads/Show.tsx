@@ -7,13 +7,15 @@ import leadsRoute from '@/routes/leads';
 import type { Lead, BreadcrumbItem } from '@/types';
 import { usePermissions } from '@/hooks/use-permissions';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Loader2, Loader2Icon, Trash2 } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
+    DialogFooter,
+    DialogDescription,
 } from '@/components/ui/dialog';
 import { LeadForm } from '@/components/leads/lead-form';
 import { useDeleteLead } from '@/hooks/leads/use-delete-lead';
@@ -27,17 +29,17 @@ interface Props {
 
 export default function LeadShow({ lead }: Props) {
     const [open, setOpen] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const { hasPermission } = usePermissions();
-    const { mutate: deleteLead } = useDeleteLead();
+    const { mutate: deleteLead, isPending: deletePending } = useDeleteLead();
 
     const handleDelete = () => {
-        if (confirm('Are you sure you want to delete this lead?')) {
-            deleteLead(lead.id, {
-                onSuccess: () => {
-                    router.visit(leadsRoute.index().url);
-                },
-            });
-        }
+        deleteLead(lead.id, {
+            onSuccess: () => {
+                setDeleteDialogOpen(false);
+                router.visit(leadsRoute.index().url);
+            },
+        });
     };
 
     const statusVariant: Record<string, any> = {
@@ -89,10 +91,33 @@ export default function LeadShow({ lead }: Props) {
                             </Dialog>
                         )}
                         {hasPermission('leads.delete') && (
-                            <Button variant="destructive" onClick={handleDelete}>
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                Delete Lead
-                            </Button>
+                            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                                <DialogTrigger
+                                    render={
+                                        <Button variant="destructive">
+                                            <Trash2 className="mr-2 h-4 w-4" />
+                                            Delete Lead
+                                        </Button>
+                                    }
+                                />
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Delete Lead</DialogTitle>
+                                        <DialogDescription>
+                                            Are you sure you want to delete this lead? This action cannot be undone.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <DialogFooter>
+                                        <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+                                            Cancel
+                                        </Button>
+                                        <Button variant="destructive" onClick={handleDelete} disabled={deletePending}>
+                                            {deletePending && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+                                            Delete
+                                        </Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
                         )}
                     </div>
                 </div>
