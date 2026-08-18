@@ -7,7 +7,8 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use Spatie\Permission\Models\Permission;
+use App\Models\Permission;
+use App\Models\Role;
 
 class LeadApiUpdateTest extends TestCase
 {
@@ -17,8 +18,10 @@ class LeadApiUpdateTest extends TestCase
     {
         $user = User::factory()->create();
         
+        $role = Role::firstOrCreate(['name' => 'Test Role']);
         $permission = Permission::firstOrCreate(['name' => 'leads.update']);
-        $user->givePermissionTo($permission);
+        $role->permissions()->attach($permission);
+        $user->roles()->attach($role);
 
         $lead = Lead::factory()->create([
             'name' => 'Old Name',
