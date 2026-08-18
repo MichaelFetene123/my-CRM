@@ -96,9 +96,12 @@ export default function LeadShow({ lead: initialLead }: Props) {
                             <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                                 <DialogTrigger
                                     render={
-                                        <Button variant="destructive">
-                                            <Trash2 className="mr-2 h-4 w-4" />
-                                            Delete Lead
+                                        <Button 
+                                            variant="ghost"
+                                            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                            disabled={deletePending}
+                                        >
+                                            <Trash2 className="h-5 w-5" />
                                         </Button>
                                     }
                                 />
