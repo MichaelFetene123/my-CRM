@@ -1,8 +1,11 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 import { useContacts } from '@/hooks/contacts/use-contacts';
 import { useCreateContact } from '@/hooks/contacts/use-create-contact';
+import { useUpdateContact } from '@/hooks/contacts/use-update-contact';
+import { useDeleteContact } from '@/hooks/contacts/use-delete-contact';
 import { TableSkeleton } from '@/components/skeleton/table-skeleton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,7 +16,15 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
+    DialogFooter,
+    DialogDescription,
 } from '@/components/ui/dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
     Table,
     TableBody,
@@ -24,7 +35,7 @@ import {
 } from '@/components/ui/table';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2Icon } from 'lucide-react';
+import { Loader2Icon, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
 import contacts from '@/routes/contacts';
 import type { Contact, PaginatedData, BreadcrumbItem } from '@/types';
 
@@ -36,10 +47,23 @@ import { usePermissions } from '@/hooks/use-permissions';
 
 export default function Contacts() {
     const [open, setOpen] = useState(false);
+    const [editingContact, setEditingContact] = useState<Contact | null>(null);
+    const [contactToDelete, setContactToDelete] = useState<number | null>(null);
     const { hasPermission } = usePermissions();
 
     const { data: contactList, isLoading } = useContacts();
-    const { mutate, isPending } = useCreateContact();
+    const { mutate: createContact, isPending: isCreating } = useCreateContact();
+    const { mutate: updateContact, isPending: isUpdating } = useUpdateContact(editingContact?.id || 0);
+    const { mutate: deleteContact, isPending: deletePending } = useDeleteContact();
+    const isPending = isCreating || isUpdating;
+
+    const handleDelete = () => {
+        if (contactToDelete) {
+            deleteContact({ id: contactToDelete }, {
+                onSuccess: () => setContactToDelete(null)
+            });
+        }
+    };
 
     const {
         register,
@@ -56,11 +80,28 @@ export default function Contacts() {
         },
     });
 
+    useEffect(() => {
+        if (editingContact) {
+            reset({
+                name: editingContact.name,
+                company: editingContact.company || '',
+                email: editingContact.email || '',
+                phone: editingContact.phone || '',
+            });
+        } else {
+            reset({ name: '', company: '', email: '', phone: '' });
+        }
+    }, [editingContact, reset]);
+
     const onSubmit = (formData: any) => {
-        mutate(formData, {
+        const handler = editingContact ? updateContact : createContact;
+        const payload = editingContact ? { id: editingContact.id, ...formData } : formData;
+
+        handler(payload, {
             onSuccess: () => {
-                reset();
+                reset({ name: '', company: '', email: '', phone: '' });
                 setOpen(false);
+                setEditingContact(null);
             },
             onError: (error) => {
                 if (error.errors) {
@@ -84,17 +125,39 @@ export default function Contacts() {
     return (
         <>
             <Head title="Contacts" />
+            <Dialog open={contactToDelete !== null} onOpenChange={(isOpen) => !isOpen && setContactToDelete(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Delete Contact</DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to delete this contact? This action cannot be undone.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setContactToDelete(null)}>
+                            Cancel
+                        </Button>
+                        <Button variant="destructive" onClick={handleDelete} disabled={deletePending}>
+                            {deletePending && <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />}
+                            Delete
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
             <div className="space-y-4 p-6">
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-semibold">Contacts</h1>
                     {hasPermission('contacts.create') && (
-                        <Dialog open={open} onOpenChange={setOpen}>
-                            <DialogTrigger render={<Button />}>
+                        <Dialog open={open} onOpenChange={(isOpen) => {
+                            if (!isOpen) setEditingContact(null);
+                            setOpen(isOpen);
+                        }}>
+                            <DialogTrigger render={<Button onClick={() => setEditingContact(null)}>
                                 New Contact
-                            </DialogTrigger>
+                            </Button>} />
                             <DialogContent>
                                 <DialogHeader>
-                                    <DialogTitle>New Contact</DialogTitle>
+                                    <DialogTitle>{editingContact ? 'Edit Contact' : 'New Contact'}</DialogTitle>
                                 </DialogHeader>
                                 <form
                                     onSubmit={handleSubmit(onSubmit)}
@@ -161,6 +224,7 @@ export default function Contacts() {
                                         <TableHead className="pr-6 text-right">
                                             Status
                                         </TableHead>
+                                        <TableHead className="w-12.5 pr-6"></TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -194,6 +258,38 @@ export default function Contacts() {
                                                 >
                                                     {contact.status}
                                                 </Badge>
+                                            </TableCell>
+                                            <TableCell className="pr-6 text-right" onClick={(e) => e.stopPropagation()}>
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger
+                                                        render={
+                                                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                                                <span className="sr-only">Open menu</span>
+                                                                <MoreHorizontal className="h-4 w-4" />
+                                                            </Button>
+                                                        }
+                                                    />
+                                                    <DropdownMenuContent align="end">
+                                                        {hasPermission('contacts.update') && (
+                                                            <DropdownMenuItem onClick={() => {
+                                                                setEditingContact(contact);
+                                                                setOpen(true);
+                                                            }}>
+                                                                <Edit className="mr-2 h-4 w-4" />
+                                                                Edit
+                                                            </DropdownMenuItem>
+                                                        )}
+                                                        {hasPermission('contacts.delete') && (
+                                                            <DropdownMenuItem 
+                                                                className="text-destructive focus:text-destructive"
+                                                                onClick={() => setContactToDelete(contact.id)}
+                                                            >
+                                                                <Trash2 className="mr-2 h-4 w-4" />
+                                                                Delete
+                                                            </DropdownMenuItem>
+                                                        )}
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
                                             </TableCell>
                                         </TableRow>
                                     ))}
