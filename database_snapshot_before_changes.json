@@ -1,0 +1,1302 @@
+{
+    "users": [
+        {
+            "id": 2,
+            "name": "MIKI",
+            "email": "admin@gmail.com",
+            "email_verified_at": null,
+            "password": "$2y$12$KhZBw3pQBZdVXugflb8izejBIsmXCelcG5ECc0oqNb\/o2x7sUGWQ6",
+            "two_factor_secret": null,
+            "two_factor_recovery_codes": null,
+            "two_factor_confirmed_at": null,
+            "remember_token": "ZJ7g7VVUOrTXoPztGBg4NHbVXVir1uXToUpOBTX1bxYmx5jeoeGPldH0uCis",
+            "created_at": "2026-08-14 18:01:35",
+            "updated_at": "2026-08-15 11:22:06"
+        },
+        {
+            "id": 7,
+            "name": "Dr. Bradford Smitham",
+            "email": "cleve46@example.org",
+            "email_verified_at": "2026-08-17 10:21:35",
+            "password": "$2y$12$DpsOhvVp2a7r3tAAkHpmGuNdEbm3K10NORJkiaHtDBCVGmq9oe8C.",
+            "two_factor_secret": null,
+            "two_factor_recovery_codes": null,
+            "two_factor_confirmed_at": null,
+            "remember_token": "DsavGb5lBPw20iF21j5QMA4Ku5lQp1IVRmKWNLC2ObRJ73fyxolOlLCRrPyU",
+            "created_at": "2026-08-17 10:21:36",
+            "updated_at": "2026-08-17 10:23:34"
+        },
+        {
+            "id": 8,
+            "name": "Dr. Demond Bashirian DDS",
+            "email": "boehm.kelvin@example.com",
+            "email_verified_at": "2026-08-17 10:21:36",
+            "password": "$2y$12$UHiBblJ1OaDecFm8I1fk8e8F5aXsv4EbLZMUUxvZd8.Tepn\/\/wGli",
+            "two_factor_secret": null,
+            "two_factor_recovery_codes": null,
+            "two_factor_confirmed_at": null,
+            "remember_token": "5a1WqJMUbS",
+            "created_at": "2026-08-17 10:21:36",
+            "updated_at": "2026-08-17 10:21:36"
+        },
+        {
+            "id": 9,
+            "name": "Jaquan Bergnaum",
+            "email": "jaquan.doyle@example.net",
+            "email_verified_at": "2026-08-17 10:21:36",
+            "password": "$2y$12$UHiBblJ1OaDecFm8I1fk8e8F5aXsv4EbLZMUUxvZd8.Tepn\/\/wGli",
+            "two_factor_secret": null,
+            "two_factor_recovery_codes": null,
+            "two_factor_confirmed_at": null,
+            "remember_token": "gZ1WfJbYyM",
+            "created_at": "2026-08-17 10:21:36",
+            "updated_at": "2026-08-17 10:21:36"
+        },
+        {
+            "id": 10,
+            "name": "Ines Rutherford MD",
+            "email": "mconsidine@example.net",
+            "email_verified_at": "2026-08-17 10:21:36",
+            "password": "$2y$12$UHiBblJ1OaDecFm8I1fk8e8F5aXsv4EbLZMUUxvZd8.Tepn\/\/wGli",
+            "two_factor_secret": null,
+            "two_factor_recovery_codes": null,
+            "two_factor_confirmed_at": null,
+            "remember_token": "9Y3saBoqlY",
+            "created_at": "2026-08-17 10:21:36",
+            "updated_at": "2026-08-17 10:21:36"
+        },
+        {
+            "id": 11,
+            "name": "Keegan Will I",
+            "email": "dicki.blake@example.org",
+            "email_verified_at": "2026-08-17 10:21:36",
+            "password": "$2y$12$UHiBblJ1OaDecFm8I1fk8e8F5aXsv4EbLZMUUxvZd8.Tepn\/\/wGli",
+            "two_factor_secret": null,
+            "two_factor_recovery_codes": null,
+            "two_factor_confirmed_at": null,
+            "remember_token": "PsQ9rUglqg",
+            "created_at": "2026-08-17 10:21:36",
+            "updated_at": "2026-08-17 10:21:36"
+        },
+        {
+            "id": 13,
+            "name": "lwekfjw",
+            "email": "lefkjkl@lfgkj",
+            "email_verified_at": null,
+            "password": "$2y$12$mCg0iYPmMtrkOsz0r.d.c.Cfv6gQd6p8p6P7E0VYvwnHSaYDocWTi",
+            "two_factor_secret": null,
+            "two_factor_recovery_codes": null,
+            "two_factor_confirmed_at": null,
+            "remember_token": null,
+            "created_at": "2026-08-17 12:03:24",
+            "updated_at": "2026-08-17 12:03:24"
+        }
+    ],
+    "roles": [
+        {
+            "id": 1,
+            "name": "Super Admin",
+            "description": "Has all permissions",
+            "created_at": "2026-08-14 18:01:34",
+            "updated_at": "2026-08-14 18:01:34"
+        },
+        {
+            "id": 2,
+            "name": "Restricted\/Standard Users",
+            "description": "Default user role",
+            "created_at": "2026-08-14 18:01:34",
+            "updated_at": "2026-08-15 10:07:19"
+        },
+        {
+            "id": 3,
+            "name": "Manager",
+            "description": "to manage those buissiness platform",
+            "created_at": "2026-08-14 18:43:10",
+            "updated_at": "2026-08-14 18:43:10"
+        },
+        {
+            "id": 4,
+            "name": "Team Leader",
+            "description": "it leads the sells team",
+            "created_at": "2026-08-15 14:22:33",
+            "updated_at": "2026-08-15 14:22:33"
+        }
+    ],
+    "permissions": [
+        {
+            "id": 3,
+            "name": "contacts.view",
+            "description": "Can view contacts",
+            "created_at": "2026-08-15 09:42:51",
+            "updated_at": "2026-08-15 09:42:51"
+        },
+        {
+            "id": 4,
+            "name": "contacts.create",
+            "description": "Can create contacts",
+            "created_at": "2026-08-15 09:42:51",
+            "updated_at": "2026-08-15 09:42:51"
+        },
+        {
+            "id": 5,
+            "name": "contacts.update",
+            "description": "Can update contacts",
+            "created_at": "2026-08-15 09:42:51",
+            "updated_at": "2026-08-15 09:42:51"
+        },
+        {
+            "id": 6,
+            "name": "contacts.delete",
+            "description": "Can delete contacts",
+            "created_at": "2026-08-15 09:42:51",
+            "updated_at": "2026-08-15 09:42:51"
+        },
+        {
+            "id": 7,
+            "name": "leads.view",
+            "description": "Can view leads",
+            "created_at": "2026-08-15 09:42:51",
+            "updated_at": "2026-08-15 09:42:51"
+        },
+        {
+            "id": 8,
+            "name": "leads.create",
+            "description": "Can create leads",
+            "created_at": "2026-08-15 09:42:51",
+            "updated_at": "2026-08-15 09:42:51"
+        },
+        {
+            "id": 9,
+            "name": "leads.update",
+            "description": "Can update leads",
+            "created_at": "2026-08-15 09:42:51",
+            "updated_at": "2026-08-15 09:42:51"
+        },
+        {
+            "id": 10,
+            "name": "leads.delete",
+            "description": "Can delete leads",
+            "created_at": "2026-08-15 09:42:51",
+            "updated_at": "2026-08-15 09:42:51"
+        },
+        {
+            "id": 11,
+            "name": "opportunities.view",
+            "description": "Can view opportunities",
+            "created_at": "2026-08-15 09:42:51",
+            "updated_at": "2026-08-15 09:42:51"
+        },
+        {
+            "id": 12,
+            "name": "opportunities.create",
+            "description": "Can create opportunities",
+            "created_at": "2026-08-15 09:42:51",
+            "updated_at": "2026-08-15 09:42:51"
+        },
+        {
+            "id": 13,
+            "name": "opportunities.update",
+            "description": "Can update opportunities",
+            "created_at": "2026-08-15 09:42:51",
+            "updated_at": "2026-08-15 09:42:51"
+        },
+        {
+            "id": 14,
+            "name": "opportunities.delete",
+            "description": "Can delete opportunities",
+            "created_at": "2026-08-15 09:42:51",
+            "updated_at": "2026-08-15 09:42:51"
+        },
+        {
+            "id": 15,
+            "name": "activities.view",
+            "description": "Can view activities",
+            "created_at": "2026-08-15 09:42:51",
+            "updated_at": "2026-08-15 09:42:51"
+        },
+        {
+            "id": 16,
+            "name": "activities.create",
+            "description": "Can create activities",
+            "created_at": "2026-08-15 09:42:51",
+            "updated_at": "2026-08-15 09:42:51"
+        },
+        {
+            "id": 17,
+            "name": "activities.update",
+            "description": "Can update activities",
+            "created_at": "2026-08-15 09:42:51",
+            "updated_at": "2026-08-15 09:42:51"
+        },
+        {
+            "id": 18,
+            "name": "activities.delete",
+            "description": "Can delete activities",
+            "created_at": "2026-08-15 09:42:51",
+            "updated_at": "2026-08-15 09:42:51"
+        },
+        {
+            "id": 19,
+            "name": "notes.view",
+            "description": "Can view notes",
+            "created_at": "2026-08-17 10:56:12",
+            "updated_at": "2026-08-17 10:56:12"
+        },
+        {
+            "id": 20,
+            "name": "notes.create",
+            "description": "Can create notes",
+            "created_at": "2026-08-17 10:56:12",
+            "updated_at": "2026-08-17 10:56:12"
+        },
+        {
+            "id": 21,
+            "name": "notes.update",
+            "description": "Can update notes",
+            "created_at": "2026-08-17 10:56:12",
+            "updated_at": "2026-08-17 10:56:12"
+        },
+        {
+            "id": 22,
+            "name": "notes.delete",
+            "description": "Can delete notes",
+            "created_at": "2026-08-17 10:56:12",
+            "updated_at": "2026-08-17 10:56:12"
+        },
+        {
+            "id": 23,
+            "name": "users.view",
+            "description": "Can view users",
+            "created_at": "2026-08-17 10:56:12",
+            "updated_at": "2026-08-17 10:56:12"
+        },
+        {
+            "id": 24,
+            "name": "users.create",
+            "description": "Can create users",
+            "created_at": "2026-08-17 10:56:12",
+            "updated_at": "2026-08-17 10:56:12"
+        },
+        {
+            "id": 25,
+            "name": "users.update",
+            "description": "Can update users",
+            "created_at": "2026-08-17 10:56:12",
+            "updated_at": "2026-08-17 10:56:12"
+        },
+        {
+            "id": 26,
+            "name": "users.delete",
+            "description": "Can delete users",
+            "created_at": "2026-08-17 10:56:12",
+            "updated_at": "2026-08-17 10:56:12"
+        },
+        {
+            "id": 27,
+            "name": "roles.view",
+            "description": "Can view roles",
+            "created_at": "2026-08-17 10:56:12",
+            "updated_at": "2026-08-17 10:56:12"
+        },
+        {
+            "id": 28,
+            "name": "roles.create",
+            "description": "Can create roles",
+            "created_at": "2026-08-17 10:56:12",
+            "updated_at": "2026-08-17 10:56:12"
+        },
+        {
+            "id": 29,
+            "name": "roles.update",
+            "description": "Can update roles",
+            "created_at": "2026-08-17 10:56:12",
+            "updated_at": "2026-08-17 10:56:12"
+        },
+        {
+            "id": 30,
+            "name": "roles.delete",
+            "description": "Can delete roles",
+            "created_at": "2026-08-17 10:56:12",
+            "updated_at": "2026-08-17 10:56:12"
+        }
+    ],
+    "permission_role": [
+        {
+            "permission_id": 3,
+            "role_id": 1
+        },
+        {
+            "permission_id": 4,
+            "role_id": 1
+        },
+        {
+            "permission_id": 5,
+            "role_id": 1
+        },
+        {
+            "permission_id": 6,
+            "role_id": 1
+        },
+        {
+            "permission_id": 7,
+            "role_id": 1
+        },
+        {
+            "permission_id": 8,
+            "role_id": 1
+        },
+        {
+            "permission_id": 9,
+            "role_id": 1
+        },
+        {
+            "permission_id": 10,
+            "role_id": 1
+        },
+        {
+            "permission_id": 11,
+            "role_id": 1
+        },
+        {
+            "permission_id": 12,
+            "role_id": 1
+        },
+        {
+            "permission_id": 13,
+            "role_id": 1
+        },
+        {
+            "permission_id": 14,
+            "role_id": 1
+        },
+        {
+            "permission_id": 15,
+            "role_id": 1
+        },
+        {
+            "permission_id": 16,
+            "role_id": 1
+        },
+        {
+            "permission_id": 17,
+            "role_id": 1
+        },
+        {
+            "permission_id": 18,
+            "role_id": 1
+        },
+        {
+            "permission_id": 19,
+            "role_id": 1
+        },
+        {
+            "permission_id": 20,
+            "role_id": 1
+        },
+        {
+            "permission_id": 21,
+            "role_id": 1
+        },
+        {
+            "permission_id": 22,
+            "role_id": 1
+        },
+        {
+            "permission_id": 23,
+            "role_id": 1
+        },
+        {
+            "permission_id": 24,
+            "role_id": 1
+        },
+        {
+            "permission_id": 25,
+            "role_id": 1
+        },
+        {
+            "permission_id": 26,
+            "role_id": 1
+        },
+        {
+            "permission_id": 27,
+            "role_id": 1
+        },
+        {
+            "permission_id": 28,
+            "role_id": 1
+        },
+        {
+            "permission_id": 29,
+            "role_id": 1
+        },
+        {
+            "permission_id": 30,
+            "role_id": 1
+        },
+        {
+            "permission_id": 3,
+            "role_id": 2
+        },
+        {
+            "permission_id": 7,
+            "role_id": 2
+        },
+        {
+            "permission_id": 11,
+            "role_id": 2
+        },
+        {
+            "permission_id": 15,
+            "role_id": 2
+        },
+        {
+            "permission_id": 19,
+            "role_id": 2
+        },
+        {
+            "permission_id": 3,
+            "role_id": 3
+        },
+        {
+            "permission_id": 4,
+            "role_id": 3
+        },
+        {
+            "permission_id": 5,
+            "role_id": 3
+        },
+        {
+            "permission_id": 6,
+            "role_id": 3
+        },
+        {
+            "permission_id": 7,
+            "role_id": 3
+        },
+        {
+            "permission_id": 8,
+            "role_id": 3
+        },
+        {
+            "permission_id": 9,
+            "role_id": 3
+        },
+        {
+            "permission_id": 10,
+            "role_id": 3
+        },
+        {
+            "permission_id": 11,
+            "role_id": 3
+        },
+        {
+            "permission_id": 12,
+            "role_id": 3
+        },
+        {
+            "permission_id": 13,
+            "role_id": 3
+        },
+        {
+            "permission_id": 14,
+            "role_id": 3
+        },
+        {
+            "permission_id": 15,
+            "role_id": 3
+        },
+        {
+            "permission_id": 16,
+            "role_id": 3
+        },
+        {
+            "permission_id": 17,
+            "role_id": 3
+        },
+        {
+            "permission_id": 18,
+            "role_id": 3
+        },
+        {
+            "permission_id": 19,
+            "role_id": 3
+        },
+        {
+            "permission_id": 20,
+            "role_id": 3
+        },
+        {
+            "permission_id": 21,
+            "role_id": 3
+        },
+        {
+            "permission_id": 22,
+            "role_id": 3
+        },
+        {
+            "permission_id": 23,
+            "role_id": 3
+        },
+        {
+            "permission_id": 27,
+            "role_id": 3
+        },
+        {
+            "permission_id": 3,
+            "role_id": 4
+        },
+        {
+            "permission_id": 4,
+            "role_id": 4
+        },
+        {
+            "permission_id": 5,
+            "role_id": 4
+        },
+        {
+            "permission_id": 6,
+            "role_id": 4
+        },
+        {
+            "permission_id": 7,
+            "role_id": 4
+        },
+        {
+            "permission_id": 8,
+            "role_id": 4
+        },
+        {
+            "permission_id": 9,
+            "role_id": 4
+        },
+        {
+            "permission_id": 10,
+            "role_id": 4
+        },
+        {
+            "permission_id": 11,
+            "role_id": 4
+        },
+        {
+            "permission_id": 12,
+            "role_id": 4
+        },
+        {
+            "permission_id": 13,
+            "role_id": 4
+        },
+        {
+            "permission_id": 14,
+            "role_id": 4
+        },
+        {
+            "permission_id": 15,
+            "role_id": 4
+        },
+        {
+            "permission_id": 16,
+            "role_id": 4
+        },
+        {
+            "permission_id": 17,
+            "role_id": 4
+        },
+        {
+            "permission_id": 18,
+            "role_id": 4
+        },
+        {
+            "permission_id": 19,
+            "role_id": 4
+        },
+        {
+            "permission_id": 20,
+            "role_id": 4
+        },
+        {
+            "permission_id": 21,
+            "role_id": 4
+        },
+        {
+            "permission_id": 22,
+            "role_id": 4
+        },
+        {
+            "permission_id": 23,
+            "role_id": 4
+        }
+    ],
+    "role_user": [
+        {
+            "role_id": 1,
+            "user_id": 2
+        },
+        {
+            "role_id": 3,
+            "user_id": 7
+        },
+        {
+            "role_id": 2,
+            "user_id": 8
+        },
+        {
+            "role_id": 2,
+            "user_id": 9
+        },
+        {
+            "role_id": 2,
+            "user_id": 10
+        },
+        {
+            "role_id": 2,
+            "user_id": 11
+        },
+        {
+            "role_id": 2,
+            "user_id": 13
+        }
+    ],
+    "contacts": [
+        {
+            "id": 1,
+            "name": "Ms. Dianna Dibbert",
+            "company": "Raynor, Fay and Upton",
+            "email": "tborer@example.com",
+            "phone": "(956) 714-9620",
+            "status": "inactive",
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 2,
+            "name": "Cali Block",
+            "company": "Konopelski-Abbott",
+            "email": "westley89@example.com",
+            "phone": "+1-856-258-6007",
+            "status": "customer",
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 3,
+            "name": "Prof. Albin Conroy I",
+            "company": "Corwin-O'Hara",
+            "email": "wade.dach@example.net",
+            "phone": "1-725-397-6778",
+            "status": "customer",
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 4,
+            "name": "Mekhi Conn",
+            "company": "Casper, Quigley and Cronin",
+            "email": "merritt72@example.com",
+            "phone": "201-831-2034",
+            "status": "customer",
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 5,
+            "name": "Mr. Jon Wuckert",
+            "company": "Murray-Crona",
+            "email": "ngerlach@example.net",
+            "phone": "907.655.6448",
+            "status": "customer",
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 6,
+            "name": "Dr. Lorna Considine I",
+            "company": "Harris-Goyette",
+            "email": "abernathy.luz@example.com",
+            "phone": "+1 (516) 329-2875",
+            "status": "prospect",
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 7,
+            "name": "Doug Kunze DVM",
+            "company": "Beer Group",
+            "email": "elena.renner@example.org",
+            "phone": "575-346-2240",
+            "status": "inactive",
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 8,
+            "name": "Daniella Haag DVM",
+            "company": "Gutmann Ltd",
+            "email": "jparker@example.org",
+            "phone": "475.301.8087",
+            "status": "customer",
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 9,
+            "name": "Selmer Jones",
+            "company": "Reichert-Kub",
+            "email": "jenkins.noel@example.com",
+            "phone": "+17626897335",
+            "status": "customer",
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 10,
+            "name": "Rozella Kutch",
+            "company": "Rempel Inc",
+            "email": "oliver.simonis@example.net",
+            "phone": "325-889-3330",
+            "status": "customer",
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        }
+    ],
+    "leads": [
+        {
+            "id": 2,
+            "contact_id": 2,
+            "name": "Moshe Howell",
+            "email": "mschmeler@example.net",
+            "source": "animi",
+            "status": "discarded",
+            "discard_reason": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 3,
+            "contact_id": 1,
+            "name": "Moses Hayes",
+            "email": "steuber.christian@example.org",
+            "source": "quae",
+            "status": "discarded",
+            "discard_reason": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 4,
+            "contact_id": 5,
+            "name": "Dr. Jermain Thompson Sr.",
+            "email": "jarret.damore@example.com",
+            "source": "illum",
+            "status": "converted",
+            "discard_reason": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 5,
+            "contact_id": 1,
+            "name": "Ceasar Kessler",
+            "email": "jerde.winona@example.org",
+            "source": "quis",
+            "status": "discarded",
+            "discard_reason": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 10,
+            "contact_id": 4,
+            "name": "Dr. Webster Eichmann II",
+            "email": "nathaniel02@example.org",
+            "source": "magnam",
+            "status": "discarded",
+            "discard_reason": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 11,
+            "contact_id": 7,
+            "name": "Lizzie Terry PhD",
+            "email": "thiel.alisha@example.org",
+            "source": "est",
+            "status": "converted",
+            "discard_reason": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 44,
+            "contact_id": null,
+            "name": "abebe",
+            "email": "ldkladfkj@gmail.com",
+            "source": "facebook",
+            "status": "new",
+            "discard_reason": null,
+            "owner_id": 2,
+            "created_at": "2026-08-18 13:18:34",
+            "updated_at": "2026-08-18 13:29:26"
+        },
+        {
+            "id": 45,
+            "contact_id": null,
+            "name": "bekele",
+            "email": "bekele@gmail.com",
+            "source": "instagram",
+            "status": "new",
+            "discard_reason": null,
+            "owner_id": 2,
+            "created_at": "2026-08-18 13:29:54",
+            "updated_at": "2026-08-18 13:29:54"
+        },
+        {
+            "id": 46,
+            "contact_id": null,
+            "name": "Alemayehu",
+            "email": "alemayehu@gmail.com",
+            "source": "tiktok",
+            "status": "new",
+            "discard_reason": null,
+            "owner_id": 2,
+            "created_at": "2026-08-18 13:30:21",
+            "updated_at": "2026-08-18 13:30:21"
+        },
+        {
+            "id": 47,
+            "contact_id": null,
+            "name": "Abenezer",
+            "email": "abenezer@gmail.com",
+            "source": "telegram",
+            "status": "new",
+            "discard_reason": null,
+            "owner_id": 2,
+            "created_at": "2026-08-18 13:31:01",
+            "updated_at": "2026-08-18 13:31:01"
+        },
+        {
+            "id": 48,
+            "contact_id": null,
+            "name": "Saron",
+            "email": "saron@gmail.com",
+            "source": "snap chat",
+            "status": "new",
+            "discard_reason": null,
+            "owner_id": 2,
+            "created_at": "2026-08-18 13:31:32",
+            "updated_at": "2026-08-18 13:31:32"
+        },
+        {
+            "id": 49,
+            "contact_id": null,
+            "name": "Liya",
+            "email": "liya@gmail.com",
+            "source": "snap chat",
+            "status": "new",
+            "discard_reason": null,
+            "owner_id": 2,
+            "created_at": "2026-08-18 13:31:53",
+            "updated_at": "2026-08-18 13:31:53"
+        },
+        {
+            "id": 50,
+            "contact_id": null,
+            "name": "Feleke",
+            "email": "feleke@gmail.com",
+            "source": "telegram",
+            "status": "new",
+            "discard_reason": null,
+            "owner_id": 2,
+            "created_at": "2026-08-18 13:33:11",
+            "updated_at": "2026-08-18 13:33:11"
+        },
+        {
+            "id": 51,
+            "contact_id": null,
+            "name": "Aklilu",
+            "email": "aklilu@gmail.com",
+            "source": "telegram",
+            "status": "new",
+            "discard_reason": null,
+            "owner_id": 2,
+            "created_at": "2026-08-18 13:34:03",
+            "updated_at": "2026-08-18 13:34:03"
+        }
+    ],
+    "opportunities": [
+        {
+            "id": 2,
+            "contact_id": 6,
+            "lead_id": null,
+            "title": "Molestiae aliquam quae provident.",
+            "stage_id": 4,
+            "status": "won",
+            "lost_reason": null,
+            "stage_entered_at": "2026-08-15 09:42:52",
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 4,
+            "contact_id": 6,
+            "lead_id": null,
+            "title": "Libero libero quia mollitia.",
+            "stage_id": 6,
+            "status": "won",
+            "lost_reason": null,
+            "stage_entered_at": "2026-08-15 09:42:52",
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:42:52",
+            "updated_at": "2026-08-15 09:42:52"
+        },
+        {
+            "id": 24,
+            "contact_id": 1,
+            "lead_id": null,
+            "title": "i don't know",
+            "stage_id": 1,
+            "status": "open",
+            "lost_reason": null,
+            "stage_entered_at": "2026-08-18 12:38:27",
+            "owner_id": 2,
+            "created_at": "2026-08-18 12:38:27",
+            "updated_at": "2026-08-18 13:03:43"
+        },
+        {
+            "id": 25,
+            "contact_id": 3,
+            "lead_id": null,
+            "title": "Stage",
+            "stage_id": 1,
+            "status": "open",
+            "lost_reason": null,
+            "stage_entered_at": "2026-08-18 12:57:11",
+            "owner_id": 2,
+            "created_at": "2026-08-18 12:57:11",
+            "updated_at": "2026-08-18 13:03:43"
+        },
+        {
+            "id": 26,
+            "contact_id": 4,
+            "lead_id": null,
+            "title": "stage 2",
+            "stage_id": 1,
+            "status": "open",
+            "lost_reason": null,
+            "stage_entered_at": "2026-08-18 12:58:51",
+            "owner_id": 2,
+            "created_at": "2026-08-18 12:58:51",
+            "updated_at": "2026-08-18 13:03:43"
+        },
+        {
+            "id": 27,
+            "contact_id": 7,
+            "lead_id": null,
+            "title": "for thinking pipeline",
+            "stage_id": 24,
+            "status": "open",
+            "lost_reason": null,
+            "stage_entered_at": "2026-08-18 13:07:13",
+            "owner_id": 2,
+            "created_at": "2026-08-18 13:07:13",
+            "updated_at": "2026-08-18 13:07:13"
+        },
+        {
+            "id": 28,
+            "contact_id": 10,
+            "lead_id": null,
+            "title": "for won pipeline",
+            "stage_id": 5,
+            "status": "open",
+            "lost_reason": null,
+            "stage_entered_at": "2026-08-18 13:37:10",
+            "owner_id": 2,
+            "created_at": "2026-08-18 13:37:10",
+            "updated_at": "2026-08-18 13:37:10"
+        },
+        {
+            "id": 29,
+            "contact_id": 4,
+            "lead_id": null,
+            "title": "for won pipeline 2",
+            "stage_id": 5,
+            "status": "open",
+            "lost_reason": null,
+            "stage_entered_at": "2026-08-18 13:37:41",
+            "owner_id": 2,
+            "created_at": "2026-08-18 13:37:41",
+            "updated_at": "2026-08-18 13:37:41"
+        }
+    ],
+    "pipeline_stages": [
+        {
+            "id": 1,
+            "name": "New",
+            "order": 1,
+            "is_won": 0,
+            "is_lost": 0,
+            "created_at": "2026-08-14 18:01:35",
+            "updated_at": "2026-08-14 18:01:35"
+        },
+        {
+            "id": 3,
+            "name": "Proposal Sent",
+            "order": 3,
+            "is_won": 0,
+            "is_lost": 0,
+            "created_at": "2026-08-14 18:01:35",
+            "updated_at": "2026-08-14 18:01:35"
+        },
+        {
+            "id": 4,
+            "name": "Negotiation",
+            "order": 4,
+            "is_won": 0,
+            "is_lost": 0,
+            "created_at": "2026-08-14 18:01:35",
+            "updated_at": "2026-08-14 18:01:35"
+        },
+        {
+            "id": 5,
+            "name": "Won",
+            "order": 5,
+            "is_won": 1,
+            "is_lost": 0,
+            "created_at": "2026-08-14 18:01:35",
+            "updated_at": "2026-08-14 18:01:35"
+        },
+        {
+            "id": 6,
+            "name": "Lost",
+            "order": 6,
+            "is_won": 0,
+            "is_lost": 1,
+            "created_at": "2026-08-14 18:01:35",
+            "updated_at": "2026-08-14 18:01:35"
+        },
+        {
+            "id": 24,
+            "name": "thinking",
+            "order": 2,
+            "is_won": 1,
+            "is_lost": 0,
+            "created_at": "2026-08-18 13:06:33",
+            "updated_at": "2026-08-18 13:06:33"
+        }
+    ],
+    "notes": [
+        {
+            "id": 4,
+            "entity_type": "opportunity",
+            "entity_id": 18,
+            "body": "we will try our best",
+            "mentioned_user_ids": null,
+            "created_by": 2,
+            "created_at": "2026-08-16 08:17:16",
+            "updated_at": "2026-08-16 08:17:16"
+        },
+        {
+            "id": 7,
+            "entity_type": "opportunity",
+            "entity_id": 19,
+            "body": "the reason is not specified",
+            "mentioned_user_ids": null,
+            "created_by": 2,
+            "created_at": "2026-08-16 09:30:55",
+            "updated_at": "2026-08-16 09:30:55"
+        },
+        {
+            "id": 37,
+            "entity_type": "opportunity",
+            "entity_id": 21,
+            "body": "it good to see you.",
+            "mentioned_user_ids": null,
+            "created_by": 2,
+            "created_at": "2026-08-17 09:03:19",
+            "updated_at": "2026-08-17 09:38:39"
+        },
+        {
+            "id": 38,
+            "entity_type": "opportunity",
+            "entity_id": 18,
+            "body": "hi",
+            "mentioned_user_ids": null,
+            "created_by": 7,
+            "created_at": "2026-08-17 10:39:03",
+            "updated_at": "2026-08-17 10:39:03"
+        }
+    ],
+    "activities": [
+        {
+            "id": 1,
+            "entity_type": "App\\Models\\Contact",
+            "entity_id": 5,
+            "type": "meeting",
+            "due_at": "2026-08-21 04:06:19",
+            "completed_at": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:42:53",
+            "updated_at": "2026-08-15 09:42:53"
+        },
+        {
+            "id": 2,
+            "entity_type": "App\\Models\\Contact",
+            "entity_id": 9,
+            "type": "task",
+            "due_at": "2026-08-19 17:28:03",
+            "completed_at": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:42:53",
+            "updated_at": "2026-08-15 09:42:53"
+        },
+        {
+            "id": 3,
+            "entity_type": "App\\Models\\Contact",
+            "entity_id": 10,
+            "type": "task",
+            "due_at": "2026-08-19 18:56:02",
+            "completed_at": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:42:53",
+            "updated_at": "2026-08-15 09:42:53"
+        },
+        {
+            "id": 5,
+            "entity_type": "App\\Models\\Contact",
+            "entity_id": 10,
+            "type": "task",
+            "due_at": "2026-08-18 10:44:25",
+            "completed_at": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:42:53",
+            "updated_at": "2026-08-15 09:42:53"
+        },
+        {
+            "id": 8,
+            "entity_type": "App\\Models\\Contact",
+            "entity_id": 7,
+            "type": "meeting",
+            "due_at": "2026-08-17 15:44:18",
+            "completed_at": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:42:53",
+            "updated_at": "2026-08-17 08:53:33"
+        },
+        {
+            "id": 10,
+            "entity_type": "App\\Models\\Contact",
+            "entity_id": 5,
+            "type": "call",
+            "due_at": "2026-08-18 21:08:15",
+            "completed_at": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:42:53",
+            "updated_at": "2026-08-17 08:55:15"
+        },
+        {
+            "id": 12,
+            "entity_type": "App\\Models\\Contact",
+            "entity_id": 20,
+            "type": "meeting",
+            "due_at": "2026-08-18 12:25:10",
+            "completed_at": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:45:56",
+            "updated_at": "2026-08-15 09:45:56"
+        },
+        {
+            "id": 13,
+            "entity_type": "App\\Models\\Contact",
+            "entity_id": 11,
+            "type": "task",
+            "due_at": "2026-08-20 23:21:27",
+            "completed_at": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:45:56",
+            "updated_at": "2026-08-15 09:45:56"
+        },
+        {
+            "id": 15,
+            "entity_type": "App\\Models\\Contact",
+            "entity_id": 17,
+            "type": "call",
+            "due_at": "2026-08-19 08:47:10",
+            "completed_at": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:45:56",
+            "updated_at": "2026-08-15 09:45:56"
+        },
+        {
+            "id": 16,
+            "entity_type": "App\\Models\\Contact",
+            "entity_id": 18,
+            "type": "task",
+            "due_at": "2026-08-18 21:56:55",
+            "completed_at": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:45:56",
+            "updated_at": "2026-08-15 09:45:56"
+        },
+        {
+            "id": 19,
+            "entity_type": "App\\Models\\Contact",
+            "entity_id": 16,
+            "type": "meeting",
+            "due_at": "2026-08-18 05:51:05",
+            "completed_at": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:45:56",
+            "updated_at": "2026-08-15 09:45:56"
+        },
+        {
+            "id": 20,
+            "entity_type": "App\\Models\\Contact",
+            "entity_id": 13,
+            "type": "meeting",
+            "due_at": "2026-08-18 07:47:12",
+            "completed_at": null,
+            "owner_id": 2,
+            "created_at": "2026-08-15 09:45:57",
+            "updated_at": "2026-08-15 09:45:57"
+        },
+        {
+            "id": 24,
+            "entity_type": "opportunity",
+            "entity_id": 23,
+            "type": "meeting",
+            "due_at": "2026-08-17 11:09:00",
+            "completed_at": null,
+            "owner_id": 2,
+            "created_at": "2026-08-17 08:09:24",
+            "updated_at": "2026-08-17 08:09:24"
+        },
+        {
+            "id": 28,
+            "entity_type": "opportunity",
+            "entity_id": 21,
+            "type": "task",
+            "due_at": "2026-08-19 13:10:00",
+            "completed_at": null,
+            "owner_id": 2,
+            "created_at": "2026-08-17 09:03:58",
+            "updated_at": "2026-08-17 09:30:27"
+        },
+        {
+            "id": 29,
+            "entity_type": "opportunity",
+            "entity_id": 18,
+            "type": "task",
+            "due_at": "2026-08-17 14:45:00",
+            "completed_at": null,
+            "owner_id": 7,
+            "created_at": "2026-08-17 11:45:40",
+            "updated_at": "2026-08-17 11:45:40"
+        }
+    ]
+}
