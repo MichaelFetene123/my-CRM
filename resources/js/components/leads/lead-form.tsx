@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,6 +21,7 @@ export function LeadForm({ lead, onSuccess, onCancel }: LeadFormProps) {
     const isPending = isCreating || isUpdating;
 
     const {
+        control,
         register,
         handleSubmit,
         reset,
@@ -45,6 +46,7 @@ export function LeadForm({ lead, onSuccess, onCancel }: LeadFormProps) {
     }, [lead, reset]);
 
     const onSubmit = (formData: any) => {
+        console.log("Submitting formData", formData);
         if (lead) {
             updateLead(
                 { id: lead.id, ...formData },
@@ -88,7 +90,11 @@ export function LeadForm({ lead, onSuccess, onCancel }: LeadFormProps) {
         <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
             <div>
                 <Label htmlFor="name">Name</Label>
-                <Input id="name" {...register('name')} />
+                <Controller
+                    name="name"
+                    control={control}
+                    render={({ field }) => <Input id="name" {...field} />}
+                />
                 {errors.name && (
                     <p className="mt-1 text-sm text-destructive">
                         {errors.name.message as string}
@@ -97,7 +103,11 @@ export function LeadForm({ lead, onSuccess, onCancel }: LeadFormProps) {
             </div>
             <div>
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" {...register('email')} />
+                <Controller
+                    name="email"
+                    control={control}
+                    render={({ field }) => <Input id="email" type="email" {...field} />}
+                />
                 {errors.email && (
                     <p className="mt-1 text-sm text-destructive">
                         {errors.email.message as string}
@@ -106,7 +116,11 @@ export function LeadForm({ lead, onSuccess, onCancel }: LeadFormProps) {
             </div>
             <div>
                 <Label htmlFor="source">Source</Label>
-                <Input id="source" {...register('source')} />
+                <Controller
+                    name="source"
+                    control={control}
+                    render={({ field }) => <Input id="source" {...field} />}
+                />
                 {errors.source && (
                     <p className="mt-1 text-sm text-destructive">
                         {errors.source.message as string}
