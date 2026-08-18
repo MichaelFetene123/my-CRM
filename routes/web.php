@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('api')->name('apiLeads.')->group(function () {
         Route::get('leads', [LeadController::class, 'apiIndex'])->name('index');
         Route::post('leads', [LeadController::class, 'apiStore'])->name('store');
+        Route::get('leads/{lead}', [LeadController::class, 'apiShow'])->name('show');
         Route::put('leads/{lead}', [LeadController::class, 'apiUpdate'])->name('update');
         Route::post('leads/{lead}/convert', [LeadController::class, 'apiConvert'])->name('convert');
         Route::post('leads/{lead}/discard', [LeadController::class, 'apiDiscard'])->name('discard');

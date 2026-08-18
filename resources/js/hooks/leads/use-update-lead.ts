@@ -18,10 +18,7 @@ export function useUpdateLead(leadId: number) {
     return useMutation<Lead, ApiError, UpdateLeadData>({
         mutationFn: async (data) => {
             const { id, ...payload } = data;
-            return await api.post(apiLeadsRoute.update(id).url, {
-                _method: 'PUT',
-                ...payload,
-            });
+            return await api.put(apiLeadsRoute.update(id).url, payload);
         },
         onSuccess: (updatedLead) => {
             toast.success('Lead updated successfully');

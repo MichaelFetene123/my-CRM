@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/dialog';
 import { LeadForm } from '@/components/leads/lead-form';
 import { useDeleteLead } from '@/hooks/leads/use-delete-lead';
+import { useLead } from '@/hooks/leads/use-lead';
 
 interface Props {
     lead: Lead & {
@@ -27,7 +28,9 @@ interface Props {
     };
 }
 
-export default function LeadShow({ lead }: Props) {
+export default function LeadShow({ lead: initialLead }: Props) {
+    const { data } = useLead(initialLead.id, initialLead);
+    const lead = data || initialLead;
     const [open, setOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const { hasPermission } = usePermissions();
@@ -83,7 +86,6 @@ export default function LeadShow({ lead }: Props) {
                                         lead={lead}
                                         onSuccess={() => {
                                             setOpen(false);
-                                            router.reload({ only: ['lead'] });
                                         }}
                                         onCancel={() => setOpen(false)}
                                     />
