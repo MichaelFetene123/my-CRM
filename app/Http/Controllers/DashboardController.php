@@ -26,10 +26,11 @@ class DashboardController extends Controller
             'upcomingActivities' => Inertia::defer(Activity::whereNull('completed_at')
                 ->whereBetween('due_at', [now(), now()->addWeek()])
                 ->count(...)),
-            'leadsBySource' => Inertia::defer(Lead::selectRaw('COALESCE(source, "Unknown") as source, COUNT(*) as count')
+            'leadsBySource' => Inertia::defer(fn () => Lead::active()
+                ->selectRaw('COALESCE(source, "Unknown") as source, COUNT(*) as count')
                 ->groupBy('source')
                 ->orderByDesc('count')
-                ->get(...)),
+                ->get()),
         ]);
     }
 
