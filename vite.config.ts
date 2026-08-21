@@ -24,7 +24,12 @@ export default defineConfig({
                 }),
             ],
         }),
-        inertia(),
+        inertia({
+            ssr: {
+                cluster: true,
+                host: '127.0.0.1',
+            },
+        }),
         react({
             babel: {
                 plugins: ['babel-plugin-react-compiler'],
